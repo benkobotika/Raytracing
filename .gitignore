@@ -8,3 +8,9 @@
 01_Normals/x64/Debug/*
 *.json
 
+/01_Normals/x64/Debug/Raytrace.tlog/CL.read.1.tlog
+/01_Normals/x64/Debug/Raytrace.tlog/link.read.1.tlog
+/01_Normals/x64/Debug/01_Normals.log
+/01_Normals/x64/Debug/Raytrace.ilk
+/x64/Debug/Raytrace.exe
+/x64/Debug/Raytrace.pdb
