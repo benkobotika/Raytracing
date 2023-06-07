@@ -70,7 +70,7 @@ void main()
     vec3 r_point = normalize(reflect(-to_point_light_norm, vs_out_norm));
     vec3 r_dir = normalize(reflect(-to_light_dir_norm, vs_out_norm));
     float si_point = pow(clamp(dot(h_norm_1, vs_out_norm), 0.0, 1.0), 20);
-    float si_dir = pow(clamp(dot(h_norm_2, vs_out_norm), 0.0, 1.0), 10);
+    float si_dir = pow(clamp(dot(h_norm_2, vs_out_norm), 0.0, 1.0), 1);
     vec3 specular = (si_point * point_light_color + si_dir * light_dir_color) * Ls * Ks; // no specular light (blinking) for light direction
 
 	/* help:
