@@ -49,10 +49,10 @@ int main( int argc, char* args[] )
 
 	// create window
 	SDL_Window *win = 0;
-	//win = SDL_CreateWindow( "Raytrace", 50, 50, 1000, 500,
-	//						SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL);
-	win = SDL_CreateWindow("Raytrace", 0, 0, 0, 0,
-		SDL_WINDOW_FULLSCREEN | SDL_WINDOW_OPENGL);
+	win = SDL_CreateWindow( "Raytrace", 50, 50, 1000, 500,
+							SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL);
+	//win = SDL_CreateWindow("Raytrace", 0, 0, 0, 0,
+	//	SDL_WINDOW_FULLSCREEN | SDL_WINDOW_OPENGL);
 
 
 	// error handling

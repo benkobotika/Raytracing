@@ -75,8 +75,13 @@ void Raytrace::InitTextures()
 	m_loadedTextureID[0] = TextureFromFile("assets/sun.jpg");
 	m_loadedTextureID[1] = TextureFromFile("assets/mercury.jpg");
 	m_loadedTextureID[2] = TextureFromFile("assets/venus.jpg");
-	m_loadedTextureID[3] = TextureFromFile("assets/moon.jpg");
-	m_loadedTextureID[4] = TextureFromFile("assets/earth.jpg");
+	m_loadedTextureID[3] = TextureFromFile("assets/earth.jpg");
+	m_loadedTextureID[4] = TextureFromFile("assets/moon.jpg");
+	m_loadedTextureID[5] = TextureFromFile("assets/mars.jpg");
+	m_loadedTextureID[6] = TextureFromFile("assets/jupiter.jpg");
+	m_loadedTextureID[7] = TextureFromFile("assets/saturn.jpg");
+	m_loadedTextureID[8] = TextureFromFile("assets/uranus.jpg");
+	m_loadedTextureID[9] = TextureFromFile("assets/neptune.jpg");
 }
 
 bool Raytrace::Init()

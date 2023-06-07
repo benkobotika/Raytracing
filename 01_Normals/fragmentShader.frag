@@ -33,7 +33,7 @@ uniform vec3 up;
 
 // spheres
 uniform int spheresCount;
-uniform vec4 spheres[5];
+uniform vec4 spheres[10];
 
 uniform sampler2D texImage;
 
