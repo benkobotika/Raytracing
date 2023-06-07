@@ -9,8 +9,8 @@ in vec2 vs_out_tex;
 out vec4 fs_out_col;
 
 // light direction and point light (2 light sources)
-uniform vec3 to_light_dir = vec3(1,1,1);
-uniform vec3 to_point_light = vec3(0, 0, 0);
+uniform vec3 to_light_dir = vec3(1, 1, 1);
+uniform vec3 to_point_light = vec3(0, 0, 0); // sun
 
 // light properties: ambient, diffuse, specular
 uniform vec3 La;
@@ -49,10 +49,10 @@ void main()
 	// diffuse color
 	// ==============
 	vec3 to_light_dir_norm = normalize(to_light_dir);
-	vec3 to_light_point_norm = normalize(to_point_light - vs_out_pos);
+	vec3 to_point_light_norm = normalize(to_point_light - vs_out_pos);
 
 	float di_dir = clamp(dot(to_light_dir_norm, vs_out_norm), 0.0, 1.0);
-	float di_point = clamp(dot(to_light_point_norm, vs_out_norm), 0.0, 1.0);
+	float di_point = clamp(dot(to_point_light_norm, vs_out_norm), 0.0, 1.0);
 	vec3 diffuse = (di_point * point_light_color + di_dir * light_dir_color) * Ld * Kd;
 
 	/* help:
@@ -64,10 +64,10 @@ void main()
 	// specular color (Phong-Blinn)
 	// ==============
     vec3 v_norm = normalize(eye - vs_out_pos); // vector from vs_out_pos to eye (v)
-	vec3 h_norm_1 = normalize(v_norm + to_light_point_norm); // half vector
-	vec3 h_norm_2 = normalize(v_norm + to_light_dir_norm); // half vector
+	vec3 h_norm_1 = normalize(v_norm + to_point_light_norm); // half vector (point light)
+	vec3 h_norm_2 = normalize(v_norm + to_light_dir_norm); // half vector (directional light)
 
-    vec3 r_point = normalize(reflect(-to_light_point_norm, vs_out_norm));
+    vec3 r_point = normalize(reflect(-to_point_light_norm, vs_out_norm));
     vec3 r_dir = normalize(reflect(-to_light_dir_norm, vs_out_norm));
     float si_point = pow(clamp(dot(h_norm_1, vs_out_norm), 0.0, 1.0), 20);
     float si_dir = pow(clamp(dot(h_norm_2, vs_out_norm), 0.0, 1.0), 10);
