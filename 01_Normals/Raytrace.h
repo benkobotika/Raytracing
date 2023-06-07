@@ -54,9 +54,9 @@ protected:
 	glm::vec4(70.0f, 0.0f, 0.0f, mercury_size * log2(277.0f / 240.0f)),		// moon
 	glm::vec4(85.0f, 0.0f, 0.0f, mercury_size * log2(277.0f / 207.0f)),		// mars
 	glm::vec4(105.0f, 0.0f, 0.0f, mercury_size * log2(277.0f / 11.0f)),		// jupiter
-	glm::vec4(135.0f, 0.0f, 0.0f, mercury_size * log2(277.0f / 12.0f)),		// saturn
-	glm::vec4(165.0f, 0.0f, 0.0f, mercury_size * log2(277.0f / 27.7f)),		// uranus
-	glm::vec4(195.0f, 0.0f, 0.0f, mercury_size * log2(277.0f / 27.4f)),		// neptune
+	glm::vec4(125.0f, 0.0f, 0.0f, mercury_size * log2(277.0f / 12.0f)),		// saturn
+	glm::vec4(145.0f, 0.0f, 0.0f, mercury_size * log2(277.0f / 27.7f)),		// uranus
+	glm::vec4(165.0f, 0.0f, 0.0f, mercury_size * log2(277.0f / 27.4f)),		// neptune
 	};
 
 	// light properties
