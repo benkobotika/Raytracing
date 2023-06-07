@@ -1,3 +1,4 @@
+//Path: 01_Normals\Shaders\fragmentShader.frag
 #version 140
 
 // attributes per fragment from the pipeline
