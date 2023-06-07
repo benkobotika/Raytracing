@@ -17,6 +17,8 @@ int main( int argc, char* args[] )
 	//	std::cout << "Press a key to exit the application..." << std::endl;
 	//	std::cin.get();
 	//	});
+	// hehe :))
+
 
 	// init SDL
 	if ( SDL_Init( SDL_INIT_VIDEO ) == -1 )
