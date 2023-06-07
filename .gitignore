@@ -5,3 +5,13 @@
 /.vs
 /01_Normals/x64/Debug
 *.json
+/01_Normals/x64/Debug/Raytrace.tlog/CL.command.1.tlog
+/01_Normals/x64/Debug/Raytrace.tlog/CL.read.1.tlog
+/01_Normals/x64/Debug/Raytrace.tlog/CL.write.1.tlog
+/01_Normals/x64/Debug/01_Normals.log
+/01_Normals/x64/Debug/Raytrace.ilk
+/01_Normals/x64/Debug/Raytrace.obj
+/01_Normals/x64/Debug/vc143.idb
+/01_Normals/x64/Debug/vc143.pdb
+/x64/Debug/Raytrace.exe
+/x64/Debug/Raytrace.pdb
