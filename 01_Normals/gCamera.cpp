@@ -55,8 +55,8 @@ void gCamera::Update(float _deltaTime)
 	m_eye += (m_goFw*m_fw + m_goRight*m_st)*m_speed*_deltaTime;
 	m_at  += (m_goFw*m_fw + m_goRight*m_st)*m_speed*_deltaTime;
 
-	m_viewMatrix = glm::lookAt( m_eye, m_at, m_up);
-	m_matViewProj = m_matProj * m_viewMatrix;
+	m_viewMatrix = glm::lookAt( m_eye, m_at, m_up); // updating camera position
+	m_matViewProj = m_matProj * m_viewMatrix; // projection matrix
 }
 
 void gCamera::UpdateUV(float du, float dv)
