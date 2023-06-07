@@ -8,9 +8,9 @@ in vec2 vs_out_tex;
 // out parameter - color
 out vec4 fs_out_col;
 
-// light direction and point light
-uniform vec3 light_dir = vec3(-1,-1,-1);
-uniform vec3 point_light = vec3(20, 20, 50);
+// light direction and point light (2 light sources)
+uniform vec3 to_light_dir = normalize(vec3(1,1,1));
+uniform vec3 point_light = vec3(0, 0, 0);
 
 // light properties: ambient, diffuse, specular
 uniform vec3 La;
@@ -22,6 +22,11 @@ uniform vec3 Ka;
 uniform vec3 Kd;
 uniform vec3 Ks;
 
+// light colors
+uniform vec3 light_dir_color = vec3(1.0f, 1.0f, 1.0f); // white color
+uniform vec3 point_light_color = vec3(1.0f, 0.5f, 0.0f); // orange color
+
+// camera
 uniform vec3 eye;
 uniform vec3 at;
 uniform vec3 up;
@@ -43,27 +48,26 @@ void main()
 
 	// diffuse color
 	// ==============
-	vec3 to_light = normalize(-light_dir);
-	float di = clamp(dot(to_light, vs_out_norm), 0.0, 1.0);
-
 	vec3 to_light_point = normalize(point_light - vs_out_pos);
+	float di_dir = clamp(dot(to_light_dir, vs_out_norm), 0.0, 1.0);
 	float di_point = clamp(dot(to_light_point, vs_out_norm), 0.0, 1.0);
-	vec3 diffuse = di_point * Ld * Ld;
+	vec3 diffuse = (di_point * point_light_color + di_dir * light_dir_color) * Ld * Kd;
+
 	/* help:
 	    - normalization: http://www.opengl.org/sdk/docs/manglsl/xhtml/normalize.xml
 	    - dot product: http://www.opengl.org/sdk/docs/manglsl/xhtml/dot.xml
 	    - clamp: http://www.opengl.org/sdk/docs/manglsl/xhtml/clamp.xml
 	*/
 
-	// specular color
+	// specular color (Phong)
 	// ==============
-	vec3 e = normalize(eye - vs_out_pos);
-	vec3 r = normalize(reflect(light_dir, vs_out_norm));
-	float si = pow(clamp(dot(e, r), 0.0, 1.0), 20);
+    vec3 v = normalize(eye - vs_out_pos); // vector from vs_out_pos to eye (v)
+    vec3 r_point = normalize(reflect(-to_light_point, vs_out_norm));
+    vec3 r_dir = normalize(reflect(-to_light_dir, vs_out_norm));
+    float si_point = pow(clamp(dot(v, r_point), 0.0, 1.0), 1);
+    float si_dir = pow(clamp(dot(v, r_dir), 0.0, 1.0), 20);
+    vec3 specular = (si_point * point_light_color + si_dir * light_dir_color) * Ls * Ks;
 
-	vec3 r_point = normalize(reflect(-to_light_point, vs_out_norm));
-	float si_point = pow(clamp(dot(e, r_point), 0.0, 1.0), 20);
-	vec3 specular = si_point * Ls * Ks;
 	/* help:
 		- reflect: http://www.opengl.org/sdk/docs/manglsl/xhtml/reflect.xml
 				reflect(beérkező_vektor, normálvektor);
@@ -71,10 +75,6 @@ void main()
 				pow(alap, kitevő);
 	*/
 	
-	// surface normal
-	// fs_out_col = vec4(vs_out_norm, 1);
-	// fs_out_col = vec4(ambient + diffuse + specular, 1);
-
 	// fragment color (calculate intersection with spheres)
 	// =======================================================
 	vec4 textureColor = texture(texImage, vs_out_tex);
