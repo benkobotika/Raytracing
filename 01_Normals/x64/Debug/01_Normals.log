@@ -1,7 +1,17 @@
 ﻿C:\Program Files\Microsoft Visual Studio\2022\Community\MSBuild\Microsoft\VC\v170\Microsoft.CppBuild.targets(531,5): warning MSB8028: The intermediate directory (x64\Debug\) contains files shared from another project (01_Normals.vcxproj).  This can lead to incorrect clean and rebuild behavior.
+  GLDebugMessageCallback.cpp
+  InitSphere.cpp
+  InitVaoVboIndB.cpp
+  Mouse.cpp
   Raytrace.cpp
-T:\rtx\01_Normals\Raytrace.cpp(21,35): warning C4267: 'argument': conversion from 'size_t' to 'GLsizei', possible loss of data
-T:\rtx\01_Normals\Raytrace.cpp(22,30): warning C4267: 'argument': conversion from 'size_t' to 'GLsizei', possible loss of data
-T:\rtx\01_Normals\Raytrace.cpp(23,30): warning C4267: 'argument': conversion from 'size_t' to 'GLsizei', possible loss of data
-T:\rtx\01_Normals\Raytrace.cpp(24,31): warning C4267: 'argument': conversion from 'size_t' to 'GLsizei', possible loss of data
+T:\rtx\01_Normals\Raytrace.cpp(23,35): warning C4267: 'argument': conversion from 'size_t' to 'GLsizei', possible loss of data
+T:\rtx\01_Normals\Raytrace.cpp(24,30): warning C4267: 'argument': conversion from 'size_t' to 'GLsizei', possible loss of data
+T:\rtx\01_Normals\Raytrace.cpp(25,30): warning C4267: 'argument': conversion from 'size_t' to 'GLsizei', possible loss of data
+T:\rtx\01_Normals\Raytrace.cpp(26,31): warning C4267: 'argument': conversion from 'size_t' to 'GLsizei', possible loss of data
+  RenderAndUpdate.cpp
+T:\rtx\01_Normals\RenderAndUpdate.cpp(53,47): warning C4267: 'argument': conversion from 'size_t' to 'GLint', possible loss of data
+T:\rtx\01_Normals\RenderAndUpdate.cpp(54,42): warning C4267: 'argument': conversion from 'size_t' to 'GLsizei', possible loss of data
+  gCamera.cpp
+  main.cpp
+  Generating Code...
   01_Normals.vcxproj -> T:\rtx\x64\Debug\Raytrace.exe
