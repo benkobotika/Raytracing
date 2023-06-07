@@ -10,7 +10,7 @@ in vec2 vs_out_tex;
 out vec4 fs_out_col;
 
 // light direction and point light (2 light sources)
-uniform vec3 to_light_dir = vs_out_pos;
+vec3 to_light_dir = vs_out_pos;
 uniform vec3 to_point_light = vec3(0, 0, 0); // sun
 
 // light properties: ambient, diffuse, specular
