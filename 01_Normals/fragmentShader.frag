@@ -64,13 +64,14 @@ void main()
 	// specular color (Phong-Blinn)
 	// ==============
     vec3 v_norm = normalize(eye - vs_out_pos); // vector from vs_out_pos to eye (v)
-	vec3 h_norm = normalize(v_norm + to_light_point_norm); // half vector
+	vec3 h_norm_1 = normalize(v_norm + to_light_point_norm); // half vector
+	vec3 h_norm_2 = normalize(v_norm + to_light_dir_norm); // half vector
 
     vec3 r_point = normalize(reflect(-to_light_point_norm, vs_out_norm));
-    //vec3 r_dir = normalize(reflect(-to_light_dir_norm, vs_out_norm));
-    float si_point = pow(clamp(dot(h_norm, vs_out_norm), 0.0, 1.0), 20);
-    //float si_dir = pow(clamp(dot(v_norm, r_dir), 0.0, 1.0), 20);
-    vec3 specular = (si_point * point_light_color + 0) * Ls * Ks; // no specular light (blinking) for light direction
+    vec3 r_dir = normalize(reflect(-to_light_dir_norm, vs_out_norm));
+    float si_point = pow(clamp(dot(h_norm_1, vs_out_norm), 0.0, 1.0), 20);
+    float si_dir = pow(clamp(dot(h_norm_2, vs_out_norm), 0.0, 1.0), 10);
+    vec3 specular = (si_point * point_light_color + si_dir * light_dir_color) * Ls * Ks; // no specular light (blinking) for light direction
 
 	/* help:
 		- reflect: http://www.opengl.org/sdk/docs/manglsl/xhtml/reflect.xml
