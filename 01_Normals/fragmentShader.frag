@@ -22,7 +22,9 @@ uniform vec3 Ka;
 uniform vec3 Kd;
 uniform vec3 Ks;
 
-uniform vec3 eye = vec3(1, 1, 1);
+uniform vec3 eye;
+uniform vec3 at;
+uniform vec3 up;
 
 // spheres
 uniform int spheresCount;

@@ -61,7 +61,13 @@ void Raytrace::Render()
 		glUniformMatrix4fv(m_loc_worldIT, 1, GL_FALSE, &worldIT[0][0]);
 
 		glm::vec3 eye = m_camera.GetEye();
-		glUniform3fv(m_loc_eye, 1, &eye.x);
+		glUniform3fv(m_loc_eye, 1, &eye[0]);
+
+		glm::vec3 at = m_camera.GetAt();
+		glUniform3fv(m_loc_at, 1, &at[0]);
+
+		glm::vec3 up = m_camera.GetUp();
+		glUniform3fv(m_loc_up, 1, &up[0]);
 
 		// texture
 		glActiveTexture(GL_TEXTURE0);

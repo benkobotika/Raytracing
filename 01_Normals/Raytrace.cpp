@@ -101,7 +101,6 @@ bool Raytrace::Init()
 	m_loc_mvp = glGetUniformLocation(m_programID, "MVP");
 	m_loc_world = glGetUniformLocation(m_programID, "world");
 	m_loc_worldIT = glGetUniformLocation(m_programID, "worldIT");
-	m_loc_eye = glGetUniformLocation(m_programID, "eye");
 	m_loc_tex = glGetUniformLocation(m_programID, "texImage");
 	m_loc_spheres_count = glGetUniformLocation(m_programID, "spheresCount");
 	m_loc_spheres = glGetUniformLocation(m_programID, "spheres");
@@ -116,6 +115,11 @@ bool Raytrace::Init()
 	m_loc_Ka = glGetUniformLocation(m_programID, "Ka");
 	m_loc_Kd = glGetUniformLocation(m_programID, "Kd");
 	m_loc_Ks = glGetUniformLocation(m_programID, "Ks");
+
+	// camera
+	m_loc_eye = glGetUniformLocation(m_programID, "eye");
+	m_loc_at = glGetUniformLocation(m_programID, "at");
+	m_loc_up = glGetUniformLocation(m_programID, "up");
 	
 	return true;
 }

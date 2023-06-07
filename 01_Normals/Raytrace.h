@@ -86,8 +86,8 @@ protected:
 	GLuint m_loc_mvp = 0;
 	GLuint m_loc_world = 0;
 	GLuint m_loc_worldIT = 0;
-	GLuint m_loc_eye = 0;
 	GLuint m_loc_tex = 0;
+
 	GLuint m_loc_spheres = 0;
 	GLuint m_loc_spheres_count = 0;
 
@@ -99,6 +99,11 @@ protected:
 	GLuint m_loc_Ka = 0;
 	GLuint m_loc_Kd = 0;
 	GLuint m_loc_Ks = 0;
+
+	// camera
+	GLuint m_loc_eye = 0;
+	GLuint m_loc_at = 0;
+	GLuint m_loc_up = 0;
 
 	// we approximate our parametric surface with NxM quadrilaterals, so it needs to be evaluated at (N+1)x(M+1) points
 	static const int N = 80;

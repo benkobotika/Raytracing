@@ -1,6 +1,7 @@
 ﻿C:\Program Files\Microsoft Visual Studio\2022\Community\MSBuild\Microsoft\VC\v170\Microsoft.CppBuild.targets(531,5): warning MSB8028: The intermediate directory (x64\Debug\) contains files shared from another project (01_Normals.vcxproj).  This can lead to incorrect clean and rebuild behavior.
   InitSphere.cpp
   InitVaoVboIndB.cpp
+  main.cpp
   Mouse.cpp
   Raytrace.cpp
 T:\rtx\01_Normals\Raytrace.cpp(21,35): warning C4267: 'argument': conversion from 'size_t' to 'GLsizei', possible loss of data
@@ -10,6 +11,5 @@ T:\rtx\01_Normals\Raytrace.cpp(24,31): warning C4267: 'argument': conversion fro
   RenderAndUpdate.cpp
 T:\rtx\01_Normals\RenderAndUpdate.cpp(51,47): warning C4267: 'argument': conversion from 'size_t' to 'GLint', possible loss of data
 T:\rtx\01_Normals\RenderAndUpdate.cpp(52,42): warning C4267: 'argument': conversion from 'size_t' to 'GLsizei', possible loss of data
-  main.cpp
   Generating Code...
   01_Normals.vcxproj -> T:\rtx\x64\Debug\Raytrace.exe
