@@ -1,3 +1,4 @@
+//Path: 01_Normals\Shaders\vertex_shader.vert
 #version 140
 
 // variable from VBO

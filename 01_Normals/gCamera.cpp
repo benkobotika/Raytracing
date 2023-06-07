@@ -1,3 +1,5 @@
+//Path: 01_Normals\Utils\gCamera.cpp
+
 #include <iostream>
 #include "gCamera.h"
 #include <glm/gtc/matrix_transform.hpp>

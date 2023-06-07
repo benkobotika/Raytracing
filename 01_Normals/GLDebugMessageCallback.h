@@ -1,3 +1,5 @@
+//Path: 01_Normals\Source Files\GLDebugMessageCallback.h
+
 #pragma once
 
 #include <GL/glew.h>

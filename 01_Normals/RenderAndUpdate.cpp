@@ -1,3 +1,5 @@
+//Path: 01_Normals\Source Files\RenderAndUpdate.cpp
+
 #include <GL/glew.h>
 
 #include <SDL.h>
