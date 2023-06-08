@@ -60,11 +60,20 @@ protected:
 	};
 
 	// light properties
+	// light sources and their color
+	std::vector<glm::vec3> lightSources = {
+		glm::vec3(0.0f, 0.0f, 0.0f), // point light position
+		glm::vec3(1.0f, 0.6f, 0.0f), // point light color
+		glm::vec3(1.0f, 1.0f, 1.0f), // directional light position
+		glm::vec3(1.0f, 1.0f, 1.0f) // directional light color
+	};
+
+	// ambient, diffuse, specular light properties
 	glm::vec3 La = glm::vec3(0.8f, 0.9f, 0.9f);
 	glm::vec3 Ld = glm::vec3(0.4f, 0.6f, 0.6f);
 	glm::vec3 Ls = glm::vec3(0.9f, 0.9f, 0.9f);
 
-	// material properties
+	// ambient, diffuse, specular material properties
 	glm::vec3 Ka = glm::vec3(0.7f, 0.8f, 0.9f);
 	glm::vec3 Kd = glm::vec3(0.2f, 0.4f, 0.6f);
 	glm::vec3 Ks = glm::vec3(0.4f, 0.8f, 1.0f);
@@ -106,6 +115,8 @@ protected:
 	GLuint m_loc_Ka = 0;
 	GLuint m_loc_Kd = 0;
 	GLuint m_loc_Ks = 0;
+
+	GLuint m_loc_light_sources = 0;
 
 	// camera
 	GLuint m_loc_eye = 0;

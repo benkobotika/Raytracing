@@ -9,8 +9,17 @@ in vec2 vs_out_tex;
 // out parameter - color
 out vec4 fs_out_col;
 
-// light direction and point light (2 light sources)
-uniform vec3 to_point_light = vec3(0, 0, 0); // sun
+// camera
+uniform vec3 eye;
+uniform vec3 at;
+uniform vec3 up;
+
+// point light and directional light (2 light sources)
+uniform vec3 light_sources[4]; // position, color
+vec3 to_point_light = light_sources[0];
+vec3 point_light_color = light_sources[1]; // orange color
+vec3 to_light_dir = light_sources[2];
+vec3 light_dir_color = light_sources[3]; // white color
 
 // light properties: ambient, diffuse, specular
 uniform vec3 La;
@@ -21,18 +30,6 @@ uniform vec3 Ls;
 uniform vec3 Ka;
 uniform vec3 Kd;
 uniform vec3 Ks;
-
-// light colors
-uniform vec3 light_dir_color = vec3(1.0f, 1.0f, 1.0f); // white color
-uniform vec3 point_light_color = vec3(1.0f, 0.6f, 0.0f); // orange color
-
-// camera
-uniform vec3 eye;
-uniform vec3 at;
-uniform vec3 up;
-
-// to light direction
-vec3 to_light_dir = (eye - vs_out_pos);
 
 // spheres
 uniform int spheresCount;

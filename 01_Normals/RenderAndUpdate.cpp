@@ -47,6 +47,7 @@ void Raytrace::Render()
 	// pass lights to fragment shader
 	InitLightProperties();
 	InitMaterialProperties();
+	glUniform3fv(m_loc_light_sources, lightSources.size(), reinterpret_cast<const GLfloat*>(lightSources.data()));
 
 	// draw spheres
 	//============================================================================================================
