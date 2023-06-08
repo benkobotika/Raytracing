@@ -5,9 +5,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <math.h>
 
-/// <summary>
-/// Initializes a new instance of the <see cref="gCamera"/> class.
-/// </summary>
+// Initializes a new instance of the <see cref="gCamera"/> class.
 gCamera::gCamera(void) : m_eye(0.0f, 20.0f, 20.0f), m_at(0.0f), m_up(0.0f, 1.0f, 0.0f), m_speed(16.0f), m_goFw(0), m_goRight(0), m_slow_ctrl(false), m_slow_shift(true)
 {
 	SetView(glm::vec3(0, 20, 20), glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
@@ -88,9 +86,7 @@ void gCamera::KeyboardDown(SDL_KeyboardEvent& key)
 {
 	switch (key.keysym.sym)
 	{
-		/// <summary>
-		/// Speed is halved when the left/right shift key is pressed.
-		/// </summary>
+		// Speed is halved when the left/right shift key is pressed.
 	case SDLK_LSHIFT:
 	case SDLK_RSHIFT:
 		if (m_slow_shift)
@@ -99,9 +95,7 @@ void gCamera::KeyboardDown(SDL_KeyboardEvent& key)
 			m_speed *= 2.0f;
 		}
 		break;
-		/// <summary>
-		/// The camera moves forward when the W key is pressed.
-		/// </summary>
+		// The camera moves forward when the W key is pressed.
 	case SDLK_LCTRL:
 	case SDLK_RCTRL:
 		if (!m_slow_ctrl)
@@ -110,27 +104,19 @@ void gCamera::KeyboardDown(SDL_KeyboardEvent& key)
 			m_speed /= 2.0f;
 		}
 		break;
-		/// <summary>
-		/// The camera moves forward when the W key is pressed.
-		/// </summary>
+		// The camera moves forward when the W key is pressed.
 	case SDLK_w:
 		m_goFw = 1;
 		break;
-		/// <summary>
-		/// The camera moves backward when the S key is pressed.
-		/// </summary>
+		// The camera moves backward when the S key is pressed.
 	case SDLK_s:
 		m_goFw = -1;
 		break;
-		/// <summary>
-		/// The camera moves left when the A key is pressed.
-		/// </summary>
+		// The camera moves left when the A key is pressed.
 	case SDLK_a:
 		m_goRight = -1;
 		break;
-		/// <summary>
-		/// The camera moves right when the D key is pressed.
-		/// </summary>
+		// The camera moves right when the D key is pressed.
 	case SDLK_d:
 		m_goRight = 1;
 		break;
@@ -142,9 +128,7 @@ void gCamera::KeyboardUp(SDL_KeyboardEvent& key)
 	float current_speed = m_speed;
 	switch (key.keysym.sym)
 	{
-		/// <summary>
-		/// The speed is multiplied by 4 when the left/right shift key is released.
-		/// </summary>
+		// The speed is multiplied by 4 when the left/right shift key is released.
 	case SDLK_LSHIFT:
 	case SDLK_RSHIFT:
 		if (!m_slow_shift)
@@ -153,9 +137,7 @@ void gCamera::KeyboardUp(SDL_KeyboardEvent& key)
 			m_speed /= 2.0f;
 		}
 		break;
-		/// <summary>
-		/// The camera moves forward when the W key is pressed.
-		/// </summary>
+		// The camera moves forward when the W key is pressed.
 	case SDLK_LCTRL:
 	case SDLK_RCTRL:
 		if (m_slow_ctrl)
@@ -164,9 +146,7 @@ void gCamera::KeyboardUp(SDL_KeyboardEvent& key)
 			m_speed *= 2.0f;
 		}
 		break;
-		/// <summary>
-		/// When the W/A/S/D key is released, the camera stops moving forward.
-		/// </summary>
+	// When the W/A/S/D key is released, the camera stops moving forward.
 	case SDLK_w:
 	case SDLK_s:
 		m_goFw = 0;
@@ -186,10 +166,8 @@ void gCamera::MouseMove(SDL_MouseMotionEvent& mouse)
 	}
 }
 
-// <summary>
 // The camera moves forward when the mouse wheel is scrolled up.
 // The camera moves backward when the mouse wheel is scrolled down.
-// </summary>
 void gCamera::MouseWheel(SDL_MouseWheelEvent& wheel) {
 	int scrollDirection = wheel.y;
 

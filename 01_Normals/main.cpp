@@ -178,7 +178,6 @@ int main( int argc, char* args[] )
 		SDL_GL_SwapWindow(win);
 	}
 
-
 	// exit
 	app.Clean();
 

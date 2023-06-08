@@ -12,8 +12,8 @@ public:
 	gCamera(glm::vec3 _eye, glm::vec3 _at, glm::vec3 _up);
 	~gCamera(void);
 
-	/// Gets the view matrix.
-	/// <returns>The 4x4 view matrix</returns>
+	// Gets the view matrix.
+	// <returns>The 4x4 view matrix</returns>
 	glm::mat4 GetViewMatrix();
 
 	void Update(float _deltaTime);
@@ -38,9 +38,9 @@ public:
 	void MouseUp(SDL_MouseButtonEvent& mouse);
 
 private:
-	/// Updates the UV.
-	/// <param name="du">The du, i.e. the change of spherical coordinate u.</param>
-	/// <param name="dv">The dv, i.e. the change of spherical coordinate v.</param>
+	// Updates the UV.
+	// <param name="du">The du, i.e. the change of spherical coordinate u.</param>
+	// <param name="dv">The dv, i.e. the change of spherical coordinate v.</param>
 	void UpdateUV(float du, float dv);
 
 	//  The traversal speed of the camera
@@ -77,7 +77,7 @@ private:
 	// The unit vector pointing towards the viewing direction.
 	glm::vec3	m_fw;
 
-	/// The unit vector pointing to the 'right'
+	// The unit vector pointing to the 'right'
 	glm::vec3	m_st;
 
 	glm::mat4	m_matProj;
@@ -85,4 +85,3 @@ private:
 	float	m_goFw;
 	float	m_goRight;
 };
-
