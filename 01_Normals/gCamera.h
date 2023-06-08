@@ -77,7 +77,9 @@ private:
 
 	glm::mat4	m_matViewProj;
 
-	bool	m_slow;
+	bool	m_slow_ctrl;
+
+	bool	m_slow_shift;
 
 	/// <summary>
 	/// The camera position.

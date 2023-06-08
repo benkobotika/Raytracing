@@ -8,7 +8,7 @@
 /// <summary>
 /// Initializes a new instance of the <see cref="gCamera"/> class.
 /// </summary>
-gCamera::gCamera(void) : m_eye(0.0f, 20.0f, 20.0f), m_at(0.0f), m_up(0.0f, 1.0f, 0.0f), m_speed(16.0f), m_goFw(0), m_goRight(0), m_slow(false)
+gCamera::gCamera(void) : m_eye(0.0f, 20.0f, 20.0f), m_at(0.0f), m_up(0.0f, 1.0f, 0.0f), m_speed(16.0f), m_goFw(0), m_goRight(0), m_slow_ctrl(false), m_slow_shift(true)
 {
 	SetView(glm::vec3(0, 20, 20), glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
 
@@ -17,7 +17,7 @@ gCamera::gCamera(void) : m_eye(0.0f, 20.0f, 20.0f), m_at(0.0f), m_up(0.0f, 1.0f,
 	SetProj(glm::radians(60.0f), 640 / 480.0f, 0.01f, 1000.0f);
 }
 
-gCamera::gCamera(glm::vec3 _eye, glm::vec3 _at, glm::vec3 _up) : m_speed(16.0f), m_goFw(0), m_goRight(0), m_dist(10), m_slow(false)
+gCamera::gCamera(glm::vec3 _eye, glm::vec3 _at, glm::vec3 _up) : m_speed(16.0f), m_goFw(0), m_goRight(0), m_dist(10), m_slow_ctrl(false), m_slow_shift(true)
 {
 	SetView(_eye, _at, _up);
 }
@@ -93,9 +93,20 @@ void gCamera::KeyboardDown(SDL_KeyboardEvent& key)
 		/// </summary>
 	case SDLK_LSHIFT:
 	case SDLK_RSHIFT:
-		if (!m_slow)
+		if (m_slow_shift)
 		{
-			m_slow = true;
+			m_slow_shift = false;
+			m_speed *= 2.0f;
+		}
+		break;
+		/// <summary>
+		/// The camera moves forward when the W key is pressed.
+		/// </summary>
+	case SDLK_LCTRL:
+	case SDLK_RCTRL:
+		if (!m_slow_ctrl)
+		{
+			m_slow_ctrl = true;
 			m_speed /= 2.0f;
 		}
 		break;
@@ -136,10 +147,21 @@ void gCamera::KeyboardUp(SDL_KeyboardEvent& key)
 		/// </summary>
 	case SDLK_LSHIFT:
 	case SDLK_RSHIFT:
-		if (m_slow)
+		if (!m_slow_shift)
 		{
-			m_slow = false;
-			m_speed *= 4.0f;
+			m_slow_shift = true;
+			m_speed /= 2.0f;
+		}
+		break;
+		/// <summary>
+		/// The camera moves forward when the W key is pressed.
+		/// </summary>
+	case SDLK_LCTRL:
+	case SDLK_RCTRL:
+		if (m_slow_ctrl)
+		{
+			m_slow_ctrl = false;
+			m_speed *= 2.0f;
 		}
 		break;
 		/// <summary>
