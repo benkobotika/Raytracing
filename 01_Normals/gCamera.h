@@ -12,9 +12,7 @@ public:
 	gCamera(glm::vec3 _eye, glm::vec3 _at, glm::vec3 _up);
 	~gCamera(void);
 
-	/// <summary>
 	/// Gets the view matrix.
-	/// </summary>
 	/// <returns>The 4x4 view matrix</returns>
 	glm::mat4 GetViewMatrix();
 
@@ -25,30 +23,11 @@ public:
 	void LookAt(glm::vec3 _at);
 
 	void SetSpeed(float _val);
-	glm::vec3 GetEye()
-	{
-		return m_eye;
-	}
-
-	glm::vec3 GetAt()
-	{
-		return m_at;
-	}
-
-	glm::vec3 GetUp()
-	{
-		return m_up;
-	}
-
-	glm::mat4 GetProj()
-	{
-		return m_matProj;
-	}
-
-	glm::mat4 GetViewProj()
-	{
-		return m_matViewProj;
-	}
+	glm::vec3 GetEye() const { return m_eye; }
+	glm::vec3 GetAt() const { return m_at; }
+	glm::vec3 GetUp() const { return m_up; }
+	glm::mat4 GetProj() const { return m_matProj; }
+	glm::mat4 GetViewProj() const { return m_matViewProj; }
 
 	void Resize(int _w, int _h);
 
@@ -59,67 +38,46 @@ public:
 	void MouseUp(SDL_MouseButtonEvent& mouse);
 
 private:
-	/// <summary>
 	/// Updates the UV.
-	/// </summary>
 	/// <param name="du">The du, i.e. the change of spherical coordinate u.</param>
 	/// <param name="dv">The dv, i.e. the change of spherical coordinate v.</param>
 	void UpdateUV(float du, float dv);
 
-	/// <summary>
-	///  The traversal speed of the camera
-	/// </summary>
+	//  The traversal speed of the camera
 	float		m_speed;
-	/// <summary>
-	/// The view matrix of the camera
-	/// </summary>
+
+	// The view matrix of the camera
 	glm::mat4	m_viewMatrix;
 
 	glm::mat4	m_matViewProj;
 
 	bool	m_slow_ctrl;
-
 	bool	m_slow_shift;
 
-	/// <summary>
-	/// The camera position.
-	/// </summary>
+	// The camera position.
 	glm::vec3	m_eye;
 
-	/// <summary>
-	/// The vector pointing upwards
-	/// </summary>
+	// The vector pointing upwards
 	glm::vec3	m_up;
 
-	/// <summary>
-	/// The camera look at point.
-	/// </summary>
+	// The camera look at point.
 	glm::vec3	m_at;
 
-	/// <summary>
-	/// The u spherical coordinate of the spherical coordinate pair (u,v) denoting the
-	/// current viewing direction from the view position m_eye. 
-	/// </summary>
+	// The u spherical coordinate of the spherical coordinate pair (u,v) denoting the
+	// current viewing direction from the view position m_eye. 
 	float	m_u;
 
-	/// <summary>
-	/// The v spherical coordinate of the spherical coordinate pair (u,v) denoting the
-	/// current viewing direction from the view position m_eye. 
-	/// </summary>
+	// The v spherical coordinate of the spherical coordinate pair (u,v) denoting the
+	// current viewing direction from the view position m_eye. 
 	float	m_v;
 
-	/// <summary>
-	/// The distance of the look at point from the camera. 
-	/// </summary>
+	// The distance of the look at point from the camera. 
 	float	m_dist;
 
-	/// <summary>
-	/// The unit vector pointing towards the viewing direction.
-	/// </summary>
+	// The unit vector pointing towards the viewing direction.
 	glm::vec3	m_fw;
-	/// <summary>
+
 	/// The unit vector pointing to the 'right'
-	/// </summary>
 	glm::vec3	m_st;
 
 	glm::mat4	m_matProj;
