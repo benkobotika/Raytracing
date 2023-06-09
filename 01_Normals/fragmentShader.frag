@@ -15,21 +15,24 @@ uniform vec3 at;
 uniform vec3 up;
 
 // point light and directional light (2 light sources)
-uniform vec3 light_sources[4]; // position, color
+uniform vec3 light_sources[4]; // [position, color, position, color]
 vec3 to_point_light = light_sources[0];
 vec3 point_light_color = light_sources[1]; // orange color
 vec3 to_light_dir = light_sources[2];
 vec3 light_dir_color = light_sources[3]; // white color
 
 // light properties: ambient, diffuse, specular
-uniform vec3 La;
-uniform vec3 Ld;
-uniform vec3 Ls;
+uniform vec3 light_properties[3]; // La, Ld, Ls
+vec3 La = light_properties[0];
+vec3 Ld = light_properties[1];
+vec3 Ls = light_properties[2];
 
 // material properties: ambient, diffuse, specular
-uniform vec3 Ka;
-uniform vec3 Kd;
-uniform vec3 Ks;
+uniform vec4 material_properties[3]; // Ka, Kd, Ks
+vec3 Ka = material_properties[0].xyz;
+vec3 Kd = material_properties[1].xyz;
+vec3 Ks = material_properties[2].xyz;
+float shininess = material_properties[2].w;
 
 // spheres
 uniform int spheresCount;
@@ -69,8 +72,8 @@ void main()
 
     vec3 r_point = normalize(reflect(-to_point_light_norm, vs_out_norm));
     vec3 r_dir = normalize(reflect(-to_light_dir_norm, vs_out_norm));
-    float si_point = pow(clamp(dot(h_norm_1, vs_out_norm), 0.0, 1.0), 20);
-    float si_dir = pow(clamp(dot(h_norm_2, vs_out_norm), 0.0, 1.0), 10);
+    float si_point = pow(clamp(dot(h_norm_1, vs_out_norm), 0.0, 1.0), shininess);
+    float si_dir = pow(clamp(dot(h_norm_2, vs_out_norm), 0.0, 1.0), shininess);
     vec3 specular = (si_point * point_light_color + si_dir * light_dir_color) * Ls * Ks;
 
 	/* help:

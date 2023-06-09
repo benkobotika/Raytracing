@@ -22,20 +22,6 @@ void Raytrace::Update()
 	last_time = SDL_GetTicks();
 }
 
-void Raytrace::InitLightProperties()
-{
-	glUniform3f(m_loc_La, La.x, La.y, La.z);
-	glUniform3f(m_loc_Ld, Ld.x, Ld.y, Ld.z);
-	glUniform3f(m_loc_Ls, Ls.x, Ls.y, Ls.z);
-}
-
-void Raytrace::InitMaterialProperties()
-{
-	glUniform3f(m_loc_Ka, Ka.x, Ka.y, Ka.z);
-	glUniform3f(m_loc_Kd, Kd.x, Kd.y, Kd.z);
-	glUniform3f(m_loc_Ks, Ks.x, Ks.y, Ks.z);
-}
-
 void Raytrace::Render()
 {
 	// clear the frame buffer (GL_COLOR_BUFFER_BIT) and the depth buffer (GL_DEPTH_BUFFER_BIT)
@@ -44,10 +30,10 @@ void Raytrace::Render()
 	// shader turn on
 	glUseProgram(m_programID);
 
-	// pass lights to fragment shader
-	InitLightProperties();
-	InitMaterialProperties();
+	// pass light and material properties to fragment shader
 	glUniform3fv(m_loc_light_sources, lightSources.size(), reinterpret_cast<const GLfloat*>(lightSources.data()));
+	glUniform3fv(m_loc_light_properties, lightProperties.size(), reinterpret_cast<const GLfloat*>(lightProperties.data()));
+	glUniform4fv(m_loc_material_properties, materialProperties.size(), reinterpret_cast<const GLfloat*>(materialProperties.data()));
 
 	// draw spheres
 	//============================================================================================================

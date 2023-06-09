@@ -115,15 +115,10 @@ bool Raytrace::Init()
 	// get the location of light and material uniform variables
 	// light properties
 	m_loc_light_sources = glGetUniformLocation(m_programID, "light_sources");
-
-	m_loc_La = glGetUniformLocation(m_programID, "La");
-	m_loc_Ld = glGetUniformLocation(m_programID, "Ld");
-	m_loc_Ls = glGetUniformLocation(m_programID, "Ls");
+	m_loc_light_properties = glGetUniformLocation(m_programID, "light_properties");
 	
 	// material properties
-	m_loc_Ka = glGetUniformLocation(m_programID, "Ka");
-	m_loc_Kd = glGetUniformLocation(m_programID, "Kd");
-	m_loc_Ks = glGetUniformLocation(m_programID, "Ks");
+	m_loc_material_properties = glGetUniformLocation(m_programID, "material_properties");
 
 	// camera
 	m_loc_eye = glGetUniformLocation(m_programID, "eye");
