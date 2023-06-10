@@ -9,6 +9,36 @@ in vec2 vs_out_tex;
 // out parameter - color
 out vec4 fs_out_col;
 
+// depth map texture for each light source
+uniform sampler2D depthMapDir;
+uniform sampler2D depthMapPoint;
+
+
+// light space matrices for each light source
+out vec4 FragPosLightSpaceDir;
+out vec4 FragPosLightSpacePoint;
+
+float shadowCalc(sampler2D depthMap, vec4 fragPosLightSpace)
+{
+	float shadow = 0.0;
+
+	vec3 projCoords = fragPosLightSpace.xyz / fragPosLightSpace.w;
+	vec2 UVCoords;
+	UVCoords.x = projCoords.x * 0.5 + 0.5;
+	UVCoords.y = projCoords.y * 0.5 + 0.5;
+
+	if (0.0 <= UVCoords.x && UVCoords.x <= 1.0 && 0.0 <= UVCoords.y && UVCoords.y <= 1.0)
+	{
+		float z = projCoords.z;
+		float depth = texture(depthMap, UVCoords).r;
+
+		shadow = z > depth ? 1.0 : 0.0;
+	}
+
+	return shadow;
+}
+
+
 // camera
 uniform vec3 eye;
 uniform vec3 at;
@@ -56,7 +86,11 @@ void main()
 
 	float di_dir = clamp(dot(to_light_dir_norm, vs_out_norm), 0.0, 1.0);
 	float di_point = clamp(dot(to_point_light_norm, vs_out_norm), 0.0, 1.0);
-	vec3 diffuse = (di_point * point_light_color + di_dir * light_dir_color) * Ld * Kd;
+
+	float shadowDir = shadowCalc(depthMapDir, FragPosLightSpaceDir);
+	float shadowPoint = shadowCalc(depthMapPoint, FragPosLightSpacePoint);
+
+	vec3 diffuse = ((1.0 - shadowPoint) * di_point * point_light_color + (1.0 - shadowDir) * di_dir * light_dir_color) * Ld * Kd;
 
 	/* help:
 	    - normalization: http://www.opengl.org/sdk/docs/manglsl/xhtml/normalize.xml
@@ -75,6 +109,8 @@ void main()
     float si_point = pow(clamp(dot(h_norm_1, vs_out_norm), 0.0, 1.0), shininess);
     float si_dir = pow(clamp(dot(h_norm_2, vs_out_norm), 0.0, 1.0), shininess);
     vec3 specular = (si_point * point_light_color + si_dir * light_dir_color) * Ls * Ks;
+
+
 
 	/* help:
 		- reflect: http://www.opengl.org/sdk/docs/manglsl/xhtml/reflect.xml

@@ -124,6 +124,9 @@ bool Raytrace::Init()
 	m_loc_eye = glGetUniformLocation(m_programID, "eye");
 	m_loc_at = glGetUniformLocation(m_programID, "at");
 	m_loc_up = glGetUniformLocation(m_programID, "up");
+
+	m_loc_lightSpaceMatrixDir = glGetUniformLocation(m_programID, "lightSpaceMatrixDir");
+	m_loc_lightSpaceMatrixPoint = glGetUniformLocation(m_programID, "lightSpaceMatrixPoint");
 	
 	return true;
 }

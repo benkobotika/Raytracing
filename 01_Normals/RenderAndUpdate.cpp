@@ -35,6 +35,12 @@ void Raytrace::Render()
 	glUniform3fv(m_loc_light_properties, lightProperties.size(), reinterpret_cast<const GLfloat*>(lightProperties.data()));
 	glUniform4fv(m_loc_material_properties, materialProperties.size(), reinterpret_cast<const GLfloat*>(materialProperties.data()));
 
+	// Update the uniform values for the light space matrices
+	glm::mat4 lightSpaceMatrixDir;  // Replace with actual light space matrix for directional light
+	glm::mat4 lightSpaceMatrixPoint;  // Replace with actual light space matrix for point light
+	glUniformMatrix4fv(m_loc_lightSpaceMatrixDir, 1, GL_FALSE, glm::value_ptr(lightSpaceMatrixDir));
+	glUniformMatrix4fv(m_loc_lightSpaceMatrixPoint, 1, GL_FALSE, glm::value_ptr(lightSpaceMatrixPoint));
+
 	// draw spheres
 	//============================================================================================================
 	glUniform1i(m_loc_spheres_count, spheres.size());
