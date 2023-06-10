@@ -12,7 +12,6 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/transform2.hpp>
-#include <glm/gtc/type_ptr.hpp>
 #include <vector>
 
 #include "gCamera.h"
@@ -123,10 +122,6 @@ protected:
 	GLuint m_loc_eye = 0;
 	GLuint m_loc_at = 0;
 	GLuint m_loc_up = 0;
-
-	// lightSpaceMatrix uniform variables
-	GLuint m_loc_lightSpaceMatrixDir;
-	GLuint m_loc_lightSpaceMatrixPoint;
 
 	// we approximate our parametric surface with NxM quadrilaterals, so it needs to be evaluated at (N+1)x(M+1) points
 	static const int N = 80;
