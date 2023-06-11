@@ -21,11 +21,12 @@ vec3 point_light_color = light_sources[1]; // orange color
 vec3 to_light_dir = light_sources[2];
 vec3 light_dir_color = light_sources[3]; // white color
 
-// light properties: ambient, diffuse, specular
-uniform vec3 light_properties[3]; // La, Ld, Ls
+// light properties: ambient, diffuse, specular, attenuation
+uniform vec3 light_properties[4]; // La, Ld, Ls, At
 vec3 La = light_properties[0];
 vec3 Ld = light_properties[1];
 vec3 Ls = light_properties[2];
+vec3 At = light_properties[3];
 
 // material properties: ambient, diffuse, specular
 uniform vec4 material_properties[3]; // Ka, Kd, Ks
@@ -87,6 +88,8 @@ void main()
 	// =======================================================
 	vec4 textureColor = texture(texImage, vs_out_tex);
 	vec3 fragmentPosition = vs_out_pos;
+	float distance_between_fragment_and_light;
+	float attenuation;
 	
 	for (int i=0; i<spheresCount; i++) 
 	{
@@ -97,6 +100,15 @@ void main()
 
 		if (dist <= radius)
 		{
+			distance_between_fragment_and_light = (distance(to_point_light, vs_out_pos) + distance(eye, vs_out_pos))/2;
+			//distance_between_fragment_and_light = distance(to_point_light, vs_out_pos);
+			attenuation = 1.0f / (At[0] + At[1] * distance_between_fragment_and_light +
+			At[2] * distance_between_fragment_and_light * distance_between_fragment_and_light);
+
+			ambient  *= attenuation;
+			diffuse  *= attenuation;
+			specular *= attenuation; 
+
 			fs_out_col = vec4(ambient + diffuse + specular, 1) * textureColor;
 			return;
 		}
