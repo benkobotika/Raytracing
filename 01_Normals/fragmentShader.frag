@@ -9,36 +9,6 @@ in vec2 vs_out_tex;
 // out parameter - color
 out vec4 fs_out_col;
 
-// depth map texture for each light source
-uniform sampler2D depthMapDir;
-uniform sampler2D depthMapPoint;
-
-
-// light space matrices for each light source
-out vec4 FragPosLightSpaceDir;
-out vec4 FragPosLightSpacePoint;
-
-float shadowCalc(sampler2D depthMap, vec4 fragPosLightSpace)
-{
-	float shadow = 0.0;
-
-	vec3 projCoords = fragPosLightSpace.xyz / fragPosLightSpace.w;
-	vec2 UVCoords;
-	UVCoords.x = projCoords.x * 0.5 + 0.5;
-	UVCoords.y = projCoords.y * 0.5 + 0.5;
-
-	if (0.0 <= UVCoords.x && UVCoords.x <= 1.0 && 0.0 <= UVCoords.y && UVCoords.y <= 1.0)
-	{
-		float z = projCoords.z;
-		float depth = texture(depthMap, UVCoords).r;
-
-		shadow = z > depth ? 1.0 : 0.0;
-	}
-
-	return shadow;
-}
-
-
 // camera
 uniform vec3 eye;
 uniform vec3 at;
@@ -51,11 +21,12 @@ vec3 point_light_color = light_sources[1]; // orange color
 vec3 to_light_dir = light_sources[2];
 vec3 light_dir_color = light_sources[3]; // white color
 
-// light properties: ambient, diffuse, specular
-uniform vec3 light_properties[3]; // La, Ld, Ls
+// light properties: ambient, diffuse, specular, attenuation
+uniform vec3 light_properties[4]; // La, Ld, Ls, At
 vec3 La = light_properties[0];
 vec3 Ld = light_properties[1];
 vec3 Ls = light_properties[2];
+vec3 At = light_properties[3];
 
 // material properties: ambient, diffuse, specular
 uniform vec4 material_properties[3]; // Ka, Kd, Ks
@@ -86,11 +57,7 @@ void main()
 
 	float di_dir = clamp(dot(to_light_dir_norm, vs_out_norm), 0.0, 1.0);
 	float di_point = clamp(dot(to_point_light_norm, vs_out_norm), 0.0, 1.0);
-
-	float shadowDir = shadowCalc(depthMapDir, FragPosLightSpaceDir);
-	float shadowPoint = shadowCalc(depthMapPoint, FragPosLightSpacePoint);
-
-	vec3 diffuse = ((1.0 - shadowPoint) * di_point * point_light_color + (1.0 - shadowDir) * di_dir * light_dir_color) * Ld * Kd;
+	vec3 diffuse = (di_point * point_light_color + di_dir * light_dir_color) * Ld * Kd;
 
 	/* help:
 	    - normalization: http://www.opengl.org/sdk/docs/manglsl/xhtml/normalize.xml
@@ -110,8 +77,6 @@ void main()
     float si_dir = pow(clamp(dot(h_norm_2, vs_out_norm), 0.0, 1.0), shininess);
     vec3 specular = (si_point * point_light_color + si_dir * light_dir_color) * Ls * Ks;
 
-
-
 	/* help:
 		- reflect: http://www.opengl.org/sdk/docs/manglsl/xhtml/reflect.xml
 				reflect(beérkező_vektor, normálvektor);
@@ -123,6 +88,8 @@ void main()
 	// =======================================================
 	vec4 textureColor = texture(texImage, vs_out_tex);
 	vec3 fragmentPosition = vs_out_pos;
+	float distance_between_fragment_and_light;
+	float attenuation;
 	
 	for (int i=0; i<spheresCount; i++) 
 	{
@@ -133,6 +100,15 @@ void main()
 
 		if (dist <= radius)
 		{
+			distance_between_fragment_and_light = (distance(to_point_light, vs_out_pos) + distance(eye, vs_out_pos))/2;
+			//distance_between_fragment_and_light = distance(to_point_light, vs_out_pos);
+			attenuation = 1.0f / (At[0] + At[1] * distance_between_fragment_and_light +
+			At[2] * distance_between_fragment_and_light * distance_between_fragment_and_light);
+
+			ambient  *= attenuation;
+			diffuse  *= attenuation;
+			specular *= attenuation; 
+
 			fs_out_col = vec4(ambient + diffuse + specular, 1) * textureColor;
 			return;
 		}

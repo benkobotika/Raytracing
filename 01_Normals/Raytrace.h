@@ -12,7 +12,6 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/transform2.hpp>
-#include <glm/gtc/type_ptr.hpp>
 #include <vector>
 
 #include "gCamera.h"
@@ -69,10 +68,12 @@ protected:
 	};
 
 	// ambient, diffuse, specular light properties
+	// and attenuation propreties (constant, linear, quadratic)
 	glm::vec3 La = glm::vec3(0.8f, 0.9f, 0.9f);
 	glm::vec3 Ld = glm::vec3(0.4f, 0.6f, 0.6f);
 	glm::vec3 Ls = glm::vec3(0.9f, 0.9f, 0.9f);
-	std::vector<glm::vec3> lightProperties = { La, Ld, Ls };
+	glm::vec3 At = glm::vec3(1.0f, 0.00009f, 0.000032f);
+	std::vector<glm::vec3> lightProperties = { La, Ld, Ls, At };
 
 	// ambient, diffuse, specular material properties
 	glm::vec3 Ka = glm::vec3(0.7f, 0.8f, 0.9f);
@@ -123,10 +124,6 @@ protected:
 	GLuint m_loc_eye = 0;
 	GLuint m_loc_at = 0;
 	GLuint m_loc_up = 0;
-
-	// lightSpaceMatrix uniform variables
-	GLuint m_loc_lightSpaceMatrixDir;
-	GLuint m_loc_lightSpaceMatrixPoint;
 
 	// we approximate our parametric surface with NxM quadrilaterals, so it needs to be evaluated at (N+1)x(M+1) points
 	static const int N = 80;
