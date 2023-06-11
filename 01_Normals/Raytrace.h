@@ -16,7 +16,6 @@
 #include <vector>
 
 #include "gCamera.h"
-#include "SolarSystem.h"
 
 class Raytrace
 {
@@ -45,9 +44,6 @@ protected:
 		glm::vec3 n; // normal
 		glm::vec2 t; // texture
 	};
-
-	// Solar System instance
-	SolarSystem m_solarSystem;
 
 	// spheres (posX, posY, posZ, r)
 	float mercury_size = 2.0f;

@@ -90,20 +90,14 @@
     <ClCompile Include="InitVaoVboIndB.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Mouse.cpp" />
-    <ClCompile Include="Orbit.cpp" />
-    <ClCompile Include="Planet.cpp" />
     <ClCompile Include="Raytrace.cpp" />
     <ClCompile Include="RenderAndUpdate.cpp" />
-    <ClCompile Include="SolarSystem.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="gCamera.h" />
     <ClInclude Include="GLDebugMessageCallback.h" />
     <ClInclude Include="GLUtils.hpp" />
-    <ClInclude Include="Orbit.h" />
-    <ClInclude Include="Planet.h" />
     <ClInclude Include="Raytrace.h" />
-    <ClInclude Include="SolarSystem.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="fragmentShader.frag" />
