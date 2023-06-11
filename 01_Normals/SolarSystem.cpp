@@ -1,6 +1,6 @@
 #include "SolarSystem.h"
 
-void SolarSystem::AddPlanet(Planet planet)
+void SolarSystem::AddPlanet(const Planet& planet)
 {
     m_planets.push_back(planet);
 }

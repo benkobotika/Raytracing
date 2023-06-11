@@ -12,7 +12,7 @@ public:
 
     void Update(float delta_time);
     void AddPlanet(const Planet& planet);
-    const std::vector<Planet>& GetPlanets() const;
+    std::vector<glm::vec3> GetPlanetPositions() const;
 
 private:
     std::vector<Planet> m_planets;
