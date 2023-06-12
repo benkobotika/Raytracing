@@ -1,4 +1,4 @@
-//Path: 01_Normals\Shaders\fragmentShader.frag
+// Path: 01_Normals\Shaders\fragmentShader.frag
 #version 140
 
 // attributes per fragment from the pipeline
@@ -42,77 +42,90 @@ uniform vec4 spheres[10];
 uniform sampler2D texImage;
 
 void main()
-{	
-	// lights
-	// =============================================================================================
+{
+    vec3 fragmentColor = vec3(0.0);
 
-	// ambient color
-	// ==============
-	vec3 ambient = La * Ka;
+    float fovx = radians(30.0);
+    float fovy = radians(30.0);
+    float aspect = 640.0 / 480.0;
 
-	// diffuse color
-	// ==============
-	vec3 to_light_dir_norm = normalize(to_light_dir);
-	vec3 to_point_light_norm = normalize(to_point_light - vs_out_pos);
+    float alfa = tan(fovx / 2.0) * (gl_FragCoord.x - (640.0 / 2.0)) / (640.0 / 2.0);
+    float beta = tan(fovy / 2.0) * ((480.0 / 2.0) - gl_FragCoord.y) / (480.0 / 2.0);
 
-	float di_dir = clamp(dot(to_light_dir_norm, vs_out_norm), 0.0, 1.0);
-	float di_point = clamp(dot(to_point_light_norm, vs_out_norm), 0.0, 1.0);
-	vec3 diffuse = (di_point * point_light_color + di_dir * light_dir_color) * Ld * Kd;
+    vec3 rayStart = eye;
+    vec3 w = normalize(eye - at);
+    vec3 u = normalize(cross(up, w));
+    vec3 v = normalize(cross(w, u));
 
-	/* help:
-	    - normalization: http://www.opengl.org/sdk/docs/manglsl/xhtml/normalize.xml
-	    - dot product: http://www.opengl.org/sdk/docs/manglsl/xhtml/dot.xml
-	    - clamp: http://www.opengl.org/sdk/docs/manglsl/xhtml/clamp.xml
-	*/
+    vec3 rayDirection = normalize(alfa * u + beta * v - w);
 
-	// specular color (Phong-Blinn)
-	// ==============
-    vec3 v_norm = normalize(eye - vs_out_pos); // vector from vs_out_pos to eye (v)
-	vec3 h_norm_1 = normalize(v_norm + to_point_light_norm); // half vector (point light)
-	vec3 h_norm_2 = normalize(v_norm + to_light_dir_norm); // half vector (directional light)
+    // Ray Sphere intersection
+    // t^⟨v, v⟩ + 2t⟨v, p0 − c⟩ + ⟨p0 − c, p0 − c⟩ − r^2 = 0
+    bool intersected = false;
+    float closest_t = 1e20;
 
-    vec3 r_point = normalize(reflect(-to_point_light_norm, vs_out_norm));
-    vec3 r_dir = normalize(reflect(-to_light_dir_norm, vs_out_norm));
-    float si_point = pow(clamp(dot(h_norm_1, vs_out_norm), 0.0, 1.0), shininess);
-    float si_dir = pow(clamp(dot(h_norm_2, vs_out_norm), 0.0, 1.0), shininess);
-    vec3 specular = (si_point * point_light_color + si_dir * light_dir_color) * Ls * Ks;
+    for (int i = 0; i < spheresCount; i++)
+    {
+        vec3 center = spheres[i].xyz;
+        float radius = spheres[i].w;
 
-	/* help:
-		- reflect: http://www.opengl.org/sdk/docs/manglsl/xhtml/reflect.xml
-				reflect(beérkező_vektor, normálvektor);
-		- pow: http://www.opengl.org/sdk/docs/manglsl/xhtml/pow.xml
-				pow(alap, kitevő);
-	*/
-	
-	// fragment color (calculate intersection with spheres)
-	// =======================================================
-	vec4 textureColor = texture(texImage, vs_out_tex);
-	vec3 fragmentPosition = vs_out_pos;
-	float distance_between_fragment_and_light;
-	float attenuation;
-	
-	for (int i=0; i<spheresCount; i++) 
-	{
-		vec3 center = spheres[i].xyz;
-		float radius = spheres[i].w;
+        vec3 poc = rayStart - center; // (p0 - c) vector
+        float a = dot(rayDirection, rayDirection);
+        float b = 2.0 * dot(poc, rayDirection);
+        float c = dot(poc, poc) - radius * radius;
+        float delta = b * b - 4.0 * a * c;
 
-		float dist = distance(center, fragmentPosition);
+        if (delta >= 0.0)
+        {
+            // Ray intersects with the sphere
+            float t1 = (-b + sqrt(delta)) / (2.0 * a);
+            float t2 = (-b - sqrt(delta)) / (2.0 * a);
 
-		if (dist <= radius)
-		{
-			distance_between_fragment_and_light = (distance(to_point_light, vs_out_pos) + distance(eye, vs_out_pos))/2;
-			//distance_between_fragment_and_light = distance(to_point_light, vs_out_pos);
-			attenuation = 1.0f / (At[0] + At[1] * distance_between_fragment_and_light +
-			At[2] * distance_between_fragment_and_light * distance_between_fragment_and_light);
+            float t = min(t1, t2); // closest intersection
 
-			ambient  *= attenuation;
-			diffuse  *= attenuation;
-			specular *= attenuation; 
+            if (t > 0.0)
+            {
+                closest_t = t;
+                intersected = true;
 
-			fs_out_col = vec4(ambient + diffuse + specular, 1) * textureColor;
-			return;
-		}
-	}
+                // Intersection point
+                vec3 intersectionPoint = rayStart + t * rayDirection;
 
-	discard;
+                // Normal
+                vec3 normal = normalize(intersectionPoint - center);
+
+                // Calculate lights
+                // ambient
+                vec3 ambient = La * Ka;
+
+                // diffuse
+                vec3 to_light_dir_norm = normalize(to_light_dir);
+                vec3 to_point_light_norm = normalize(to_point_light - intersectionPoint);
+
+                float di_dir = clamp(dot(to_light_dir_norm, normal), 0.0, 1.0);
+                float di_point = clamp(dot(to_point_light_norm, normal), 0.0, 1.0);
+                vec3 diffuse = (di_point * point_light_color + di_dir * light_dir_color) * Ld * Kd;
+
+                // specular
+                vec3 v_norm = normalize(eye - intersectionPoint);
+                vec3 h_norm_1 = normalize(v_norm + to_point_light_norm);
+                vec3 h_norm_2 = normalize(v_norm + to_light_dir_norm);
+                float si_point = pow(clamp(dot(h_norm_1, normal), 0.0, 1.0), shininess);
+                float si_dir = pow(clamp(dot(h_norm_2, normal), 0.0, 1.0), shininess);
+                vec3 specular = (si_point * point_light_color + si_dir * light_dir_color) * Ls * Ks;
+                
+                fragmentColor = ambient + diffuse + specular;
+            }
+        }
+    }
+
+    if (!intersected)
+    {
+        fragmentColor = vec3(0.0, 0.0, 0.0);
+    }
+
+    vec4 textureColor = texture(texImage, vs_out_tex);
+    fragmentColor *= textureColor.rgb;
+
+    fs_out_col = vec4(fragmentColor, 1.0);
 }
