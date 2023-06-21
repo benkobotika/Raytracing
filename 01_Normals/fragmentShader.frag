@@ -45,12 +45,11 @@ void main()
 {
     vec3 fragmentColor = vec3(0.0);
 
-    float fovx = radians(30.0);
-    float fovy = radians(30.0);
+    float fovx = radians(60.0);
     float aspect = 640.0 / 480.0;
 
     float alfa = tan(fovx / 2.0) * (gl_FragCoord.x - (640.0 / 2.0)) / (640.0 / 2.0);
-    float beta = tan(fovy / 2.0) * ((480.0 / 2.0) - gl_FragCoord.y) / (480.0 / 2.0);
+    float beta = tan(fovx / 2.0) * ((480.0 / 2.0) - gl_FragCoord.y) / (480.0 / 2.0) / aspect;
 
     vec3 rayStart = eye;
     vec3 w = normalize(eye - at);
@@ -83,7 +82,7 @@ void main()
 
             float t = min(t1, t2); // closest intersection
 
-            if (t > 0.0)
+            if (t > 0.0 && t < closest_t)
             {
                 closest_t = t;
                 intersected = true;
@@ -119,13 +118,14 @@ void main()
         }
     }
 
-    if (!intersected)
+    if (intersected)
     {
-        fragmentColor = vec3(0.0, 0.0, 0.0);
+        vec4 textureColor = texture(texImage, vs_out_tex);
+        fragmentColor *= textureColor.rgb;
+    } else {
+        fragmentColor = vec3(0.0f, 0.0f, 0.0f);
     }
-
-    vec4 textureColor = texture(texImage, vs_out_tex);
-    fragmentColor *= textureColor.rgb;
-
     fs_out_col = vec4(fragmentColor, 1.0);
+
+
 }

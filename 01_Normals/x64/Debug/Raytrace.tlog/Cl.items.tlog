@@ -1,8 +1,8 @@
-T:\rtx\01_Normals\gCamera.cpp;T:\rtx\01_Normals\x64\Debug\gCamera.obj
-T:\rtx\01_Normals\GLDebugMessageCallback.cpp;T:\rtx\01_Normals\x64\Debug\GLDebugMessageCallback.obj
-T:\rtx\01_Normals\InitSphere.cpp;T:\rtx\01_Normals\x64\Debug\InitSphere.obj
-T:\rtx\01_Normals\InitVaoVboIndB.cpp;T:\rtx\01_Normals\x64\Debug\InitVaoVboIndB.obj
-T:\rtx\01_Normals\main.cpp;T:\rtx\01_Normals\x64\Debug\main.obj
-T:\rtx\01_Normals\Mouse.cpp;T:\rtx\01_Normals\x64\Debug\Mouse.obj
-T:\rtx\01_Normals\Raytrace.cpp;T:\rtx\01_Normals\x64\Debug\Raytrace.obj
-T:\rtx\01_Normals\RenderAndUpdate.cpp;T:\rtx\01_Normals\x64\Debug\RenderAndUpdate.obj
+D:\Computer Science\masodev\2 felev\Grafika\rtx\01_Normals\gCamera.cpp;D:\Computer Science\masodev\2 felev\Grafika\rtx\01_Normals\x64\Debug\gCamera.obj
+D:\Computer Science\masodev\2 felev\Grafika\rtx\01_Normals\GLDebugMessageCallback.cpp;D:\Computer Science\masodev\2 felev\Grafika\rtx\01_Normals\x64\Debug\GLDebugMessageCallback.obj
+D:\Computer Science\masodev\2 felev\Grafika\rtx\01_Normals\InitSphere.cpp;D:\Computer Science\masodev\2 felev\Grafika\rtx\01_Normals\x64\Debug\InitSphere.obj
+D:\Computer Science\masodev\2 felev\Grafika\rtx\01_Normals\InitVaoVboIndB.cpp;D:\Computer Science\masodev\2 felev\Grafika\rtx\01_Normals\x64\Debug\InitVaoVboIndB.obj
+D:\Computer Science\masodev\2 felev\Grafika\rtx\01_Normals\main.cpp;D:\Computer Science\masodev\2 felev\Grafika\rtx\01_Normals\x64\Debug\main.obj
+D:\Computer Science\masodev\2 felev\Grafika\rtx\01_Normals\Mouse.cpp;D:\Computer Science\masodev\2 felev\Grafika\rtx\01_Normals\x64\Debug\Mouse.obj
+D:\Computer Science\masodev\2 felev\Grafika\rtx\01_Normals\Raytrace.cpp;D:\Computer Science\masodev\2 felev\Grafika\rtx\01_Normals\x64\Debug\Raytrace.obj
+D:\Computer Science\masodev\2 felev\Grafika\rtx\01_Normals\RenderAndUpdate.cpp;D:\Computer Science\masodev\2 felev\Grafika\rtx\01_Normals\x64\Debug\RenderAndUpdate.obj

@@ -43,64 +43,36 @@ glm::vec2 Raytrace::GetTex(float u, float v)
 
 void Raytrace::InitSphere()
 {
-	// we approximate our parametric surface with NxM quadrilaterals, so it needs to be evaluated at (N+1)x(M+1) points
-	std::vector<std::vector<Vertex>> vertices(spheres.size());
-	for (int k = 0; k < spheres.size(); k++)
-	{
-		std::vector<Vertex>& vert = vertices[k];
-		vert.resize((N + 1) * (M + 1));
-		for (int j = 0; j <= M; ++j)
-		{
-			for (int i = 0; i <= N; ++i)
-			{
-				float u = i / (float)N; // normalization (0, 1)
-				float v = j / (float)M; // normalization (0, 1)
+    std::vector<Vertex> vertices(4); // Create four vertices
 
-				// it represents the index of the current point in a one dimensional array
-				int index = i + j * (N + 1);
-				vert[index].p = GetSphere(u, v, spheres[k].w);
-				vert[index].n = GetNorm(u, v);
-				vert[index].t = GetTex(u, v);
-			}
-		}
-	}
+    // Define the position, normal, and texture coordinates for each vertex
+    vertices[0].p = glm::vec3(-100.0f, -100.0f, 0.0f);
+    vertices[0].n = glm::vec3(0.0f, 0.0f, 1.0f);
+    vertices[0].t = glm::vec2(0.0f, 0.0f);
 
-	// index buffer data: 
-	std::vector<GLushort> indices(3 * 2 * (N) * (M));
-	for (int j = 0; j < M; ++j)
-	{
-		for (int i = 0; i < N; ++i)
-		{
-			// (i,j+1) C-----D (i+1,j+1)
-			//         |\    |				A = p(u_i, v_j)
-			//         | \   |				B = p(u_{i+1}, v_j)
-			//         |  \  |				C = p(u_i, v_{j+1})
-			//         |   \ |				D = p(u_{i+1}, v_{j+1})
-			//         |    \|
-			//   (i,j) A-----B (i+1,j)
-			//
-			// - 1D index in the VBO for (i, j): i + j * (N + 1)
-			// - 1D index in the IB for (i, j): i * 6 + j * 6 * N
-			//     (because each quad has 2 triangles = 6 indices)
-			int index = i * 6 + j * (6 * N);
-			indices[index + 0] = i + j * (N + 1);
-			indices[index + 1] = (i + 1) + j * (N + 1);
-			indices[index + 2] = i + (j + 1) * (N + 1);
-			indices[index + 3] = (i + 1) + j * (N + 1);
-			indices[index + 4] = (i + 1) + (j + 1) * (N + 1);
-			indices[index + 5] = i + (j + 1) * (N + 1);
-		}
-	}
+    vertices[1].p = glm::vec3(100.0f, -100.0f, 0.0f);
+    vertices[1].n = glm::vec3(0.0f, 0.0f, 1.0f);
+    vertices[1].t = glm::vec2(1.0f, 0.0f);
 
-	// Init VAO, VBO, IndexBuffer
-	for (int i = 0; i < spheres.size(); i++)
-	{
-		InitVAO(m_vaoID[i]);
-		InitVBO(vertices[i], m_vboID[i]);
-		InitIndexBuffer(m_ibID[i], indices);
-	}
+    vertices[2].p = glm::vec3(-100.0f, 100.0f, 0.0f);
+    vertices[2].n = glm::vec3(0.0f, 0.0f, 1.0f);
+    vertices[2].t = glm::vec2(0.0f, 1.0f);
 
-	glBindVertexArray(0);
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+    vertices[3].p = glm::vec3(100.0f, 100.0f, 0.0f);
+    vertices[3].n = glm::vec3(0.0f, 0.0f, 1.0f);
+    vertices[3].t = glm::vec2(1.0f, 1.0f);
+
+    std::vector<GLushort> indices = { 0, 1, 2, 2, 1, 3 }; // Define the indices for the two triangles
+
+    // Initialize the VAO, VBO, and IndexBuffer
+    for (int i = 0; i < spheres.size(); i++)
+    {
+        InitVAO(m_vaoID[i]);
+        InitVBO(vertices, m_vboID[i]);
+        InitIndexBuffer(m_ibID[i], indices);
+    }
+
+    glBindVertexArray(0);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }

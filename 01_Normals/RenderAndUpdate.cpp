@@ -42,7 +42,7 @@ void Raytrace::Render()
 	for (int i = 0; i < spheres.size(); i++)
 	{
 		glm::mat4 viewProj = m_camera.GetViewProj();
-		glm::mat4 world = glm::translate(glm::mat4(1.0f), glm::vec3(spheres[i].x, spheres[i].y, spheres[i].z));
+		glm::mat4 world = glm::mat4(1.0f);
 		glm::mat4 worldIT = glm::inverse(glm::transpose(world));
 		glm::mat4 mvp = viewProj * world;
 		glUniformMatrix4fv(m_loc_mvp, 1, GL_FALSE, &mvp[0][0]);
@@ -67,6 +67,6 @@ void Raytrace::Render()
 		glBindVertexArray(m_vaoID[i]);
 
 		// the VAO and the program need to be bounded for draw calls (glUseProgram() and glBindVertexArray())
-		glDrawElements(GL_TRIANGLES, 3 * 2 * (N) * (M), GL_UNSIGNED_SHORT, 0);
+		glDrawElements(GL_TRIANGLES, 3 * 2, GL_UNSIGNED_SHORT, 0);
 	}
 }
