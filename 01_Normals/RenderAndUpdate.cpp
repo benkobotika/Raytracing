@@ -137,7 +137,6 @@ void Raytrace::Render()
 	GLint cubemapTextureLocation = glGetUniformLocation(m_programID, "cubemapTexture");
 	glUniform1i(cubemapTextureLocation, 0); // 0 corresponds to the texture unit used above (GL_TEXTURE0)
 
-}
 	glBindVertexArray(0);
 	glDeleteVertexArrays(1, &vao);
 	glDeleteBuffers(1, &vbo);
