@@ -13,12 +13,6 @@
     <ClCompile Include="GLDebugMessageCallback.cpp">
       <Filter>Utils</Filter>
     </ClCompile>
-    <ClCompile Include="InitVaoVboIndB.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="InitSphere.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="RenderAndUpdate.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>

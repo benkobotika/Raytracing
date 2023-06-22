@@ -86,15 +86,6 @@ protected:
 		glm::vec4(Ks, shininess)
 	};
 
-	void InitVAO(GLuint&);
-	void InitVBO(std::vector<Vertex>&, GLuint&);
-	void InitIndexBuffer(GLuint&, std::vector<GLushort>&);
-
-	// helper functions
-	glm::vec3 GetSphere(float u, float v, float r);
-	glm::vec3 GetNorm(float u, float v);
-	glm::vec2 GetTex(float u, float v);
-
 	// variables to shader
 	GLuint m_programID = 0; // shader program
 
@@ -125,11 +116,6 @@ protected:
 	GLuint m_loc_at = 0;
 	GLuint m_loc_up = 0;
 
-	// we approximate our parametric surface with NxM quadrilaterals, so it needs to be evaluated at (N+1)x(M+1) points
-	static const int N = 80;
-	static const int M = 40;
-
-	void InitSphere();
 	void InitShaders();
 	void InitTextures();
 };

@@ -39,10 +39,11 @@ float shininess = material_properties[2].w;
 uniform int spheresCount;
 uniform vec4 spheres[10];
 
-uniform sampler2D texImage;
+uniform sampler2D texImage[10];
 
 void main()
 {
+
     vec3 fragmentColor = vec3(0.0);
 
     float fovx = radians(60.0);
@@ -114,17 +115,17 @@ void main()
                 vec3 specular = (si_point * point_light_color + si_dir * light_dir_color) * Ls * Ks;
                 
                 fragmentColor = ambient + diffuse + specular;
+                
+                vec4 textureColor = texture(texImage[i], vs_out_tex);
+                fragmentColor *= textureColor.rgb;
+                fs_out_col = vec4(fragmentColor, 1.0);
+
+                return;
             }
         }
     }
 
-    if (intersected)
-    {
-        vec4 textureColor = texture(texImage, vs_out_tex);
-        fragmentColor *= textureColor.rgb;
-    } else {
-        fragmentColor = vec3(0.0f, 0.0f, 0.0f);
-    }
+    fragmentColor = vec3(0.0f, 0.0f, 0.0f);
     fs_out_col = vec4(fragmentColor, 1.0);
 
 

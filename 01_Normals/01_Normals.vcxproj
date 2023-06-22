@@ -86,8 +86,6 @@
   <ItemGroup>
     <ClCompile Include="gCamera.cpp" />
     <ClCompile Include="GLDebugMessageCallback.cpp" />
-    <ClCompile Include="InitSphere.cpp" />
-    <ClCompile Include="InitVaoVboIndB.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Mouse.cpp" />
     <ClCompile Include="Raytrace.cpp" />

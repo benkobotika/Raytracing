@@ -41,24 +41,24 @@ glm::vec2 Raytrace::GetTex(float u, float v)
 	return glm::vec2(1 - u, 1 - v);
 }
 
-void Raytrace::InitSphere()
+void Raytrace::InitTriangles()
 {
     std::vector<Vertex> vertices(4); // Create four vertices
 
     // Define the position, normal, and texture coordinates for each vertex
-    vertices[0].p = glm::vec3(-100.0f, -100.0f, 0.0f);
+    vertices[0].p = glm::vec3(-10000.0f, -10000.0f, 0.0f);
     vertices[0].n = glm::vec3(0.0f, 0.0f, 1.0f);
     vertices[0].t = glm::vec2(0.0f, 0.0f);
 
-    vertices[1].p = glm::vec3(100.0f, -100.0f, 0.0f);
+    vertices[1].p = glm::vec3(10000.0f, -10000.0f, 0.0f);
     vertices[1].n = glm::vec3(0.0f, 0.0f, 1.0f);
     vertices[1].t = glm::vec2(1.0f, 0.0f);
 
-    vertices[2].p = glm::vec3(-100.0f, 100.0f, 0.0f);
+    vertices[2].p = glm::vec3(-10000.0f, 10000.0f, 0.0f);
     vertices[2].n = glm::vec3(0.0f, 0.0f, 1.0f);
     vertices[2].t = glm::vec2(0.0f, 1.0f);
 
-    vertices[3].p = glm::vec3(100.0f, 100.0f, 0.0f);
+    vertices[3].p = glm::vec3(10000.0f, 10000.0f, 0.0f);
     vertices[3].n = glm::vec3(0.0f, 0.0f, 1.0f);
     vertices[3].t = glm::vec2(1.0f, 1.0f);
 

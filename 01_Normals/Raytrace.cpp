@@ -20,14 +20,8 @@ Raytrace::Raytrace()
 // destructor
 Raytrace::~Raytrace()
 {
-	glDeleteVertexArrays(spheres.size(), m_vaoID);
-	glDeleteBuffers(spheres.size(), m_vboID);
-	glDeleteBuffers(spheres.size(), m_ibID);
 	glDeleteTextures(spheres.size(), m_loadedTextureID);
 
-	delete[] m_vaoID;
-	delete[] m_vboID;
-	delete[] m_ibID;
 	delete[] m_loadedTextureID;
 }
 
@@ -96,7 +90,6 @@ bool Raytrace::Init()
 	glCullFace(GL_BACK); // GL_BACK: polygons facing away from the camera, GL_FRONT: polygons facing towards the camera
 
 	// initialize spheres, shaders and textures
-	InitSphere();
 	InitShaders();
 	InitTextures();
 
@@ -134,9 +127,6 @@ void Raytrace::Clean()
 	for (int i = 0; i < spheres.size(); i++) 
 	{
 		glDeleteTextures(1, &m_loadedTextureID[i]);
-		glDeleteBuffers(1, &m_vboID[i]);
-		glDeleteBuffers(1, &m_ibID[i]);
-		glDeleteVertexArrays(1, &m_vaoID[i]);
 	}
 
 	glDeleteProgram(m_programID);
