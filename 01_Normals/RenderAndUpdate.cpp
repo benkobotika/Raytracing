@@ -1,15 +1,11 @@
 //Path: 01_Normals\Source Files\RenderAndUpdate.cpp
 
 #include <GL/glew.h>
-
 #include <SDL.h>
 #include <SDL_opengl.h>
-
 #include <iostream>
 #include <sstream>
-
 #include "GLDebugMessageCallback.h"
-
 #include "Raytrace.h"
 
 void Raytrace::Update()
@@ -66,10 +62,37 @@ void Raytrace::Render()
 		glUniform1i(glGetUniformLocation(m_programID, uniformName.str().c_str()), i);
 	}
 
-	glBegin(GL_QUADS);
-	glVertex2f(-1000.0f, -1000.0f);
-	glVertex2f(1000.0f, -1000.0f);
-	glVertex2f(1000.0f, 1000.0f);
-	glVertex2f(-1000.0f, 1000.0f);
+
+	glm::vec4 vertex1 = glm::vec4(-1.0f, -1.0f, -1.0f, 1.0f); // we always look at -z direction
+	glm::vec4 vertex2 = glm::vec4(1.0f, -1.0f, -1.0f, 1.0f);
+	glm::vec4 vertex3 = glm::vec4(1.0f, 1.0f, -1.0f, 1.0f);
+	glm::vec4 vertex4 = glm::vec4(-1.0f, 1.0f, -1.0f, 1.0f);
+
+	// adjusting the aspect ratios
+	float screenWidth = 480.0f;
+	float screenHeight = 640.0f;
+	vertex1.x *= screenWidth / 2.0f;
+	vertex1.y *= screenHeight / 2.0f;
+	vertex2.x *= screenWidth / 2.0f;
+	vertex2.y *= screenHeight / 2.0f;
+	vertex3.x *= screenWidth / 2.0f;
+	vertex3.y *= screenHeight / 2.0f;
+	vertex4.x *= screenWidth / 2.0f;
+	vertex4.y *= screenHeight / 2.0f;
+
+	glm::mat4 inverseViewMatrix = glm::inverse(m_camera.GetViewMatrix()); // from camera to view (InverseViewMatrix)
+	vertex1 = inverseViewMatrix * vertex1;
+	vertex2 = inverseViewMatrix * vertex2;
+	vertex3 = inverseViewMatrix * vertex3;
+	vertex4 = inverseViewMatrix * vertex4;
+
+	glBegin(GL_TRIANGLES);
+	glVertex4fv(&vertex1[0]);
+	glVertex4fv(&vertex2[0]);
+	glVertex4fv(&vertex3[0]);
+
+	glVertex4fv(&vertex3[0]);
+	glVertex4fv(&vertex4[0]);
+	glVertex4fv(&vertex1[0]);
 	glEnd();
 }
