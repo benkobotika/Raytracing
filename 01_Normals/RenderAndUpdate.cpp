@@ -51,9 +51,7 @@ void Raytrace::Render()
 	glUniform3fv(m_loc_light_properties, lightProperties.size(), reinterpret_cast<const GLfloat*>(lightProperties.data()));
 	glUniform4fv(m_loc_material_properties, materialProperties.size(), reinterpret_cast<const GLfloat*>(materialProperties.data()));
 
-	// Draw spheres
-	//============================================================================================================
-
+	// Rendering
 	glUniform1i(m_loc_spheres_count, spheres.size());
 	glUniform4fv(m_loc_spheres, spheres.size(), reinterpret_cast<const GLfloat*>(spheres.data()));
 
