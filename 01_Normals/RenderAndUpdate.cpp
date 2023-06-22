@@ -125,10 +125,9 @@ void Raytrace::Render()
 	// Draw the geometry
 	glDrawArrays(GL_TRIANGLES, 0, vertexData.size());
 
-	glVertex4fv(&vertex3[0]);
-	glVertex4fv(&vertex4[0]);
-	glVertex4fv(&vertex1[0]);
-	glEnd();
+	glBindVertexArray(0);
+	glDeleteVertexArrays(1, &vao);
+	glDeleteBuffers(1, &vbo);
 
 	// skybox 
 	glActiveTexture(GL_TEXTURE0);
@@ -136,8 +135,5 @@ void Raytrace::Render()
 	
 	GLint cubemapTextureLocation = glGetUniformLocation(m_programID, "cubemapTexture");
 	glUniform1i(cubemapTextureLocation, 0); // 0 corresponds to the texture unit used above (GL_TEXTURE0)
-
-	glBindVertexArray(0);
-	glDeleteVertexArrays(1, &vao);
-	glDeleteBuffers(1, &vbo);
+	
 }
