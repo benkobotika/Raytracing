@@ -15,6 +15,26 @@ void Raytrace::Update()
 
 	m_camera.Update(delta_time);
 
+	float rotationSpeed[] = { 1.0f, 0.9f, 0.8f, 0.7f, 0.6f, 0.5f, 0.4f, 0.3f, 0.2f, 0.1f };
+	for (int i = 1; i < spheres.size(); i++) {
+		float& x = spheres[i][0];
+		float& y = spheres[i][1];
+		float& z = spheres[i][2];
+		float radius = spheres[i][3];
+
+		float angle = rotationSpeed[i] * delta_time;
+
+		// polar coordinates
+		float r = std::sqrt(x * x + z * z);
+		float theta = std::atan2(z, x);
+
+		// from polar to descartes
+		float new_x = r * std::cos(theta + angle);
+		float new_z = r * std::sin(theta + angle);
+		x = new_x;
+		z = new_z;
+	}
+
 	last_time = SDL_GetTicks();
 }
 

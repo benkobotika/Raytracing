@@ -106,23 +106,24 @@ void main()
                 float di_point = clamp(dot(to_point_light_norm, normal), 0.0, 1.0);
                 vec3 diffuse = (di_point * point_light_color + di_dir * light_dir_color) * Ld * Kd;
 
-                // specular
+                // specular (Phong Blinn)
                 vec3 v_norm = normalize(eye - intersectionPoint);
                 vec3 h_norm_1 = normalize(v_norm + to_point_light_norm);
                 vec3 h_norm_2 = normalize(v_norm + to_light_dir_norm);
                 float si_point = pow(clamp(dot(h_norm_1, normal), 0.0, 1.0), shininess);
                 float si_dir = pow(clamp(dot(h_norm_2, normal), 0.0, 1.0), shininess);
                 vec3 specular = (si_point * point_light_color + si_dir * light_dir_color) * Ls * Ks;
-                
+
                 fragmentColor = ambient + diffuse + specular;
-                
                 vec4 textureColor = texture(texImage[i], vs_out_tex);
                 fragmentColor *= textureColor.rgb;
-                fs_out_col = vec4(fragmentColor, 1.0);
-
-                return;
             }
         }
+    }
+
+    if (intersected) {
+        fs_out_col = vec4(fragmentColor, 1.0);
+        return;
     }
 
     fragmentColor = vec3(0.0f, 0.0f, 0.0f);
