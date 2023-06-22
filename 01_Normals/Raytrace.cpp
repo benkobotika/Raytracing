@@ -98,18 +98,6 @@ bool Raytrace::Init()
 	m_camera.SetProj(glm::radians(60.0f), 640.0f / 480.0f, 0.01f, 1000.0f);
 
 	// get the location of uniform variables in the shader
-
-	// TODO: HIBA:
-	//	[glCompileShader] Shader compilation error in fragmentShader.frag:
-	//ERROR: 0 : 118 : 'variable indexing sampler array' : not supported with this profile : none
-	//ERROR : 0 : 118 : '' : compilation terminated
-	//ERROR : 2 compilation errors.No code generated.
-	//[glLinkProgram] Shader linking error :
-	//Program Link Failed for unknown reason.
-	//
-	//OpenGL debug message[1], type : ERROR, severity : MEDIUM, source : API, message :
-	//	GL_INVALID_OPERATION
-
 	m_loc_mvp = glGetUniformLocation(m_programID, "MVP");
 	m_loc_world = glGetUniformLocation(m_programID, "world");
 	m_loc_worldIT = glGetUniformLocation(m_programID, "worldIT");
