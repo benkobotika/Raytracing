@@ -40,19 +40,20 @@ void Raytrace::Update()
 
 void Raytrace::Render()
 {
-	// clear the frame buffer (GL_COLOR_BUFFER_BIT) and the depth buffer (GL_DEPTH_BUFFER_BIT)
+	// Clear the frame buffer (GL_COLOR_BUFFER_BIT) and the depth buffer (GL_DEPTH_BUFFER_BIT)
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	// shader turn on
+	// Shader turn on
 	glUseProgram(m_programID);
 
-	// pass light and material properties to fragment shader
+	// Pass light and material properties to the fragment shader
 	glUniform3fv(m_loc_light_sources, lightSources.size(), reinterpret_cast<const GLfloat*>(lightSources.data()));
 	glUniform3fv(m_loc_light_properties, lightProperties.size(), reinterpret_cast<const GLfloat*>(lightProperties.data()));
 	glUniform4fv(m_loc_material_properties, materialProperties.size(), reinterpret_cast<const GLfloat*>(materialProperties.data()));
 
-	// draw spheres
+	// Draw spheres
 	//============================================================================================================
+
 	glUniform1i(m_loc_spheres_count, spheres.size());
 	glUniform4fv(m_loc_spheres, spheres.size(), reinterpret_cast<const GLfloat*>(spheres.data()));
 
@@ -73,7 +74,7 @@ void Raytrace::Render()
 	glm::vec3 up = m_camera.GetUp();
 	glUniform3fv(m_loc_up, 1, &up[0]);
 
-	// texture
+	// Texture
 	for (int i = 0; i < spheres.size(); i++) {
 		glActiveTexture(GL_TEXTURE0 + i);
 		glBindTexture(GL_TEXTURE_2D, m_loadedTextureID[i]);
@@ -82,34 +83,49 @@ void Raytrace::Render()
 		glUniform1i(glGetUniformLocation(m_programID, uniformName.str().c_str()), i);
 	}
 
-
-	glm::vec4 vertex1 = glm::vec4(-1.0f, -1.0f, -1.0f, 1.0f); // we always look at -z direction
-	glm::vec4 vertex2 = glm::vec4(1.0f, -1.0f, -1.0f, 1.0f);
-	glm::vec4 vertex3 = glm::vec4(1.0f, 1.0f, -1.0f, 1.0f);
-	glm::vec4 vertex4 = glm::vec4(-1.0f, 1.0f, -1.0f, 1.0f);
+	std::vector<Vertex> vertexData = {
+		{{-1.0f, -1.0f, -1.0f}, {0.0f, 0.0f, -1.0f}, {0.0f, 1.0f}},
+		{{1.0f, -1.0f, -1.0f},  {0.0f, 0.0f, -1.0f}, {0.0f, 1.0f}},
+		{{1.0f, 1.0f, -1.0f},   {0.0f, 0.0f, -1.0f}, {0.0f, 1.0f}},
+		{{1.0f, 1.0f, -1.0f},   {0.0f, 0.0f, -1.0f}, {0.0f, 1.0f}},
+		{{-1.0f, 1.0f, -1.0f},  {0.0f, 0.0f, -1.0f}, {0.0f, 1.0f}},
+		{{-1.0f, -1.0f, -1.0f}, {0.0f, 0.0f, -1.0f}, {0.0f, 1.0f}}
+	};
 
 	// adjusting the aspect ratios
-	float screenWidth = 60.0f;
-	float screenHeight = 640.0f;
-	vertex1.x *= screenWidth / 2.0f;
-	vertex1.y *= screenHeight / 2.0f;
-	vertex2.x *= screenWidth / 2.0f;
-	vertex2.y *= screenHeight / 2.0f;
-	vertex3.x *= screenWidth / 2.0f;
-	vertex3.y *= screenHeight / 2.0f;
-	vertex4.x *= screenWidth / 2.0f;
-	vertex4.y *= screenHeight / 2.0f;
+	float screenWidth = 640.0f;
+	float screenHeight = 480.0f;
 
 	glm::mat4 inverseViewMatrix = glm::inverse(m_camera.GetViewMatrix()); // from camera to view (InverseViewMatrix)
-	vertex1 = inverseViewMatrix * vertex1;
-	vertex2 = inverseViewMatrix * vertex2;
-	vertex3 = inverseViewMatrix * vertex3;
-	vertex4 = inverseViewMatrix * vertex4;
 
-	glBegin(GL_TRIANGLES);
-	glVertex4fv(&vertex1[0]);
-	glVertex4fv(&vertex2[0]);
-	glVertex4fv(&vertex3[0]);
+	for (auto& vertex : vertexData) {
+		vertex.p.x *= screenWidth / 2.0f;
+		vertex.p.y *= screenHeight / 2.0f;
+		vertex.p = glm::vec3(inverseViewMatrix * glm::vec4(vertex.p, 1.0f));
+		vertex.n = glm::vec3(inverseViewMatrix * glm::vec4(vertex.n, 0.0f));
+	}
+
+	// Create and bind a VAO
+	glGenVertexArrays(1, &vao);
+	glBindVertexArray(vao);
+
+	// Create and bind a VBO
+	glGenBuffers(1, &vbo);
+	glBindBuffer(GL_ARRAY_BUFFER, vbo);
+
+	GLsizei stride = sizeof(Vertex);
+	glBufferData(GL_ARRAY_BUFFER, vertexData.size() * sizeof(Vertex), vertexData.data(), GL_STATIC_DRAW);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, stride, nullptr);
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, stride, reinterpret_cast<const void*>(sizeof(glm::vec3)));
+	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, stride, reinterpret_cast<const void*>(2 * sizeof(glm::vec3)));
+	glEnableVertexAttribArray(0);
+	glEnableVertexAttribArray(1);
+	glEnableVertexAttribArray(2);
+
+	glBindVertexArray(vao);
+
+	// Draw the geometry
+	glDrawArrays(GL_TRIANGLES, 0, vertexData.size());
 
 	glVertex4fv(&vertex3[0]);
 	glVertex4fv(&vertex4[0]);
@@ -123,4 +139,8 @@ void Raytrace::Render()
 	GLint cubemapTextureLocation = glGetUniformLocation(m_programID, "cubemapTexture");
 	glUniform1i(cubemapTextureLocation, 0); // 0 corresponds to the texture unit used above (GL_TEXTURE0)
 
+}
+	glBindVertexArray(0);
+	glDeleteVertexArrays(1, &vao);
+	glDeleteBuffers(1, &vbo);
 }
