@@ -89,7 +89,7 @@ void Raytrace::Render()
 	glm::vec4 vertex4 = glm::vec4(-1.0f, 1.0f, -1.0f, 1.0f);
 
 	// adjusting the aspect ratios
-	float screenWidth = 480.0f;
+	float screenWidth = 60.0f;
 	float screenHeight = 640.0f;
 	vertex1.x *= screenWidth / 2.0f;
 	vertex1.y *= screenHeight / 2.0f;

@@ -11,7 +11,7 @@
 Raytrace::Raytrace()
 {
 	// camera position (eye, center, up)
-	glm::vec3 eye = glm::vec3(0, 0, 200); 
+	glm::vec3 eye = glm::vec3(0, 50, 150);
 	glm::vec3 at = glm::vec3(0, 0, 0);
 	glm::vec3 up = glm::vec3(0, 1, 0);
 	m_camera.SetView(eye, at, up);
@@ -59,7 +59,7 @@ void Raytrace::InitShaders()
 		glGetProgramInfoLog(m_programID, infoLogLength, nullptr, VertexShaderErrorMessage.data());
 		std::cerr << "[glLinkProgram] Shader linking error:\n" << &VertexShaderErrorMessage[0] << std::endl;
 	}
-	
+
 	glDeleteShader(vs_ID);
 	glDeleteShader(fs_ID);
 }
@@ -96,7 +96,7 @@ bool Raytrace::Init()
 	// camera
 	// parameters: angle, aspect (ratio of the width to height), near clipping plane dist, far clipping plane dist 
 	m_camera.SetProj(glm::radians(60.0f), 640.0f / 480.0f, 0.01f, 1000.0f);
-	
+
 	// get the location of uniform variables in the shader
 	m_loc_mvp = glGetUniformLocation(m_programID, "MVP");
 	m_loc_world = glGetUniformLocation(m_programID, "world");
@@ -109,7 +109,7 @@ bool Raytrace::Init()
 	// light properties
 	m_loc_light_sources = glGetUniformLocation(m_programID, "light_sources");
 	m_loc_light_properties = glGetUniformLocation(m_programID, "light_properties");
-	
+
 	// material properties
 	m_loc_material_properties = glGetUniformLocation(m_programID, "material_properties");
 
@@ -117,14 +117,14 @@ bool Raytrace::Init()
 	m_loc_eye = glGetUniformLocation(m_programID, "eye");
 	m_loc_at = glGetUniformLocation(m_programID, "at");
 	m_loc_up = glGetUniformLocation(m_programID, "up");
-	
+
 	return true;
 }
 
 void Raytrace::Clean()
 {
 	// deallocating memory
-	for (int i = 0; i < spheres.size(); i++) 
+	for (int i = 0; i < spheres.size(); i++)
 	{
 		glDeleteTextures(1, &m_loadedTextureID[i]);
 	}
