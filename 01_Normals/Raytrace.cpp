@@ -6,6 +6,9 @@
 #include <math.h>
 #include <vector>
 
+#define STB_IMAGE_IMPLEMENTATION
+#include "stb_image.h"
+
 
 // constructor
 Raytrace::Raytrace()
@@ -97,30 +100,29 @@ GLuint Raytrace::LoadCubemapTexture()
 	glGenTextures(1, &textureID);
 	glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);
 
-	// Set the texture parameters
+	int width, height, nrChannels;
+	for (unsigned int i = 0; i < cubemapFilenames.size(); i++)
+	{
+		unsigned char* data = stbi_load(cubemapFilenames[i].c_str(), &width, &height, &nrChannels, 0);
+		if (data)
+		{
+			glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i,
+				0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data
+			);
+			stbi_image_free(data);
+		}
+		else
+		{
+			std::cout << "Cubemap tex failed to load at path: " << cubemapFilenames[i] << std::endl;
+			stbi_image_free(data);
+		}
+	}
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
 
-	// Load and upload the image data for each face of the cubemap texture
-	for (unsigned int i = 0; i < cubemapFilenames.size(); i++)
-	{
-		// Load the image for the current face
-		GLuint faceTextureID = TextureFromFile(cubemapFilenames[i].c_str());
-
-		// Upload the image data to the corresponding face of the cubemap texture
-		glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGB, 512, 512, 0, GL_RGB, GL_UNSIGNED_BYTE, nullptr);
-
-		// Cleanup the face texture IDz`
-		glDeleteTextures(1, &faceTextureID);
-	}
-
-	// Unbind the texture
-	glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
-
-	// Return the cubemap texture ID
 	return textureID;
 }
 
