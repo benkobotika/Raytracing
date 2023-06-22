@@ -90,9 +90,8 @@ protected:
 	GLuint m_programID = 0; // shader program
 
 	// OpenGL things
-	GLuint* m_vaoID = new GLuint[spheres.size()]; // vertex array object resource identifier
-	GLuint* m_vboID = new GLuint[spheres.size()]; // vertex buffer object resource identifier
-	GLuint* m_ibID = new GLuint[spheres.size()];  // index buffer object resource identifier
+	GLuint vao;
+	GLuint vbo;
 	GLuint* m_loadedTextureID = new GLuint[spheres.size()]; // loaded texture identifier
 
 	gCamera	m_camera;
