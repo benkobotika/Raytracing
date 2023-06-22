@@ -94,7 +94,8 @@ protected:
 	GLuint* m_vboID = new GLuint[spheres.size()]; // vertex buffer object resource identifier
 	GLuint* m_ibID = new GLuint[spheres.size()];  // index buffer object resource identifier
 	GLuint* m_loadedTextureID = new GLuint[spheres.size()]; // loaded texture identifier
-
+	GLuint cubemapTextureID = 0;
+	
 	gCamera	m_camera;
 
 	// uniform variable locations in shader
@@ -118,5 +119,9 @@ protected:
 
 	void InitShaders();
 	void InitTextures();
+
+	// skybox
+	void InitCubemap();
+	GLuint  LoadCubemapTexture();
 };
 

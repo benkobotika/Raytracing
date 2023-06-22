@@ -78,6 +78,50 @@ void Raytrace::InitTextures()
 	m_loadedTextureID[7] = TextureFromFile("assets/saturn.jpg");
 	m_loadedTextureID[8] = TextureFromFile("assets/uranus.jpg");
 	m_loadedTextureID[9] = TextureFromFile("assets/neptune.jpg");
+	
+}
+
+void Raytrace::InitCubemap() 
+{
+	cubemapTextureID = LoadCubemapTexture();
+}
+
+GLuint Raytrace::LoadCubemapTexture()
+{
+	std::vector<std::string> cubemapFilenames = {
+	"assets/skybox/right.png", "assets/skybox/left.png", "assets/skybox/top.png", "assets/skybox/bot.png", "assets/skybox/front.png", "assets/skybox/back.png"
+	};
+	
+	// Generate a texture object
+	GLuint textureID;
+	glGenTextures(1, &textureID);
+	glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);
+
+	// Set the texture parameters
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+
+	// Load and upload the image data for each face of the cubemap texture
+	for (unsigned int i = 0; i < cubemapFilenames.size(); i++)
+	{
+		// Load the image for the current face
+		GLuint faceTextureID = TextureFromFile(cubemapFilenames[i].c_str());
+
+		// Upload the image data to the corresponding face of the cubemap texture
+		glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGB, 512, 512, 0, GL_RGB, GL_UNSIGNED_BYTE, nullptr);
+
+		// Cleanup the face texture IDz`
+		glDeleteTextures(1, &faceTextureID);
+	}
+
+	// Unbind the texture
+	glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
+
+	// Return the cubemap texture ID
+	return textureID;
 }
 
 bool Raytrace::Init()
@@ -92,6 +136,7 @@ bool Raytrace::Init()
 	// initialize spheres, shaders and textures
 	InitShaders();
 	InitTextures();
+	InitCubemap();
 
 	// camera
 	// parameters: angle, aspect (ratio of the width to height), near clipping plane dist, far clipping plane dist 

@@ -41,6 +41,9 @@ uniform vec4 spheres[10];
 
 uniform sampler2D texImage[10];
 
+// Cubemap texture
+uniform samplerCube cubemapTexture;
+
 void main()
 {
 
@@ -126,9 +129,13 @@ void main()
         fs_out_col = vec4(fragmentColor, 1.0);
         return;
     }
-
-    fragmentColor = vec3(0.0f, 0.0f, 0.0f);
-    fs_out_col = vec4(fragmentColor, 1.0);
+    else {
+        // Draw skybox using cubemap texture
+        vec3 rayDirection = normalize(alfa * u + beta * v - w);
+        vec3 skyboxColor = textureCube(cubemapTexture, rayDirection).rgb;
+        fs_out_col = vec4(skyboxColor, 1.0);
+        return;
+    }
 
 
 }

@@ -115,4 +115,12 @@ void Raytrace::Render()
 	glVertex4fv(&vertex4[0]);
 	glVertex4fv(&vertex1[0]);
 	glEnd();
+
+	// skybox 
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapTextureID);
+	
+	GLint cubemapTextureLocation = glGetUniformLocation(m_programID, "cubemapTexture");
+	glUniform1i(cubemapTextureLocation, 0); // 0 corresponds to the texture unit used above (GL_TEXTURE0)
+
 }
