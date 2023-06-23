@@ -16,8 +16,8 @@ void Raytrace::Update()
 	m_camera.Update(delta_time);
 
 	float rotationSpeed[] = { 1.0f, 0.9f, 0.8f,
-		0.05f, // earth
-		1.0f, // moon
+		0.7f, // earth
+		12.0f, // moon
 		0.5f, 0.4f, 0.3f, 0.2f, 0.1f };
 	for (int i = 1; i < spheres.size(); i++) {
 
@@ -55,7 +55,7 @@ void Raytrace::Update()
 			moon_z = new_relative_z + earth_z;
 			
 		}
-		else if (i == 3)
+		else 
 		{
 			//// polar coordinates
 			float r = std::sqrt(x * x + z * z);
