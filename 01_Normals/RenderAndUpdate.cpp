@@ -15,7 +15,10 @@ void Raytrace::Update()
 
 	m_camera.Update(delta_time);
 
-	float rotationSpeed[] = { 1.0f, 0.9f, 0.8f, 0.7f, 1.0f, 0.5f, 0.4f, 0.3f, 0.2f, 0.1f };
+	float rotationSpeed[] = { 1.0f, 0.9f, 0.8f,
+		0.05f, // earth
+		1.0f, // moon
+		0.5f, 0.4f, 0.3f, 0.2f, 0.1f };
 	for (int i = 1; i < spheres.size(); i++) {
 
 
@@ -38,16 +41,21 @@ void Raytrace::Update()
 			float& moon_x = spheres[4][0];
 			float& moon_y = spheres[4][1];
 			float& moon_z = spheres[4][2];
+			
+			 // Calculate the relative position of the moon from the earth
+			float relative_x = moon_x - earth_x;
+			float relative_z = moon_z - earth_z;
 
-			// moon should rotate around earth
-			rotationSpeed[i] = rotationSpeed[3] * 12.0f;
-			moon_x = earth_x + 2 * earth_radius * cos(angle);
-			moon_z = earth_z + 2 * earth_radius * sin(angle);
-			
-			
+			// Apply rotation to the relative position
+			float new_relative_x = relative_x * cos(angle) - relative_z * sin(angle);
+			float new_relative_z = relative_x * sin(angle) + relative_z * cos(angle);
+
+			// Update the absolute position of the moon
+			moon_x = new_relative_x + earth_x;
+			moon_z = new_relative_z + earth_z;
 			
 		}
-		else
+		else if (i == 3)
 		{
 			//// polar coordinates
 			float r = std::sqrt(x * x + z * z);
