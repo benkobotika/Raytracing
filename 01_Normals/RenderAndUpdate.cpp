@@ -15,7 +15,7 @@ void Raytrace::Update()
 
 	m_camera.Update(delta_time);
 
-	float rotationSpeed[] = { 1.0f, 0.9f, 0.8f, 0.7f, 0.6f, 0.5f, 0.4f, 0.3f, 0.2f, 0.1f };
+	float rotationSpeed[] = { 1.0f, 0.9f, 0.8f, 0.7f, 1.0f, 0.5f, 0.4f, 0.3f, 0.2f, 0.1f };
 	for (int i = 1; i < spheres.size(); i++) {
 
 
@@ -27,7 +27,7 @@ void Raytrace::Update()
 		float angle = rotationSpeed[i] * delta_time;
 
 
-		// moon should rotate around earth
+		// moon
 		if (i == 4)
 		{
 			float& earth_x = spheres[3][0];
@@ -39,17 +39,21 @@ void Raytrace::Update()
 			float& moon_y = spheres[4][1];
 			float& moon_z = spheres[4][2];
 
-			moon_x = earth_x + (moon_x - earth_x) * cos(angle) - (moon_z - earth_z) * sin(angle);
-			moon_z = earth_z + (moon_x - earth_x) * sin(angle) + (moon_z - earth_z) * cos(angle);
+			// moon should rotate around earth
+			rotationSpeed[i] = rotationSpeed[3] * 12.0f;
+			moon_x = earth_x + 2 * earth_radius * cos(angle);
+			moon_z = earth_z + 2 * earth_radius * sin(angle);
+			
+			
 			
 		}
 		else
 		{
-			// polar coordinates
+			//// polar coordinates
 			float r = std::sqrt(x * x + z * z);
 			float theta = std::atan2(z, x);
 
-			// from polar to descartes
+			//// from polar to descartes
 			float new_x = r * std::cos(theta + angle);
 			float new_z = r * std::sin(theta + angle);
 			x = new_x;
