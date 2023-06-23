@@ -1,6 +1,8 @@
 // Path: 01_Normals\Shaders\fragmentShader.frag
 #version 460
 
+#extension GL_NV_shadow_samplers_cube : enable
+
 // attributes per fragment from the pipeline
 in vec3 vs_out_pos;
 in vec3 vs_out_norm;
