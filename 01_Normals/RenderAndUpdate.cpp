@@ -17,6 +17,8 @@ void Raytrace::Update()
 
 	float rotationSpeed[] = { 1.0f, 0.9f, 0.8f, 0.7f, 0.6f, 0.5f, 0.4f, 0.3f, 0.2f, 0.1f };
 	for (int i = 1; i < spheres.size(); i++) {
+
+
 		float& x = spheres[i][0];
 		float& y = spheres[i][1];
 		float& z = spheres[i][2];
@@ -24,15 +26,36 @@ void Raytrace::Update()
 
 		float angle = rotationSpeed[i] * delta_time;
 
-		// polar coordinates
-		float r = std::sqrt(x * x + z * z);
-		float theta = std::atan2(z, x);
 
-		// from polar to descartes
-		float new_x = r * std::cos(theta + angle);
-		float new_z = r * std::sin(theta + angle);
-		x = new_x;
-		z = new_z;
+		// moon should rotate around earth
+		if (i == 4)
+		{
+			float& earth_x = spheres[3][0];
+			float& earth_y = spheres[3][1];
+			float& earth_z = spheres[3][2];
+			float earth_radius = spheres[3][3];
+			
+			float& moon_x = spheres[4][0];
+			float& moon_y = spheres[4][1];
+			float& moon_z = spheres[4][2];
+
+			moon_x = earth_x + (moon_x - earth_x) * cos(angle) - (moon_z - earth_z) * sin(angle);
+			moon_z = earth_z + (moon_x - earth_x) * sin(angle) + (moon_z - earth_z) * cos(angle);
+			
+		}
+		else
+		{
+			// polar coordinates
+			float r = std::sqrt(x * x + z * z);
+			float theta = std::atan2(z, x);
+
+			// from polar to descartes
+			float new_x = r * std::cos(theta + angle);
+			float new_z = r * std::sin(theta + angle);
+			x = new_x;
+			z = new_z;
+		}
+
 	}
 
 	last_time = SDL_GetTicks();
@@ -132,8 +155,8 @@ void Raytrace::Render()
 	// skybox 
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapTextureID);
-	
+
 	GLint cubemapTextureLocation = glGetUniformLocation(m_programID, "cubemapTexture");
 	glUniform1i(cubemapTextureLocation, 0); // 0 corresponds to the texture unit used above (GL_TEXTURE0)
-	
+
 }
