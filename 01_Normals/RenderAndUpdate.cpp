@@ -166,7 +166,21 @@ void Raytrace::Render()
 
 	// skybox 
 	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapTextureID);
+	switch (current_scene)
+	{
+	case 0:
+		glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapTextureID0);
+		break;
+	case 1:
+		glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapTextureID1);
+		break;
+	case 2:
+		glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapTextureID2);
+		break;
+	default:
+		glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapTextureID0);
+		break;
+	}
 
 	GLint cubemapTextureLocation = glGetUniformLocation(m_programID, "cubemapTexture");
 	glUniform1i(cubemapTextureLocation, 0); // 0 corresponds to the texture unit used above (GL_TEXTURE0)

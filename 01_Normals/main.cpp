@@ -13,7 +13,7 @@
 #include "Raytrace.h"
 
 
-int main( int argc, char* args[] )
+int main(int argc, char* args[])
 {
 	//atexit([] {
 	//	std::cout << "Press a key to exit the application..." << std::endl;
@@ -23,12 +23,12 @@ int main( int argc, char* args[] )
 
 
 	// init SDL
-	if ( SDL_Init( SDL_INIT_VIDEO ) == -1 )
+	if (SDL_Init(SDL_INIT_VIDEO) == -1)
 	{
 		std::cout << "[SDL initialization] Error during the SDL initialization: " << SDL_GetError() << std::endl;
 		return 1;
 	}
-			
+
 	// init OpenGL
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
 #ifdef _DEBUG
@@ -52,9 +52,9 @@ int main( int argc, char* args[] )
 	//SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES,  2);
 
 	// create window
-	SDL_Window *win = 0;
-	win = SDL_CreateWindow( "Raytrace", 50, 50, 1200, 650,
-							SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL);
+	SDL_Window* win = 0;
+	win = SDL_CreateWindow("Raytrace", 50, 50, 1200, 650,
+		SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL);
 	//win = SDL_CreateWindow("Raytrace", 0, 0, 0, 0,
 	//	SDL_WINDOW_FULLSCREEN | SDL_WINDOW_OPENGL);
 
@@ -68,34 +68,34 @@ int main( int argc, char* args[] )
 
 
 	// create openGL context (through this will we draw)
-	SDL_GLContext	context	= SDL_GL_CreateContext(win);
+	SDL_GLContext	context = SDL_GL_CreateContext(win);
 	if (context == 0)
 	{
 		std::cout << "[Window creation] Error during the creation of an SDL window: " << SDL_GetError() << std::endl;
 		return 1;
-	}	
+	}
 
 	// display: waiting for vsync
 	SDL_GL_SetSwapInterval(1);
 
 	// init GLEW
 	GLenum error = glewInit();
-	if ( error != GLEW_OK )
+	if (error != GLEW_OK)
 	{
 		std::cout << "[GLEW] Error during the initialization of glew." << std::endl;
 		return 1;
 	}
 
 	// asking for openGL version
-	int glVersion[2] = {-1, -1}; 
-	glGetIntegerv(GL_MAJOR_VERSION, &glVersion[0]); 
-	glGetIntegerv(GL_MINOR_VERSION, &glVersion[1]); 
+	int glVersion[2] = { -1, -1 };
+	glGetIntegerv(GL_MAJOR_VERSION, &glVersion[0]);
+	glGetIntegerv(GL_MINOR_VERSION, &glVersion[1]);
 	std::cout << "Running OpenGL " << glVersion[0] << "." << glVersion[1] << std::endl;
 
-	if ( glVersion[0] == -1 && glVersion[1] == -1 )
+	if (glVersion[0] == -1 && glVersion[1] == -1)
 	{
 		SDL_GL_DeleteContext(context);
-		SDL_DestroyWindow( win );
+		SDL_DestroyWindow(win);
 
 		std::cout << "[OGL context creation] Error during the creation of the OGL context: " << SDL_GetError() << std::endl;
 
@@ -119,7 +119,7 @@ int main( int argc, char* args[] )
 	// start main message processing loop
 	bool quit = false;
 	SDL_Event ev;
-	
+
 	Raytrace app;
 	if (!app.Init())
 	{
@@ -136,7 +136,7 @@ int main( int argc, char* args[] )
 
 	while (!quit)
 	{
-		while ( SDL_PollEvent(&ev) )
+		while (SDL_PollEvent(&ev))
 		{
 			switch (ev.type)
 			{
@@ -144,8 +144,18 @@ int main( int argc, char* args[] )
 				quit = true;
 				break;
 			case SDL_KEYDOWN:
-				if ( ev.key.keysym.sym == SDLK_ESCAPE )
+				if (ev.key.keysym.sym == SDLK_ESCAPE)
 					quit = true;
+				else if (ev.key.keysym.sym == SDLK_RIGHT)
+				{
+					app.current_scene = std::min(2, app.current_scene + 1);
+					std::cout << "Current scene: " << app.current_scene << std::endl;
+				}
+				else if (ev.key.keysym.sym == SDLK_LEFT)
+				{
+					app.current_scene = std::max(0, app.current_scene - 1);
+					std::cout << "Current scene: " << app.current_scene << std::endl;
+				}
 				app.KeyboardDown(ev.key);
 				break;
 			case SDL_KEYUP:
@@ -164,7 +174,7 @@ int main( int argc, char* args[] )
 				app.MouseMove(ev.motion);
 				break;
 			case SDL_WINDOWEVENT:
-				if ( ev.window.event == SDL_WINDOWEVENT_SIZE_CHANGED )
+				if (ev.window.event == SDL_WINDOWEVENT_SIZE_CHANGED)
 				{
 					app.Resize(ev.window.data1, ev.window.data2);
 				}

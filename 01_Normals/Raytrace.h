@@ -36,6 +36,9 @@ public:
 	void MouseWheel(SDL_MouseWheelEvent&);
 	void Resize(int, int);
 
+	// current scene variable
+	int current_scene = 0;
+
 protected:
 	struct Vertex
 	{
@@ -93,7 +96,9 @@ protected:
 	GLuint vao;
 	GLuint vbo;
 	GLuint* m_loadedTextureID = new GLuint[spheres.size()]; // loaded texture identifier
-	GLuint cubemapTextureID = 0;
+	GLuint cubemapTextureID0 = 0;
+	GLuint cubemapTextureID1 = 0;
+	GLuint cubemapTextureID2 = 0;
 	
 	gCamera	m_camera;
 
@@ -121,6 +126,7 @@ protected:
 
 	// skybox
 	void InitCubemap();
-	GLuint  LoadCubemapTexture();
+	GLuint  LoadCubemapTexture(int scence);
+
 };
 

@@ -86,13 +86,20 @@ void Raytrace::InitTextures()
 
 void Raytrace::InitCubemap() 
 {
-	cubemapTextureID = LoadCubemapTexture();
+	cubemapTextureID0 = LoadCubemapTexture(0);
+	cubemapTextureID1 = LoadCubemapTexture(1);
+	cubemapTextureID2 = LoadCubemapTexture(2);
 }
 
-GLuint Raytrace::LoadCubemapTexture()
+GLuint Raytrace::LoadCubemapTexture(int scence = 0)
 {
 	std::vector<std::string> cubemapFilenames = {
-	"assets/skybox/right.png", "assets/skybox/left.png", "assets/skybox/top.png", "assets/skybox/bot.png", "assets/skybox/front.png", "assets/skybox/back.png"
+	"assets/skybox/right"+std::to_string(scence) + ".png",
+	"assets/skybox/left" + std::to_string(scence) + ".png",
+	"assets/skybox/top" + std::to_string(scence) + ".png",
+	"assets/skybox/bot" + std::to_string(scence) + ".png",
+	"assets/skybox/front" + std::to_string(scence) + ".png",
+	"assets/skybox/back" + std::to_string(scence) + ".png"
 	};
 	
 	// Generate a texture object
