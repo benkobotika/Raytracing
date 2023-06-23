@@ -1,5 +1,5 @@
 //Path: 01_Normals\Shaders\vertex_shader.vert
-#version 140
+#version 460 core
 
 // variable from VBO
 in vec3 vs_in_pos;

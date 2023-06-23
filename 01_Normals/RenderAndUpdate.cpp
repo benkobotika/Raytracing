@@ -176,8 +176,8 @@ void Raytrace::Render()
 	glEnableVertexAttribArray(1);
 	glEnableVertexAttribArray(2);
 
-	glBindVertexArray(vao);
-
+	glBindVertexArray(vao);	
+	
 	// Draw the geometry
 	glDrawArrays((GLenum )GL_TRIANGLES,(GLint) 0,(GLsizei) vertexData.size());
 
