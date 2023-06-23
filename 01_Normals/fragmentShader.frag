@@ -1,5 +1,5 @@
 // Path: 01_Normals\Shaders\fragmentShader.frag
-#version 450
+#version 460
 
 // attributes per fragment from the pipeline
 in vec3 vs_out_pos;
