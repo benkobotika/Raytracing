@@ -145,7 +145,7 @@ bool Raytrace::Init()
 	// initialize spheres, shaders and textures
 	InitShaders();
 	InitTextures();
-	//InitCubemap();
+	InitCubemap();
 
 	// camera
 	// parameters: angle, aspect (ratio of the width to height), near clipping plane dist, far clipping plane dist 
