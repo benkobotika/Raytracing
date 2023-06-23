@@ -179,7 +179,7 @@ void Raytrace::Render()
 	glBindVertexArray(vao);
 
 	// Draw the geometry
-	glDrawArrays(GL_TRIANGLES, 0, vertexData.size());
+	glDrawArrays((GLenum )GL_TRIANGLES,(GLint) 0,(GLsizei) vertexData.size());
 
 	glBindVertexArray(0);
 	glDeleteVertexArrays(1, &vao);
