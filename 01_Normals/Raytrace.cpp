@@ -145,7 +145,7 @@ bool Raytrace::Init()
 	// initialize spheres, shaders and textures
 	InitShaders();
 	InitTextures();
-	InitCubemap();
+	//InitCubemap();
 
 	// camera
 	// parameters: angle, aspect (ratio of the width to height), near clipping plane dist, far clipping plane dist 
@@ -182,6 +182,10 @@ void Raytrace::Clean()
 	{
 		glDeleteTextures(1, &m_loadedTextureID[i]);
 	}
+
+	glDeleteTextures(1, &cubemapTextureID0);
+	glDeleteTextures(1, &cubemapTextureID1);
+	glDeleteTextures(1, &cubemapTextureID2);
 
 	glDeleteProgram(m_programID);
 }
