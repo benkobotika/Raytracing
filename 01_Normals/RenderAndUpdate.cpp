@@ -126,7 +126,7 @@ void Raytrace::Render()
 	};
 
 	//// skybox 
-	glActiveTexture(GL_TEXTURE0);
+	glActiveTexture(GL_TEXTURE0 + spheres.size() + 1);
 	switch (current_scene)
 	{
 	case 0:
@@ -144,7 +144,7 @@ void Raytrace::Render()
 	}
 
 	GLint cubemapTextureLocation = glGetUniformLocation(m_programID, "cubemapTexture");
-	glUniform1i(cubemapTextureLocation, 0); // 0 corresponds to the texture unit used above (GL_TEXTURE0)
+	glUniform1i(cubemapTextureLocation, spheres.size() + 1); // 0 corresponds to the texture unit used above (GL_TEXTURE0)
 
 	// adjusting the aspect ratios
 	float screenWidth = 640.0f;
