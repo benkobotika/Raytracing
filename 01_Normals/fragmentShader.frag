@@ -119,7 +119,14 @@ void main()
                 float si_dir = pow(clamp(dot(h_norm_2, normal), 0.0, 1.0), shininess);
                 vec3 specular = (si_point * point_light_color + si_dir * light_dir_color) * Ls * Ks;
 
-                vec3 s = 
+                float distancee = distance(intersectionPoint, eye);
+                float attenuation = (1/(1+
+                                distancee*0.00009+
+                                0.000032* distancee*distancee));
+
+                ambient *= attenuation;
+                diffuse *= attenuation;
+                specular *= attenuation;
                 fragmentColor = ambient + diffuse + specular;
                 vec4 textureColor = texture(texImage[i], vs_out_tex);
                 fragmentColor *= textureColor.rgb;
