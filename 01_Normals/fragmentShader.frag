@@ -124,6 +124,14 @@ void main()
                 float u = 0.5 + atan(sphereToIntersection.z, sphereToIntersection.x) / (2.0 * 3.14159265359);
                 float v = 0.5 - asin(sphereToIntersection.y / radius) / 3.14159265359;
                 vec2 sphereTexCoords = vec2(u, v);
+                float distancee = distance(intersectionPoint, eye);
+                float attenuation = (1/(1+
+                                distancee*0.00009+
+                                0.000032* distancee*distancee));
+
+                ambient *= attenuation;
+                diffuse *= attenuation;
+                specular *= attenuation;
                 fragmentColor = ambient + diffuse + specular;
                 vec4 textureColor = texture(texImage[i], sphereTexCoords);
                 fragmentColor *= textureColor.rgb;
