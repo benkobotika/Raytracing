@@ -119,6 +119,7 @@ void main()
                 float si_dir = pow(clamp(dot(h_norm_2, normal), 0.0, 1.0), shininess);
                 vec3 specular = (si_point * point_light_color + si_dir * light_dir_color) * Ls * Ks;
 
+                // sphere texture
                 vec3 sphereToIntersection = intersectionPoint - center;
                 float u = 0.5 + atan(sphereToIntersection.z, sphereToIntersection.x) / (2.0 * 3.14159265359);
                 float v = 0.5 - asin(sphereToIntersection.y / radius) / 3.14159265359;
