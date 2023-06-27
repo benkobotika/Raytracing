@@ -3,6 +3,8 @@
 
 #extension GL_NV_shadow_samplers_cube : enable
 
+#define M_PI 3.1415926535897932384626433832795
+
 // attributes per fragment from the pipeline
 in vec3 vs_out_pos;
 in vec3 vs_out_norm;
@@ -119,6 +121,12 @@ void main()
                 float si_dir = pow(clamp(dot(h_norm_2, normal), 0.0, 1.0), shininess);
                 vec3 specular = (si_point * point_light_color + si_dir * light_dir_color) * Ls * Ks;
 
+                // sphere texture
+                vec3 sphereToIntersection = intersectionPoint - center;
+                float u = 0.5 + atan(sphereToIntersection.z, sphereToIntersection.x) / (2.0 * M_PI);
+                float v = 0.5 - asin(sphereToIntersection.y / radius) / M_PI;
+                vec2 sphereTexCoords = vec2(u, v);
+                
                 float distancee = distance(intersectionPoint, eye);
                 float attenuation = (1/(1+
                                 distancee*0.00009+
@@ -128,7 +136,7 @@ void main()
                 diffuse *= attenuation;
                 specular *= attenuation;
                 fragmentColor = ambient + diffuse + specular;
-                vec4 textureColor = texture(texImage[i], vs_out_tex);
+                vec4 textureColor = texture(texImage[i], sphereTexCoords);
                 fragmentColor *= textureColor.rgb;
             }
         }
