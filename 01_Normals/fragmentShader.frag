@@ -3,6 +3,8 @@
 
 #extension GL_NV_shadow_samplers_cube : enable
 
+#define M_PI 3.1415926535897932384626433832795
+
 // attributes per fragment from the pipeline
 in vec3 vs_out_pos;
 in vec3 vs_out_norm;
@@ -121,9 +123,10 @@ void main()
 
                 // sphere texture
                 vec3 sphereToIntersection = intersectionPoint - center;
-                float u = 0.5 + atan(sphereToIntersection.z, sphereToIntersection.x) / (2.0 * 3.14159265359);
-                float v = 0.5 - asin(sphereToIntersection.y / radius) / 3.14159265359;
+                float u = 0.5 + atan(sphereToIntersection.z, sphereToIntersection.x) / (2.0 * M_PI);
+                float v = 0.5 - asin(sphereToIntersection.y / radius) / M_PI;
                 vec2 sphereTexCoords = vec2(u, v);
+                
                 float distancee = distance(intersectionPoint, eye);
                 float attenuation = (1/(1+
                                 distancee*0.00009+
