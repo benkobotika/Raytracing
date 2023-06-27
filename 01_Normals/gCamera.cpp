@@ -134,7 +134,7 @@ void gCamera::KeyboardUp(SDL_KeyboardEvent& key)
 		if (!m_slow_shift)
 		{
 			m_slow_shift = true;
-			m_speed /= 2.0f;
+			m_speed /= 4.0f;
 		}
 		break;
 		// The camera moves forward when the W key is pressed.
