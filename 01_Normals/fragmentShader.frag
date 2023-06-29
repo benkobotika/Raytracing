@@ -48,6 +48,29 @@ uniform sampler2D texImage[10];
 // Cubemap texture
 uniform samplerCube cubemapTexture;
 
+vec3 setAmbientLight() {
+    return La * Ka;
+}
+
+vec3 setDiffuseLight(vec3 to_light_dir_norm, vec3 to_point_light_norm, vec3 intersectionPoint, vec3 normal, vec3 Ld, vec3 Kd) {
+    float di_dir = clamp(dot(to_light_dir_norm, normal), 0.0, 1.0);
+    float di_point = clamp(dot(to_point_light_norm, normal), 0.0, 1.0);
+    return (di_point * point_light_color + di_dir * light_dir_color) * Ld * Kd;
+}
+
+vec3 setSpecularLight(vec3 eye, vec3 intersectionPoint, vec3 to_point_light_norm, vec3 to_light_dir_norm, vec3 normal) {
+    vec3 v_norm = normalize(eye - intersectionPoint);
+    vec3 h_norm_1 = normalize(v_norm + to_point_light_norm);
+    vec3 h_norm_2 = normalize(v_norm + to_light_dir_norm);
+    float si_point = pow(clamp(dot(h_norm_1, normal), 0.0, 1.0), shininess);
+    float si_dir = pow(clamp(dot(h_norm_2, normal), 0.0, 1.0), shininess);
+    return (si_point * point_light_color + si_dir * light_dir_color) * Ls * Ks;
+}
+
+float setAttentuation(float distancee) {
+    return (1 / (1 + distancee * 0.00009 + 0.000032 * distancee * distancee));
+}
+
 void main()
 {
 
@@ -102,39 +125,30 @@ void main()
                 vec3 normal = normalize(intersectionPoint - center);
 
                 // Calculate lights
-                // ambient
-                vec3 ambient = La * Ka;
+                // Ambient
+                vec3 ambient = setAmbientLight();
 
-                // diffuse
+                // Diffuse
                 vec3 to_light_dir_norm = normalize(to_light_dir);
                 vec3 to_point_light_norm = normalize(to_point_light - intersectionPoint);
+                vec3 diffuse = setDiffuseLight(to_light_dir_norm, to_point_light_norm, intersectionPoint, normal, Ld, Kd);
 
-                float di_dir = clamp(dot(to_light_dir_norm, normal), 0.0, 1.0);
-                float di_point = clamp(dot(to_point_light_norm, normal), 0.0, 1.0);
-                vec3 diffuse = (di_point * point_light_color + di_dir * light_dir_color) * Ld * Kd;
+                // Specular (Phong Blinn)
+                vec3 specular = setSpecularLight(eye, intersectionPoint, to_point_light_norm, to_light_dir_norm, normal);
 
-                // specular (Phong Blinn)
-                vec3 v_norm = normalize(eye - intersectionPoint);
-                vec3 h_norm_1 = normalize(v_norm + to_point_light_norm);
-                vec3 h_norm_2 = normalize(v_norm + to_light_dir_norm);
-                float si_point = pow(clamp(dot(h_norm_1, normal), 0.0, 1.0), shininess);
-                float si_dir = pow(clamp(dot(h_norm_2, normal), 0.0, 1.0), shininess);
-                vec3 specular = (si_point * point_light_color + si_dir * light_dir_color) * Ls * Ks;
-
-                // sphere texture
+                // Sphere texture
                 vec3 sphereToIntersection = intersectionPoint - center;
                 float u = 0.5 + atan(sphereToIntersection.z, sphereToIntersection.x) / (2.0 * M_PI);
                 float v = 0.5 - asin(sphereToIntersection.y / radius) / M_PI;
                 vec2 sphereTexCoords = vec2(u, v);
                 
                 float distancee = distance(intersectionPoint, eye);
-                float attenuation = (1/(1+
-                                distancee*0.00009+
-                                0.000032* distancee*distancee));
+                float attenuation = setAttentuation(distancee);
 
                 ambient *= attenuation;
                 diffuse *= attenuation;
                 specular *= attenuation;
+
                 fragmentColor = ambient + diffuse + specular;
                 vec4 textureColor = texture(texImage[i], sphereTexCoords);
                 fragmentColor *= textureColor.rgb;
