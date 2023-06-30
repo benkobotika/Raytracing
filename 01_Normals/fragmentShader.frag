@@ -237,7 +237,7 @@ vec3 rayTrace(Ray ray, float alfa, float beta, vec3 u, vec3 v, vec3 w) {
             float radius = spheres[hit.indexOfSphere].w;
 
             vec3 sphereToIntersection = hit.position - center;
-            float u = 0.5 + atan(sphereToIntersection.z, sphereToIntersection.x) / (2.0 * M_PI);
+            float u = 0.5 + atan(-sphereToIntersection.z, sphereToIntersection.x) / (2.0 * M_PI);
             float v = 0.5 - asin(sphereToIntersection.y / radius) / M_PI;
             vec2 sphereTexCoords = vec2(u, v);
             
