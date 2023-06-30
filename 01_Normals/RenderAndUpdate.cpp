@@ -15,14 +15,14 @@ void Raytrace::Update()
 
 	m_camera.Update(delta_time);
 
-	float rotationSpeed[] = { 1.0f, 0.9f, 0.8f,
+	/*float rotationSpeed[] = {1.0f, 0.9f, 0.8f,
 		0.7f, // earth
 		12.0f, // moon
-		0.5f, 0.4f, 0.3f, 0.2f, 0.1f };
-	//float rotationSpeed[] = { 0.0f, 0.0f, 0.0f,
-	//	0.0f, // earth
-	//	0.0f, // moon
-	//	0.0f, 0.0f, 0.0f, 0.0f, 0.0f };
+		0.5f, 0.4f, 0.3f, 0.2f, 0.1f };*/
+	float rotationSpeed[] = {0.0f, 0.0f, 0.0f,
+		0.0f, // earth
+		0.0f, // moon
+		0.0f, 0.0f, 0.0f, 0.0f, 0.0f };
 	for (int i = 1; i < spheres.size(); i++) {
 		float& x = spheres[i][0];
 		float& y = spheres[i][1];

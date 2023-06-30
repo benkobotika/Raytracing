@@ -48,110 +48,158 @@ uniform sampler2D texImage[10];
 // Cubemap texture
 uniform samplerCube cubemapTexture;
 
+struct Hit {
+    float distance;
+    vec3 position;
+    vec3 normal;
+    int indexOfSphere;
+};
+
+struct Ray {
+    vec3 startPosition;
+    vec3 direction;
+};
+
+Hit intersect(Ray ray, int indexOfSphere) {
+    Hit hit;
+    vec3 center = spheres[indexOfSphere].xyz;
+    float radius = spheres[indexOfSphere].w;
+
+    vec3 poc = ray.startPosition - center; // (p0 - c) vector
+    float a = dot(ray.direction, ray.direction);
+    float b = 2.0 * dot(poc, ray.direction);
+    float c = dot(poc, poc) - radius * radius;
+    float delta = b * b - 4.0 * a * c;
+
+    if (delta >= 0.0)
+    {
+        // Ray intersects with the sphere
+        float t1 = (-b + sqrt(delta)) / (2.0 * a);
+        float t2 = (-b - sqrt(delta)) / (2.0 * a);
+
+        float t = min(t1, t2); // closest intersection
+
+        // Intersection point
+        hit.position = ray.startPosition + t * ray.direction;
+
+        // Normal
+        hit.normal = normalize(hit.position - center);
+
+        hit.indexOfSphere = indexOfSphere;
+        hit.distance = t;
+
+    }
+    return hit;
+};
+
+Hit firstIntersection(Ray ray) {
+    float closest;
+    Hit bestHit;
+    bestHit.distance = -1;
+
+    for (int i = 0; i < spheresCount; i++)
+    {
+        Hit hit = intersect(ray, i);
+        if (hit.distance > 0 && (bestHit.distance < 0 || bestHit.distance > hit.distance)) {
+            bestHit = hit;
+        }
+    }
+    return bestHit;
+};
+
+vec3 Lights(Hit hit) {
+    // Calculate lights
+    // ambient
+    vec3 ambient = La * Ka;
+
+    // diffuse
+    vec3 to_light_dir_norm = normalize(to_light_dir);
+    vec3 to_point_light_norm = normalize(to_point_light - hit.position);
+
+    float di_dir = clamp(dot(to_light_dir_norm, hit.normal), 0.0, 1.0);
+    float di_point = clamp(dot(to_point_light_norm, hit.normal), 0.0, 1.0);
+    vec3 diffuse = (di_point * point_light_color + di_dir * light_dir_color) * Ld * Kd;
+
+    // specular (Phong Blinn)
+    vec3 v_norm = normalize(eye - hit.position);
+    vec3 h_norm_1 = normalize(v_norm + to_point_light_norm);
+    vec3 h_norm_2 = normalize(v_norm + to_light_dir_norm);
+    float si_point = pow(clamp(dot(h_norm_1, hit.normal), 0.0, 1.0), shininess);
+    float si_dir = pow(clamp(dot(h_norm_2, hit.normal), 0.0, 1.0), shininess);
+    vec3 specular = (si_point * point_light_color + si_dir * light_dir_color) * Ls * Ks;
+    return ambient + diffuse + specular;
+};
+
+vec3 RayTrace(Ray ray, float alfa, float beta, vec3 u, vec3 v, vec3 w) {
+    vec3 resultColor = vec3(0, 0, 0);
+    const float epsilon = 0.000001;
+    int maxDepth = 0;
+
+    // sun coordinate
+    vec3 sunCoordinate = spheres[0].xyz;
+    // ratio between distanceEyeAndPlanet and distanceIntersectionPointAndPlanet
+    float distanceRatio = 0.75f;
+
+    for (int d = 0; d <= maxDepth; d++) {
+        Hit hit = firstIntersection(ray);
+
+        if(hit.distance <= 0.0) {
+            // Draw skybox using cubemap texture
+            vec3 rayDirection = normalize(alfa * u + beta * v - w);
+            vec3 skyboxColor = textureCube(cubemapTexture, rayDirection).rgb;
+            resultColor = skyboxColor;
+            break;
+        }
+
+        if (d==0) {
+            vec3 center = spheres[hit.indexOfSphere].xyz;
+            float radius = spheres[hit.indexOfSphere].w;
+            float distanceBetweenSunAndPlanet = distance(sunCoordinate, hit.position);
+            float distanceBetweenEyeAndPlanet = distance(hit.position, eye);
+
+            float allDistance = distanceRatio * distanceBetweenSunAndPlanet
+                            + (1 - distanceRatio) *distanceBetweenEyeAndPlanet;
+            
+
+            float attenuation = 1 + 0.000032 * allDistance * allDistance;
+            attenuation = 1 / attenuation;
+
+            vec3 sphereToIntersection = hit.position - center;
+            float u = 0.5 + atan(sphereToIntersection.z, sphereToIntersection.x) / (2.0 * M_PI);
+            float v = 0.5 - asin(sphereToIntersection.y / radius) / M_PI;
+            vec2 sphereTexCoords = vec2(u, v);
+            
+            resultColor = Lights(hit) * attenuation; 
+
+            vec4 textureColor = texture(texImage[hit.indexOfSphere], sphereTexCoords);
+            resultColor *= textureColor.rgb;
+        }
+
+        ///visszaverodes a bolygokrol
+
+        ray.startPosition = hit.position + epsilon * hit.normal;
+        ray.direction = reflect(ray.direction, hit.normal);
+    }
+    return resultColor;
+}
+
 void main()
 {
-
-    vec3 fragmentColor = vec3(0.0);
-
     float fovx = radians(60.0);
     float aspect = 640.0 / 480.0;
 
     float alfa = tan(fovx / 2.0) * (gl_FragCoord.x - (640.0 / 2.0)) / (640.0 / 2.0);
     float beta = tan(fovx / 2.0) * ((480.0 / 2.0) - gl_FragCoord.y) / (480.0 / 2.0) / aspect;
 
-    vec3 rayStart = eye;
     vec3 w = normalize(eye - at);
     vec3 u = normalize(cross(up, w));
     vec3 v = normalize(cross(w, u));
 
-    vec3 rayDirection = normalize(alfa * u + beta * v - w);
+    Ray ray;
+    ray.startPosition = eye;
+    ray.direction = normalize(alfa * u + beta * v - w);
 
-    // Ray Sphere intersection
-    // t^⟨v, v⟩ + 2t⟨v, p0 − c⟩ + ⟨p0 − c, p0 − c⟩ − r^2 = 0
-    bool intersected = false;
-    float closest_t = 1e20;
+    vec3 result = RayTrace(ray, alfa, beta, u, v, w);
 
-    for (int i = 0; i < spheresCount; i++)
-    {
-        vec3 center = spheres[i].xyz;
-        float radius = spheres[i].w;
-
-        vec3 poc = rayStart - center; // (p0 - c) vector
-        float a = dot(rayDirection, rayDirection);
-        float b = 2.0 * dot(poc, rayDirection);
-        float c = dot(poc, poc) - radius * radius;
-        float delta = b * b - 4.0 * a * c;
-
-        if (delta >= 0.0)
-        {
-            // Ray intersects with the sphere
-            float t1 = (-b + sqrt(delta)) / (2.0 * a);
-            float t2 = (-b - sqrt(delta)) / (2.0 * a);
-
-            float t = min(t1, t2); // closest intersection
-
-            if (t > 0.0 && t < closest_t)
-            {
-                closest_t = t;
-                intersected = true;
-
-                // Intersection point
-                vec3 intersectionPoint = rayStart + t * rayDirection;
-
-                // Normal
-                vec3 normal = normalize(intersectionPoint - center);
-
-                // Calculate lights
-                // ambient
-                vec3 ambient = La * Ka;
-
-                // diffuse
-                vec3 to_light_dir_norm = normalize(to_light_dir);
-                vec3 to_point_light_norm = normalize(to_point_light - intersectionPoint);
-
-                float di_dir = clamp(dot(to_light_dir_norm, normal), 0.0, 1.0);
-                float di_point = clamp(dot(to_point_light_norm, normal), 0.0, 1.0);
-                vec3 diffuse = (di_point * point_light_color + di_dir * light_dir_color) * Ld * Kd;
-
-                // specular (Phong Blinn)
-                vec3 v_norm = normalize(eye - intersectionPoint);
-                vec3 h_norm_1 = normalize(v_norm + to_point_light_norm);
-                vec3 h_norm_2 = normalize(v_norm + to_light_dir_norm);
-                float si_point = pow(clamp(dot(h_norm_1, normal), 0.0, 1.0), shininess);
-                float si_dir = pow(clamp(dot(h_norm_2, normal), 0.0, 1.0), shininess);
-                vec3 specular = (si_point * point_light_color + si_dir * light_dir_color) * Ls * Ks;
-
-                // sphere texture
-                vec3 sphereToIntersection = intersectionPoint - center;
-                float u = 0.5 + atan(sphereToIntersection.z, sphereToIntersection.x) / (2.0 * M_PI);
-                float v = 0.5 - asin(sphereToIntersection.y / radius) / M_PI;
-                vec2 sphereTexCoords = vec2(u, v);
-                
-                float distancee = distance(intersectionPoint, eye);
-                float attenuation = (1/(1+
-                                distancee*0.00009+
-                                0.000032* distancee*distancee));
-
-                ambient *= attenuation;
-                diffuse *= attenuation;
-                specular *= attenuation;
-                fragmentColor = ambient + diffuse + specular;
-                vec4 textureColor = texture(texImage[i], sphereTexCoords);
-                fragmentColor *= textureColor.rgb;
-            }
-        }
-    }
-
-    if (intersected) {
-        fs_out_col = vec4(fragmentColor, 1.0);
-        return;
-    }
-    else {
-        // Draw skybox using cubemap texture
-        vec3 rayDirection = normalize(alfa * u + beta * v - w);
-        vec3 skyboxColor = textureCube(cubemapTexture, rayDirection).rgb;
-        fs_out_col = vec4(skyboxColor, 1.0);
-        return;
-    }
-
+    fs_out_col = vec4(result, 1.0);
 }
