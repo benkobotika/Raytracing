@@ -242,8 +242,14 @@ vec3 rayTrace(Ray ray, float alfa, float beta, vec3 u, vec3 v, vec3 w) {
             vec2 sphereTexCoords = vec2(u, v);
             
             resultColor = lights(hit, sunCoordinate);
-            vec4 textureColor = getTextureColor(hit,sphereTexCoords);
+            vec4 textureColor = getTextureColor(hit, sphereTexCoords);
+            
             resultColor *= textureColor.rgb;
+            
+            // Scale up sun light intensity 
+            if (hit.indexOfSphere == 0) {
+                resultColor *= 2;
+            }
             //vec4 textureColor = texture(texImage[hit.indexOfSphere], sphereTexCoords);
         } else {
             /*vec3 center = spheres[hit.indexOfSphere].xyz;
