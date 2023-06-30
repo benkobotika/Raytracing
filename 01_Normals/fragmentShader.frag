@@ -95,55 +95,6 @@ float setAttentuation(vec3 sunCoordinate, Hit hit) {
     return 1 / attenuation;
 }
 
-
-
-Hit intersect(Ray ray, int indexOfSphere) {
-    Hit hit;
-    vec3 center = spheres[indexOfSphere].xyz;
-    float radius = spheres[indexOfSphere].w;
-
-    vec3 poc = ray.startPosition - center; // (p0 - c) vector
-    float a = dot(ray.direction, ray.direction);
-    float b = 2.0 * dot(poc, ray.direction);
-    float c = dot(poc, poc) - radius * radius;
-    float delta = b * b - 4.0 * a * c;
-
-    if (delta >= 0.0)
-    {
-        // Ray intersects with the sphere
-        float t1 = (-b + sqrt(delta)) / (2.0 * a);
-        float t2 = (-b - sqrt(delta)) / (2.0 * a);
-
-        float t = min(t1, t2); // closest intersection
-
-        // Intersection point
-        hit.position = ray.startPosition + t * ray.direction;
-
-        // Normal
-        hit.normal = normalize(hit.position - center);
-
-        hit.indexOfSphere = indexOfSphere;
-        hit.distance = t;
-
-    }
-    return hit;
-};
-
-Hit firstIntersection(Ray ray) {
-    float closest;
-    Hit bestHit;
-    bestHit.distance = -1;
-
-    for (int i = 0; i < spheresCount; i++)
-    {
-        Hit hit = intersect(ray, i);
-        if (hit.distance > 0 && (bestHit.distance < 0 || bestHit.distance > hit.distance)) {
-            bestHit = hit;
-        }
-    }
-    return bestHit;
-};
-
 vec3 lights(Hit hit, vec3 sunCoordinate) {
     // Calculate lights
     // ambient
@@ -163,9 +114,60 @@ vec3 lights(Hit hit, vec3 sunCoordinate) {
     return attenuation * (ambient + diffuse + specular);
 };
 
+Hit intersect(Ray ray, int indexOfSphere) {
+    Hit hit;
+    hit.distance = -1.0f;
+
+    vec3 center = spheres[indexOfSphere].xyz;
+    float radius = spheres[indexOfSphere].w;
+
+    vec3 poc = ray.startPosition - center; // (p0 - c) vector
+    float a = dot(ray.direction, ray.direction);
+    float b = 2.0 * dot(poc, ray.direction);
+    float c = dot(poc, poc) - radius * radius;
+    float delta = b * b - 4.0 * a * c;
+
+    if (delta >= 0.0)
+    {
+        // Ray intersects with the sphere
+        float t1 = (-b + sqrt(delta)) / (2.0 * a);
+        float t2 = (-b - sqrt(delta)) / (2.0 * a);
+
+        float t = min(t1, t2); // closest intersection
+
+        if (t > 0.0) {
+            // Intersection point
+            hit.position = ray.startPosition + t * ray.direction;
+
+            // Normal
+            hit.normal = normalize(hit.position - center);
+
+            hit.indexOfSphere = indexOfSphere;
+            hit.distance = t;
+        }
+    }
+    return hit;
+};
+
+Hit firstIntersection(Ray ray) {
+    float nearest;
+    Hit bestHit;
+    bestHit.distance = -1;
+
+    for (int i = 0; i < spheresCount; i++)
+    {
+        Hit hit = intersect(ray, i);
+        if (hit.distance > 0 && (bestHit.distance < 0 || bestHit.distance > hit.distance)) {
+            bestHit = hit;
+        }
+    }
+    return bestHit;
+};
+
 vec3 rayTrace(Ray ray, float alfa, float beta, vec3 u, vec3 v, vec3 w) {
     vec3 resultColor = vec3(0, 0, 0);
-    const float epsilon = 0.000001;
+    vec3 resultColor2 = vec3(0, 0, 0);
+    const float epsilon = 0.0000001f;
     int maxDepth = 0;
 
     // sun coordinate
@@ -187,31 +189,38 @@ vec3 rayTrace(Ray ray, float alfa, float beta, vec3 u, vec3 v, vec3 w) {
         if (d==0) {
             vec3 center = spheres[hit.indexOfSphere].xyz;
             float radius = spheres[hit.indexOfSphere].w;
-            float distanceBetweenSunAndPlanet = distance(sunCoordinate, hit.position);
-            float distanceBetweenEyeAndPlanet = distance(hit.position, eye);
-
-            float allDistance = distanceRatio * distanceBetweenSunAndPlanet
-                            + (1 - distanceRatio) *distanceBetweenEyeAndPlanet;
-            
-
-            float attenuation = 1 + 0.000032 * allDistance * allDistance;
-            attenuation = 1 / attenuation;
 
             vec3 sphereToIntersection = hit.position - center;
             float u = 0.5 + atan(sphereToIntersection.z, sphereToIntersection.x) / (2.0 * M_PI);
             float v = 0.5 - asin(sphereToIntersection.y / radius) / M_PI;
             vec2 sphereTexCoords = vec2(u, v);
             
-            resultColor = lights(hit, sunCoordinate) * attenuation; 
+            resultColor = lights(hit, sunCoordinate); 
 
             vec4 textureColor = texture(texImage[hit.indexOfSphere], sphereTexCoords);
             resultColor *= textureColor.rgb;
+        } else {
+            /*vec3 center = spheres[hit.indexOfSphere].xyz;
+            float radius = spheres[hit.indexOfSphere].w;
+
+            vec3 sphereToIntersection = hit.position - center;
+            float u = 0.5 + atan(sphereToIntersection.z, sphereToIntersection.x) / (2.0 * M_PI);
+            float v = 0.5 - asin(sphereToIntersection.y / radius) / M_PI;
+            vec2 sphereTexCoords = vec2(u, v);
+            
+            resultColor2 = lights(hit, sunCoordinate); 
+
+            vec4 textureColor = texture(texImage[hit.indexOfSphere], sphereTexCoords);
+            resultColor2 *= textureColor.rgb;
+
+            resultColor = resultColor + 0.001 * resultColor2;*/
         }
 
         ///visszaverodes a bolygokrol
 
         ray.startPosition = hit.position + epsilon * hit.normal;
         ray.direction = reflect(ray.direction, hit.normal);
+
     }
     return resultColor;
 }
