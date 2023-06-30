@@ -10,48 +10,50 @@
 #include "stb_image.h"
 
 
-// constructor
+// Constructor
 Raytrace::Raytrace()
 {
-	// camera position (eye, center, up)
+	// Camera position (eye, center, up)
 	glm::vec3 eye = glm::vec3(0, 50, 150);
 	glm::vec3 at = glm::vec3(0, 0, 0);
 	glm::vec3 up = glm::vec3(0, 1, 0);
 	m_camera.SetView(eye, at, up);
 }
 
-// destructor
+// Destructor
 Raytrace::~Raytrace()
 {
 	glDeleteTextures(spheres.size(), m_loadedTextureID);
+	glDeleteVertexArrays(1, &vao);
+	glDeleteBuffers(1, &vbo);
 
 	delete[] m_loadedTextureID;
 }
 
-// init shaders
+// Init shaders
 void Raytrace::InitShaders()
 {
 	GLuint vs_ID = loadShader(GL_VERTEX_SHADER, "vertexShader.vert");
 	GLuint fs_ID = loadShader(GL_FRAGMENT_SHADER, "fragmentShader.frag");
 
-	// creating a shader program object
+	// Creating a shader program object
 	m_programID = glCreateProgram();
 
-	// add to this program shaders
+	// Add to this program shaders
 	glAttachShader(m_programID, vs_ID); // vertex shader
 	glAttachShader(m_programID, fs_ID); // fragment shader
 
-	// assigning attributes in the VAO to shader variables
+	// Assigning attributes in the VAO to shader variables
 	glBindAttribLocation(m_programID,	// shader ID
 		0,				// the identifier index in the VAO
 		"vs_in_pos");	// variable name in the shader
 	glBindAttribLocation(m_programID, 1, "vs_in_col");
 	glBindAttribLocation(m_programID, 2, "vs_in_tex");
 
-	// connecting shaders (matching input-output variables, etc.), linking
+	// Connecting shaders (matching input-output variables, etc.), linking
 	glLinkProgram(m_programID);
 
-	// linking check
+	// Linking check
 	GLint infoLogLength = 0, result = 0;
 
 	glGetProgramiv(m_programID, GL_LINK_STATUS, &result);
@@ -67,10 +69,10 @@ void Raytrace::InitShaders()
 	glDeleteShader(fs_ID);
 }
 
-// init textures
+// Init textures
 void Raytrace::InitTextures()
 {
-	// read from file
+	// Read from file
 	m_loadedTextureID[0] = TextureFromFile("assets/sun.jpg");
 	m_loadedTextureID[1] = TextureFromFile("assets/mercury.jpg");
 	m_loadedTextureID[2] = TextureFromFile("assets/venus.jpg");
@@ -133,25 +135,44 @@ GLuint Raytrace::LoadCubemapTexture(int scence = 0)
 	return textureID;
 }
 
+void Raytrace::InitVaoVbo() {
+	// Create and bind a VAO
+	glGenVertexArrays(1, &vao);
+	glBindVertexArray(vao);
+
+	// Create and bind a VBO
+	glGenBuffers(1, &vbo);
+	glBindBuffer(GL_ARRAY_BUFFER, vbo);
+
+	GLsizei stride = sizeof(Vertex);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, stride, nullptr);
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, stride, reinterpret_cast<const void*>(sizeof(glm::vec3)));
+	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, stride, reinterpret_cast<const void*>(2 * sizeof(glm::vec3)));
+	glEnableVertexAttribArray(0);
+	glEnableVertexAttribArray(1);
+	glEnableVertexAttribArray(2);
+}
+
 bool Raytrace::Init()
 {
-	// sky color
+	// Sky color
 	glClearColor(0.0f, 0.19f, 0.25f, 1.0f);
 
 	glEnable(GL_CULL_FACE); // enable backface culling
 	glEnable(GL_DEPTH_TEST); // depth test enable (z-buffer)
 	glCullFace(GL_BACK); // GL_BACK: polygons facing away from the camera, GL_FRONT: polygons facing towards the camera
 
-	// initialize spheres, shaders and textures
+	// Initialize spheres, shaders and textures
+	InitVaoVbo();
 	InitShaders();
 	InitTextures();
 	InitCubemap();
 
-	// camera
-	// parameters: angle, aspect (ratio of the width to height), near clipping plane dist, far clipping plane dist 
+	// Camera
+	// Parameters: angle, aspect (ratio of the width to height), near clipping plane dist, far clipping plane dist 
 	m_camera.SetProj(glm::radians(60.0f), 640.0f / 480.0f, 0.01f, 1000.0f);
 
-	// get the location of uniform variables in the shader
+	// Get the location of uniform variables in the shader
 	m_loc_mvp = glGetUniformLocation(m_programID, "MVP");
 	m_loc_world = glGetUniformLocation(m_programID, "world");
 	m_loc_worldIT = glGetUniformLocation(m_programID, "worldIT");
@@ -159,15 +180,15 @@ bool Raytrace::Init()
 	m_loc_spheres_count = glGetUniformLocation(m_programID, "spheresCount");
 	m_loc_spheres = glGetUniformLocation(m_programID, "spheres");
 
-	// get the location of light and material uniform variables
-	// light properties
+	// Get the location of light and material uniform variables
+	// Light properties
 	m_loc_light_sources = glGetUniformLocation(m_programID, "light_sources");
 	m_loc_light_properties = glGetUniformLocation(m_programID, "light_properties");
 
-	// material properties
+	// Material properties
 	m_loc_material_properties = glGetUniformLocation(m_programID, "material_properties");
 
-	// camera
+	// Camera
 	m_loc_eye = glGetUniformLocation(m_programID, "eye");
 	m_loc_at = glGetUniformLocation(m_programID, "at");
 	m_loc_up = glGetUniformLocation(m_programID, "up");
@@ -177,7 +198,7 @@ bool Raytrace::Init()
 
 void Raytrace::Clean()
 {
-	// deallocating memory
+	// Deallocating memory
 	for (int i = 0; i < spheres.size(); i++)
 	{
 		glDeleteTextures(1, &m_loadedTextureID[i]);
@@ -190,7 +211,7 @@ void Raytrace::Clean()
 	glDeleteProgram(m_programID);
 }
 
-// new window size (width and height)
+// New window size (width and height)
 void Raytrace::Resize(int _w, int _h)
 {
 	glViewport(0, 0, _w, _h);

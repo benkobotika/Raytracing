@@ -60,6 +60,31 @@ struct Ray {
     vec3 direction;
 };
 
+vec3 setAmbientLight() {
+    return La * Ka;
+}
+
+vec3 setDiffuseLight(vec3 to_light_dir_norm, vec3 to_point_light_norm, vec3 intersectionPoint, vec3 normal, vec3 Ld, vec3 Kd) {
+    float di_dir = clamp(dot(to_light_dir_norm, normal), 0.0, 1.0);
+    float di_point = clamp(dot(to_point_light_norm, normal), 0.0, 1.0);
+    return (di_point * point_light_color + di_dir * light_dir_color) * Ld * Kd;
+}
+
+vec3 setSpecularLight(vec3 eye, vec3 intersectionPoint, vec3 to_point_light_norm, vec3 to_light_dir_norm, vec3 normal) {
+    vec3 v_norm = normalize(eye - intersectionPoint);
+    vec3 h_norm_1 = normalize(v_norm + to_point_light_norm);
+    vec3 h_norm_2 = normalize(v_norm + to_light_dir_norm);
+    float si_point = pow(clamp(dot(h_norm_1, normal), 0.0, 1.0), shininess);
+    float si_dir = pow(clamp(dot(h_norm_2, normal), 0.0, 1.0), shininess);
+    return (si_point * point_light_color + si_dir * light_dir_color) * Ls * Ks;
+}
+
+float setAttentuation(float distancee) {
+    return (1 / (1 + 0.000032 * distancee * distancee));
+}
+
+
+
 Hit intersect(Ray ray, int indexOfSphere) {
     Hit hit;
     vec3 center = spheres[indexOfSphere].xyz;

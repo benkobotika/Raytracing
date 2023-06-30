@@ -12,7 +12,7 @@
 
 #include "Raytrace.h"
 
-// key and mouse events
+// Key and mouse events
 void Raytrace::KeyboardDown(SDL_KeyboardEvent& key)
 {
 	m_camera.KeyboardDown(key);

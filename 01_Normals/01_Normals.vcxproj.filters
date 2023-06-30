@@ -44,12 +44,6 @@
     <None Include="vertexShader.vert">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="skybox.frag">
-      <Filter>Shaders</Filter>
-    </None>
-    <None Include="skybox.vert">
-      <Filter>Shaders</Filter>
-    </None>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Header Files">

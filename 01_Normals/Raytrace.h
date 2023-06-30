@@ -47,6 +47,15 @@ protected:
 		glm::vec2 t; // texture
 	};
 
+	std::vector<Vertex> vertexData = {
+	{{-1.0f, -1.0f, -1.0f}, {0.0f, 0.0f, -1.0f}, {0.0f, 1.0f}},
+	{{1.0f, -1.0f, -1.0f},  {0.0f, 0.0f, -1.0f}, {0.0f, 1.0f}},
+	{{1.0f, 1.0f, -1.0f},   {0.0f, 0.0f, -1.0f}, {0.0f, 1.0f}},
+	{{1.0f, 1.0f, -1.0f},   {0.0f, 0.0f, -1.0f}, {0.0f, 1.0f}},
+	{{-1.0f, 1.0f, -1.0f},  {0.0f, 0.0f, -1.0f}, {0.0f, 1.0f}},
+	{{-1.0f, -1.0f, -1.0f}, {0.0f, 0.0f, -1.0f}, {0.0f, 1.0f}}
+	};
+
 	// spheres (posX, posY, posZ, r)
 	float mercury_size = 2.0f;
 	std::vector<glm::vec4> spheres = {
@@ -93,8 +102,8 @@ protected:
 	GLuint m_programID = 0; // shader program
 
 	// OpenGL things
-	GLuint vao;
-	GLuint vbo;
+	GLuint vao = 0;
+	GLuint vbo = 0;
 	GLuint* m_loadedTextureID = new GLuint[spheres.size()]; // loaded texture identifier
 	GLuint cubemapTextureID0 = 0;
 	GLuint cubemapTextureID1 = 0;
@@ -121,8 +130,16 @@ protected:
 	GLuint m_loc_at = 0;
 	GLuint m_loc_up = 0;
 
+	// Init functions
+	void InitVaoVbo();
 	void InitShaders();
 	void InitTextures();
+
+	// Render functions
+	void passLightAndMaterialProperties();
+	void passSphereProperties();
+	void passEyeAtUp();
+	void passMvpWorldWorldIT();
 
 	// skybox
 	void InitCubemap();
