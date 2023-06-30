@@ -15,6 +15,7 @@ void Raytrace::Update()
 
 	m_camera.Update(delta_time);
 
+	// Rotations
 	float rotationSpeed[] = { 
 		0.9f,	// Mercury
 		0.8f,	// Venus
@@ -77,6 +78,38 @@ void Raytrace::Update()
 	last_time = SDL_GetTicks();
 }
 
+void Raytrace::passLightAndMaterialProperties() {
+	glUniform3fv(m_loc_light_sources, lightSources.size(), reinterpret_cast<const GLfloat*>(lightSources.data()));
+	glUniform3fv(m_loc_light_properties, lightProperties.size(), reinterpret_cast<const GLfloat*>(lightProperties.data()));
+	glUniform4fv(m_loc_material_properties, materialProperties.size(), reinterpret_cast<const GLfloat*>(materialProperties.data()));
+}
+
+void Raytrace::passSphereProperties() {
+	glUniform1i(m_loc_spheres_count, spheres.size());
+	glUniform4fv(m_loc_spheres, spheres.size(), reinterpret_cast<const GLfloat*>(spheres.data()));
+}
+
+void Raytrace::passEyeAtUp() {
+	glm::vec3 eye = m_camera.GetEye();
+	glUniform3fv(m_loc_eye, 1, &eye[0]);
+
+	glm::vec3 at = m_camera.GetAt();
+	glUniform3fv(m_loc_at, 1, &at[0]);
+
+	glm::vec3 up = m_camera.GetUp();
+	glUniform3fv(m_loc_up, 1, &up[0]);
+}
+
+void Raytrace::passMvpWorldWorldIT() {
+	glm::mat4 viewProj = m_camera.GetViewProj();
+	glm::mat4 world = glm::mat4(1.0f);
+	glm::mat4 worldIT = glm::inverse(glm::transpose(world));
+	glm::mat4 mvp = viewProj * world;
+	glUniformMatrix4fv(m_loc_mvp, 1, GL_FALSE, &mvp[0][0]);
+	glUniformMatrix4fv(m_loc_world, 1, GL_FALSE, &world[0][0]);
+	glUniformMatrix4fv(m_loc_worldIT, 1, GL_FALSE, &worldIT[0][0]);
+}
+
 void Raytrace::Render()
 {
 	// Clear the frame buffer (GL_COLOR_BUFFER_BIT) and the depth buffer (GL_DEPTH_BUFFER_BIT)
@@ -86,30 +119,12 @@ void Raytrace::Render()
 	glUseProgram(m_programID);
 
 	// Pass light and material properties to the fragment shader
-	glUniform3fv(m_loc_light_sources, lightSources.size(), reinterpret_cast<const GLfloat*>(lightSources.data()));
-	glUniform3fv(m_loc_light_properties, lightProperties.size(), reinterpret_cast<const GLfloat*>(lightProperties.data()));
-	glUniform4fv(m_loc_material_properties, materialProperties.size(), reinterpret_cast<const GLfloat*>(materialProperties.data()));
+	passLightAndMaterialProperties();
 
 	// Rendering
-	glUniform1i(m_loc_spheres_count, spheres.size());
-	glUniform4fv(m_loc_spheres, spheres.size(), reinterpret_cast<const GLfloat*>(spheres.data()));
-
-	glm::mat4 viewProj = m_camera.GetViewProj();
-	glm::mat4 world = glm::mat4(1.0f);
-	glm::mat4 worldIT = glm::inverse(glm::transpose(world));
-	glm::mat4 mvp = viewProj * world;
-	glUniformMatrix4fv(m_loc_mvp, 1, GL_FALSE, &mvp[0][0]);
-	glUniformMatrix4fv(m_loc_world, 1, GL_FALSE, &world[0][0]);
-	glUniformMatrix4fv(m_loc_worldIT, 1, GL_FALSE, &worldIT[0][0]);
-
-	glm::vec3 eye = m_camera.GetEye();
-	glUniform3fv(m_loc_eye, 1, &eye[0]);
-
-	glm::vec3 at = m_camera.GetAt();
-	glUniform3fv(m_loc_at, 1, &at[0]);
-
-	glm::vec3 up = m_camera.GetUp();
-	glUniform3fv(m_loc_up, 1, &up[0]);
+	passSphereProperties();
+	passMvpWorldWorldIT();
+	passEyeAtUp();
 
 	// Texture
 	for (int i = 0; i < spheres.size(); i++) {
@@ -120,7 +135,7 @@ void Raytrace::Render()
 		glUniform1i(glGetUniformLocation(m_programID, uniformName.str().c_str()), i);
 	}
 
-	// skybox 
+	// Skybox 
 	glActiveTexture(GL_TEXTURE0 + spheres.size() + 1);
 	switch (current_scene)
 	{

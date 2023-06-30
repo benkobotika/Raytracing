@@ -130,9 +130,16 @@ protected:
 	GLuint m_loc_at = 0;
 	GLuint m_loc_up = 0;
 
+	// Init functions
 	void InitVaoVbo();
 	void InitShaders();
 	void InitTextures();
+
+	// Render functions
+	void passLightAndMaterialProperties();
+	void passSphereProperties();
+	void passEyeAtUp();
+	void passMvpWorldWorldIT();
 
 	// skybox
 	void InitCubemap();

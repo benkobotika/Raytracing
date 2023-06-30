@@ -1,17 +1,17 @@
 //Path: 01_Normals\Shaders\vertex_shader.vert
 #version 460 core
 
-// variable from VBO
+// Variable from VBO
 in vec3 vs_in_pos;
 in vec3 vs_in_norm;
 in vec2 vs_in_tex;
 
-// values to be passed further in the pipeline
+// Values to be passed further in the pipeline
 out vec3 vs_out_pos;
 out vec3 vs_out_norm;
 out vec2 vs_out_tex;
 
-// external parameters of the shader
+// External parameters of the shader
 uniform mat4 MVP;
 uniform mat4 world;
 uniform mat4 worldIT; // inverse transpose of the world
