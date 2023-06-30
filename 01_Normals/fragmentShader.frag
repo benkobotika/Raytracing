@@ -152,6 +152,11 @@ void main()
                 fragmentColor = ambient + diffuse + specular;
                 vec4 textureColor = texture(texImage[i], sphereTexCoords);
                 fragmentColor *= textureColor.rgb;
+
+                // Scale up sun light
+                if (i == 0) {
+                    fragmentColor *= 2;
+                }
             }
         }
     }
