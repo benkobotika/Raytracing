@@ -1,4 +1,4 @@
-//Path: 01_Normals\Source Files\RenderAndUpdate.cpp
+﻿//Path: 01_Normals\Source Files\RenderAndUpdate.cpp
 
 #include <GL/glew.h>
 #include <SDL.h>
@@ -7,6 +7,17 @@
 #include <sstream>
 #include "GLDebugMessageCallback.h"
 #include "Raytrace.h"
+
+//Newton gravitációs törvénye a következőképpen szól :
+//
+//F = G * (m1 * m2) / r ^ 2
+//
+//ahol :
+//
+//	F az erő,
+//	G a gravitációs állandó(6.67430 * 10 ^ -11 m ^ 3 kg ^ -1 s ^ -2),
+//	m1 és m2 a két test tömege,
+//	r a távolságuk.
 
 void Raytrace::Update()
 {
@@ -72,8 +83,20 @@ void Raytrace::Update()
 			x = new_x;
 			z = new_z;
 		}
-
 	}
+
+	for (int i = 0; i < 3; i++) {
+		glm::vec3 forceDirection = glm::vec3(spheres[i]) - glm::vec3(spheres[3]);  // direction of the force
+		float distance = glm::length(forceDirection);  // distance between the two bodies
+		float mass1 = std::pow(spheres[i][3], 3);  // mass = density * volume = density * (4/3 * pi * r^3) = k * r^3
+		float mass2 = std::pow(spheres[10][3], 3);
+		float forceMagnitude = G * mass1 * mass2 / std::pow(distance, 2);  // gravitational force
+		glm::vec3 force = forceMagnitude * glm::normalize(forceDirection);  // force vector
+		glm::vec3 acceleration = force / mass2;  // acceleration = force / mass
+		meteorVelocity += acceleration * delta_time;  // update velocity
+	}
+	glm::vec3& pos = *(glm::vec3*)&spheres[10];
+	pos += meteorVelocity * delta_time;  // update position
 
 	last_time = SDL_GetTicks();
 }

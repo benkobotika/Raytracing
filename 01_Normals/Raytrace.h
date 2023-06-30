@@ -14,6 +14,9 @@
 #include <glm/gtx/transform2.hpp>
 #include <vector>
 
+// Random
+#include <random>
+
 #include "gCamera.h"
 
 class Raytrace
@@ -39,7 +42,10 @@ public:
 	// current scene variable
 	int current_scene = 0;
 
-protected:
+public:
+
+	glm::vec4 getRandomPosition();
+
 	struct Vertex
 	{
 		glm::vec3 p; // position
@@ -69,7 +75,9 @@ protected:
 	glm::vec4(135.0f, 0.0f, 0.0f, mercury_size * log2(277.0f / 12.0f)),		// saturn
 	glm::vec4(165.0f, 0.0f, 0.0f, mercury_size * log2(277.0f / 27.7f)),		// uranus
 	glm::vec4(195.0f, 0.0f, 0.0f, mercury_size * log2(277.0f / 27.4f)),		// neptune
+	glm::vec4(0.0f, 0.0f, 0.0f, 1000.0f)									// random sphere
 	};
+	
 
 	// light sources and their color
 	std::vector<glm::vec3> lightSources = {
@@ -97,6 +105,11 @@ protected:
 		glm::vec4(Kd, 0.0f),
 		glm::vec4(Ks, shininess)
 	};
+
+	glm::vec3 meteorVelocity;
+	const float G = 6.67430e-11;  // Gravitational constant
+
+
 
 	// variables to shader
 	GLuint m_programID = 0; // shader program

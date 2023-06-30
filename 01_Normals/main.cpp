@@ -149,6 +149,10 @@ int main(int argc, char* args[])
 					app.current_scene = std::max(0, app.current_scene - 1);
 					std::cout << "Current scene: " << app.current_scene << std::endl;
 				}
+				else if (ev.key.keysym.sym == SDLK_r) {
+					// Generate a new random position for the fourth sphere
+					app.spheres[10] = app.getRandomPosition();
+				}
 				app.KeyboardDown(ev.key);
 				break;
 			case SDL_KEYUP:

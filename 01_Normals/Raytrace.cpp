@@ -217,3 +217,10 @@ void Raytrace::Resize(int _w, int _h)
 	glViewport(0, 0, _w, _h);
 	m_camera.Resize(_w, _h);
 }
+
+glm::vec4 Raytrace::getRandomPosition() {
+	std::random_device rd;
+	std::mt19937 gen(rd());
+	std::uniform_real_distribution<> dis(-10.0, 10.0);
+	return { dis(gen), dis(gen), dis(gen), 100.0f};
+}
