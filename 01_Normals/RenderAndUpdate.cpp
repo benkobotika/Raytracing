@@ -15,21 +15,24 @@ void Raytrace::Update()
 
 	m_camera.Update(delta_time);
 
-	float rotationSpeed[] = { 1.0f, 0.9f, 0.8f,
-		0.7f, // earth
-		12.0f, // moon
-		0.5f, 0.4f, 0.3f, 0.2f, 0.1f };
-	//float rotationSpeed[] = { 0.0f, 0.0f, 0.0f,
-	//	0.0f, // earth
-	//	0.0f, // moon
-	//	0.0f, 0.0f, 0.0f, 0.0f, 0.0f };
+	float rotationSpeed[] = { 
+		0.9f,	// Mercury
+		0.8f,	// Venus
+		0.7f,	// Earth
+		12.0f,	// Moon
+		0.5f,	// Mars
+		0.4f,	// Jupiter
+		0.3f,	// Saturn
+		0.2f,	// Uranus
+		0.1f };	// Neptune
+
 	for (int i = 1; i < spheres.size(); i++) {
 		float& x = spheres[i][0];
 		float& y = spheres[i][1];
 		float& z = spheres[i][2];
 		float radius = spheres[i][3];
 
-		float angle = rotationSpeed[i] * delta_time;
+		float angle = rotationSpeed[i - 1] * delta_time;
 
 		// moon
 		if (i == 4)
@@ -58,11 +61,11 @@ void Raytrace::Update()
 		}
 		else 
 		{
-			//// polar coordinates
+			// Polar coordinates
 			float r = std::sqrt(x * x + z * z);
 			float theta = std::atan2(z, x);
 
-			//// from polar to descartes
+			// From polar to descartes
 			float new_x = r * std::cos(theta + angle);
 			float new_z = r * std::sin(theta + angle);
 			x = new_x;
@@ -117,15 +120,6 @@ void Raytrace::Render()
 		glUniform1i(glGetUniformLocation(m_programID, uniformName.str().c_str()), i);
 	}
 
-	std::vector<Vertex> vertexData = {
-		{{-1.0f, -1.0f, -1.0f}, {0.0f, 0.0f, -1.0f}, {0.0f, 1.0f}},
-		{{1.0f, -1.0f, -1.0f},  {0.0f, 0.0f, -1.0f}, {0.0f, 1.0f}},
-		{{1.0f, 1.0f, -1.0f},   {0.0f, 0.0f, -1.0f}, {0.0f, 1.0f}},
-		{{1.0f, 1.0f, -1.0f},   {0.0f, 0.0f, -1.0f}, {0.0f, 1.0f}},
-		{{-1.0f, 1.0f, -1.0f},  {0.0f, 0.0f, -1.0f}, {0.0f, 1.0f}},
-		{{-1.0f, -1.0f, -1.0f}, {0.0f, 0.0f, -1.0f}, {0.0f, 1.0f}}
-	};
-
 	// skybox 
 	glActiveTexture(GL_TEXTURE0 + spheres.size() + 1);
 	switch (current_scene)
@@ -147,43 +141,29 @@ void Raytrace::Render()
 	GLint cubemapTextureLocation = glGetUniformLocation(m_programID, "cubemapTexture");
 	glUniform1i(cubemapTextureLocation, spheres.size() + 1); // 0 corresponds to the texture unit used above (GL_TEXTURE0)
 
-	// adjusting the aspect ratios
+	// Adjusting the aspect ratios
 	float screenWidth = 640.0f;
 	float screenHeight = 480.0f;
 
+	// Calculate inverseViewMatrix
 	glm::mat4 inverseViewMatrix = glm::inverse(m_camera.GetViewMatrix()); // from camera to view (InverseViewMatrix)
 
-	for (auto& vertex : vertexData) {
+	// Build and render the vertices
+	std::vector<Vertex> vertexData2 = vertexData;
+
+	for (auto& vertex : vertexData2) {
 		vertex.p.x *= screenWidth / 2.0f;
 		vertex.p.y *= screenHeight / 2.0f;
 		vertex.p = glm::vec3(inverseViewMatrix * glm::vec4(vertex.p, 1.0f));
 		vertex.n = glm::vec3(inverseViewMatrix * glm::vec4(vertex.n, 0.0f));
 	}
 
-	// Create and bind a VAO
-	glGenVertexArrays(1, &vao);
+	glBufferData(GL_ARRAY_BUFFER, vertexData2.size() * sizeof(Vertex), vertexData2.data(), GL_STATIC_DRAW);
 	glBindVertexArray(vao);
-
-	// Create and bind a VBO
-	glGenBuffers(1, &vbo);
-	glBindBuffer(GL_ARRAY_BUFFER, vbo);
-
-	GLsizei stride = sizeof(Vertex);
-	glBufferData(GL_ARRAY_BUFFER, vertexData.size() * sizeof(Vertex), vertexData.data(), GL_STATIC_DRAW);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, stride, nullptr);
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, stride, reinterpret_cast<const void*>(sizeof(glm::vec3)));
-	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, stride, reinterpret_cast<const void*>(2 * sizeof(glm::vec3)));
-	glEnableVertexAttribArray(0);
-	glEnableVertexAttribArray(1);
-	glEnableVertexAttribArray(2);
-
-	glBindVertexArray(vao);	
 	
 	// Draw the geometry
-	glDrawArrays((GLenum )GL_TRIANGLES,(GLint) 0,(GLsizei) vertexData.size());
+	glDrawArrays((GLenum )GL_TRIANGLES,(GLint) 0,(GLsizei) vertexData2.size());
 
 	glBindVertexArray(0);
-	glDeleteVertexArrays(1, &vao);
-	glDeleteBuffers(1, &vbo);
 
 }

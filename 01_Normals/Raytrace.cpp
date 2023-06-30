@@ -24,6 +24,8 @@ Raytrace::Raytrace()
 Raytrace::~Raytrace()
 {
 	glDeleteTextures(spheres.size(), m_loadedTextureID);
+	glDeleteVertexArrays(1, &vao);
+	glDeleteBuffers(1, &vbo);
 
 	delete[] m_loadedTextureID;
 }
@@ -133,6 +135,24 @@ GLuint Raytrace::LoadCubemapTexture(int scence = 0)
 	return textureID;
 }
 
+void Raytrace::InitVaoVbo() {
+	// Create and bind a VAO
+	glGenVertexArrays(1, &vao);
+	glBindVertexArray(vao);
+
+	// Create and bind a VBO
+	glGenBuffers(1, &vbo);
+	glBindBuffer(GL_ARRAY_BUFFER, vbo);
+
+	GLsizei stride = sizeof(Vertex);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, stride, nullptr);
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, stride, reinterpret_cast<const void*>(sizeof(glm::vec3)));
+	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, stride, reinterpret_cast<const void*>(2 * sizeof(glm::vec3)));
+	glEnableVertexAttribArray(0);
+	glEnableVertexAttribArray(1);
+	glEnableVertexAttribArray(2);
+}
+
 bool Raytrace::Init()
 {
 	// sky color
@@ -143,6 +163,7 @@ bool Raytrace::Init()
 	glCullFace(GL_BACK); // GL_BACK: polygons facing away from the camera, GL_FRONT: polygons facing towards the camera
 
 	// initialize spheres, shaders and textures
+	InitVaoVbo();
 	InitShaders();
 	InitTextures();
 	InitCubemap();
