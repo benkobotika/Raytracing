@@ -31,6 +31,10 @@ vec3 La = light_properties[0];
 vec3 Ld = light_properties[1];
 vec3 Ls = light_properties[2];
 vec3 At = light_properties[3];
+// ratio between distanceEyeAndPlanet and distanceIntersectionPointAndPlanet
+float distanceRatio = At[0];
+float linearConst = At[1];
+float quadraticConst = At[2];
 
 // material properties: ambient, diffuse, specular
 uniform vec4 material_properties[3]; // Ka, Kd, Ks
@@ -64,23 +68,31 @@ vec3 setAmbientLight() {
     return La * Ka;
 }
 
-vec3 setDiffuseLight(vec3 to_light_dir_norm, vec3 to_point_light_norm, vec3 intersectionPoint, vec3 normal, vec3 Ld, vec3 Kd) {
-    float di_dir = clamp(dot(to_light_dir_norm, normal), 0.0, 1.0);
-    float di_point = clamp(dot(to_point_light_norm, normal), 0.0, 1.0);
+vec3 setDiffuseLight(vec3 to_light_dir_norm, vec3 to_point_light_norm, Hit hit) {
+    float di_dir = clamp(dot(to_light_dir_norm, hit.normal), 0.0, 1.0);
+    float di_point = clamp(dot(to_point_light_norm, hit.normal), 0.0, 1.0);
     return (di_point * point_light_color + di_dir * light_dir_color) * Ld * Kd;
 }
 
-vec3 setSpecularLight(vec3 eye, vec3 intersectionPoint, vec3 to_point_light_norm, vec3 to_light_dir_norm, vec3 normal) {
-    vec3 v_norm = normalize(eye - intersectionPoint);
+vec3 setSpecularLight(Hit hit, vec3 to_point_light_norm, vec3 to_light_dir_norm) {
+    vec3 v_norm = normalize(eye - hit.position);
     vec3 h_norm_1 = normalize(v_norm + to_point_light_norm);
     vec3 h_norm_2 = normalize(v_norm + to_light_dir_norm);
-    float si_point = pow(clamp(dot(h_norm_1, normal), 0.0, 1.0), shininess);
-    float si_dir = pow(clamp(dot(h_norm_2, normal), 0.0, 1.0), shininess);
+    float si_point = pow(clamp(dot(h_norm_1, hit.normal), 0.0, 1.0), shininess);
+    float si_dir = pow(clamp(dot(h_norm_2, hit.normal), 0.0, 1.0), shininess);
     return (si_point * point_light_color + si_dir * light_dir_color) * Ls * Ks;
 }
 
-float setAttentuation(float distancee) {
-    return (1 / (1 + 0.000032 * distancee * distancee));
+float setAttentuation(vec3 sunCoordinate, Hit hit) {
+    float distanceBetweenSunAndPlanet = distance(sunCoordinate, hit.position);
+    float distanceBetweenEyeAndPlanet = distance(hit.position, eye);
+
+    float allDistance = distanceRatio * distanceBetweenSunAndPlanet 
+        + (1 - distanceRatio) *distanceBetweenEyeAndPlanet;
+    //float attenuation = 1 + linearConst * allDistance + quadraticConst * allDistance * allDistance;
+    float attenuation = 1 + quadraticConst * allDistance * allDistance;
+
+    return 1 / attenuation;
 }
 
 
@@ -132,30 +144,26 @@ Hit firstIntersection(Ray ray) {
     return bestHit;
 };
 
-vec3 Lights(Hit hit) {
+vec3 lights(Hit hit, vec3 sunCoordinate) {
     // Calculate lights
     // ambient
-    vec3 ambient = La * Ka;
+    vec3 ambient = setAmbientLight();
 
     // diffuse
     vec3 to_light_dir_norm = normalize(to_light_dir);
     vec3 to_point_light_norm = normalize(to_point_light - hit.position);
 
-    float di_dir = clamp(dot(to_light_dir_norm, hit.normal), 0.0, 1.0);
-    float di_point = clamp(dot(to_point_light_norm, hit.normal), 0.0, 1.0);
-    vec3 diffuse = (di_point * point_light_color + di_dir * light_dir_color) * Ld * Kd;
+    vec3 diffuse = setDiffuseLight(to_light_dir_norm, to_point_light_norm, hit);
 
     // specular (Phong Blinn)
-    vec3 v_norm = normalize(eye - hit.position);
-    vec3 h_norm_1 = normalize(v_norm + to_point_light_norm);
-    vec3 h_norm_2 = normalize(v_norm + to_light_dir_norm);
-    float si_point = pow(clamp(dot(h_norm_1, hit.normal), 0.0, 1.0), shininess);
-    float si_dir = pow(clamp(dot(h_norm_2, hit.normal), 0.0, 1.0), shininess);
-    vec3 specular = (si_point * point_light_color + si_dir * light_dir_color) * Ls * Ks;
-    return ambient + diffuse + specular;
+    vec3 specular = setSpecularLight(hit, to_light_dir_norm, to_point_light_norm);
+
+    float attenuation = setAttentuation(sunCoordinate, hit);
+
+    return attenuation * (ambient + diffuse + specular);
 };
 
-vec3 RayTrace(Ray ray, float alfa, float beta, vec3 u, vec3 v, vec3 w) {
+vec3 rayTrace(Ray ray, float alfa, float beta, vec3 u, vec3 v, vec3 w) {
     vec3 resultColor = vec3(0, 0, 0);
     const float epsilon = 0.000001;
     int maxDepth = 0;
@@ -194,7 +202,7 @@ vec3 RayTrace(Ray ray, float alfa, float beta, vec3 u, vec3 v, vec3 w) {
             float v = 0.5 - asin(sphereToIntersection.y / radius) / M_PI;
             vec2 sphereTexCoords = vec2(u, v);
             
-            resultColor = Lights(hit) * attenuation; 
+            resultColor = lights(hit, sunCoordinate) * attenuation; 
 
             vec4 textureColor = texture(texImage[hit.indexOfSphere], sphereTexCoords);
             resultColor *= textureColor.rgb;
@@ -224,7 +232,7 @@ void main()
     ray.startPosition = eye;
     ray.direction = normalize(alfa * u + beta * v - w);
 
-    vec3 result = RayTrace(ray, alfa, beta, u, v, w);
+    vec3 result = rayTrace(ray, alfa, beta, u, v, w);
 
     fs_out_col = vec4(result, 1.0);
 }

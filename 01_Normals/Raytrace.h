@@ -80,11 +80,11 @@ protected:
 	};
 
 	// ambient, diffuse, specular light properties
-	// and attenuation propreties (constant, linear, quadratic)
+	// and attenuation propreties (distanceRatio, linear, quadratic)
 	glm::vec3 La = glm::vec3(0.8f, 0.9f, 0.9f);
 	glm::vec3 Ld = glm::vec3(0.4f, 0.6f, 0.6f);
 	glm::vec3 Ls = glm::vec3(0.9f, 0.9f, 0.9f);
-	glm::vec3 At = glm::vec3(1.0f, 0.00009f, 0.000032f);
+	glm::vec3 At = glm::vec3(0.75f, 0.00009f, 0.000032f);
 	std::vector<glm::vec3> lightProperties = { La, Ld, Ls, At };
 
 	// ambient, diffuse, specular material properties
