@@ -14,7 +14,7 @@
 Raytrace::Raytrace()
 {
 	// Camera position (eye, center, up)
-	glm::vec3 eye = glm::vec3(82.914, -232.181, 392.311);
+	glm::vec3 eye = glm::vec3(94.2055, -57.5629, 90.4523);
 	glm::vec3 at = glm::vec3(0, 0, 0);
 	glm::vec3 up = glm::vec3(0, 1, 0);
 	m_camera.SetView(eye, at, up);

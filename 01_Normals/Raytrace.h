@@ -100,7 +100,7 @@ protected:
 
 	// ambient, diffuse, specular material properties
 	glm::vec3 Ka = glm::vec3(0.7f, 0.8f, 0.9f);
-	glm::vec3 Kd = glm::vec3(0.2f, 0.4f, 0.6f);
+	glm::vec3 Kd = glm::vec3(0.8f, 0.8f, 0.8f);
 	glm::vec3 Ks = glm::vec3(0.4f, 0.8f, 1.0f);
 	float shininess = 20.0f;
 	std::vector<glm::vec4> materialProperties = {
