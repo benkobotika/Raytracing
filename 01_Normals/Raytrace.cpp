@@ -174,10 +174,12 @@ void Raytrace::InitMasses()
 	// simplified to mass = r^3
 
 	masses[0] = 10000.0f;
-	for (int i = 1; i < spheres.size(); i++)
+	for (int i = 1; i < spheres.size()-1; i++)
 	{
-		masses[i]=std::pow(spheres[i][3], 3);
+		masses[i]=std::pow(spheres[i][3], 2)*10;
+		std::cout << "masses[" << i << "] = " << masses[i] << std::endl;
 	}
+	masses[10] = 100.0f;
 }
 
 bool Raytrace::Init()
@@ -195,6 +197,11 @@ bool Raytrace::Init()
 	InitTextures();
 	InitCubemap();
 	InitMasses();
+
+	for (int i = 0; i < spheres.size(); i++)
+	{
+		std::cout << "masses[" << i << "]" << masses[i]<<std::endl;
+	}
 
 	// Camera
 	// Parameters: angle, aspect (ratio of the width to height), near clipping plane dist, far clipping plane dist 
@@ -251,6 +258,6 @@ void Raytrace::Resize(int _w, int _h)
 glm::vec4 Raytrace::getRandomPosition() {
 	std::random_device rd;
 	std::mt19937 gen(rd());
-	std::uniform_real_distribution<> dis(-100.0f, 100.0f);
+	std::uniform_real_distribution<> dis(-200.0f, 200.0f);
 	return { dis(gen), dis(gen), dis(gen), 10.0f};
 }
