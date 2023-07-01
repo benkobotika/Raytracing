@@ -101,6 +101,7 @@ float setAttentuation(vec3 sunCoordinate, Hit hit) {
 }
 
 bool thisIsShadow(Hit hit, vec3 sunCoordinate) {
+    //calculate Rays
     Ray rayFromSunToHit;
     rayFromSunToHit.startPosition = hit.position + 0.01f * hit.normal;
     rayFromSunToHit.direction = normalize(sunCoordinate - hit.position);
@@ -113,14 +114,27 @@ bool thisIsShadow(Hit hit, vec3 sunCoordinate) {
     rayFromBottomOfSunToHit.startPosition = hit.position + 0.01f * hit.normal;
     rayFromBottomOfSunToHit.direction = normalize(sunCoordinate - up * spheres[0].w - hit.position);
 
+    Ray rayFromLeftSideOfSunToHit;
+    rayFromLeftSideOfSunToHit.startPosition = hit.position + 0.01f * hit.normal;
+    rayFromLeftSideOfSunToHit.direction = normalize(sunCoordinate + vec3(1,0,0) * spheres[0].w - hit.position);
+
+    Ray rayFromRightSideOfSunToHit;
+    rayFromRightSideOfSunToHit.startPosition = hit.position + 0.01f * hit.normal;
+    rayFromRightSideOfSunToHit.direction = normalize(sunCoordinate - vec3(1,0,0) * spheres[0].w - hit.position);
+
+    //calculate ray to shadow
     Hit firstHitFromHitToSun = firstIntersection(rayFromSunToHit);
     Hit firstHitFromHitToTopOfSun = firstIntersection(rayFromTopOfSunToHit);
     Hit firstHitFromHitToBottomOfSun = firstIntersection(rayFromBottomOfSunToHit);
+    Hit firstHitFromHitToLeftSideOfSun = firstIntersection(rayFromBottomOfSunToHit);
+    Hit firstHitFromHitToRightSideOfSun = firstIntersection(rayFromRightSideOfSunToHit);
 
     return (hit.indexOfSphere == 0 || 
     (firstHitFromHitToSun.distance > 0.0 && firstHitFromHitToSun.indexOfSphere == 0) ||
     (firstHitFromHitToTopOfSun.distance > 0.0 && firstHitFromHitToTopOfSun.indexOfSphere == 0) ||
-    (firstHitFromHitToBottomOfSun.distance > 0.0 && firstHitFromHitToBottomOfSun.indexOfSphere == 0));
+    (firstHitFromHitToBottomOfSun.distance > 0.0 && firstHitFromHitToBottomOfSun.indexOfSphere == 0) ||
+    (firstHitFromHitToLeftSideOfSun.distance > 0.0 && firstHitFromHitToLeftSideOfSun.indexOfSphere == 0) ||
+    (firstHitFromHitToRightSideOfSun.distance > 0.0 && firstHitFromHitToRightSideOfSun.indexOfSphere == 0));
 }
 
 vec3 lights(Hit hit, vec3 sunCoordinate) {
