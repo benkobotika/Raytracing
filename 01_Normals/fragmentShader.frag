@@ -263,27 +263,31 @@ vec3 rayTrace(Ray ray, float alfa, float beta, vec3 u, vec3 v, vec3 w) {
     vec3 resultColor = vec3(0, 0, 0);
     vec3 resultColor2 = vec3(0, 0, 0);
     vec3 reflectedColor = vec3(0, 0, 0);
-    float intensity = 0.01;
+    float intensity = 0.01f;
     const float epsilon = 0.0000001f;
-    int maxDepth = 0;
+    int maxDepth = 1;
+
+    bool isSkyBox = false;
 
     // sun coordinate
     vec3 sunCoordinate = spheres[0].xyz;
     // ratio between distanceEyeAndPlanet and distanceIntersectionPointAndPlanet
     float distanceRatio = 0.75f;
 
-    for (int d = 0; d <= maxDepth; d++) {
+    for (int d = 0; d <= maxDepth && !isSkyBox; d++) {
         Hit hit = firstIntersection(ray);
 
-        if(hit.distance <= 0.0) {
+        if(hit.distance <= 0.0 && d == 0) {
             // Draw skybox using cubemap texture
             vec3 rayDirection = normalize(alfa * u + beta * v - w);
             vec3 skyboxColor = textureCube(cubemapTexture, rayDirection).rgb;
             resultColor = skyboxColor;
+            isSkyBox = true;
             break;
-        }
+        } else if (hit.distance <= 0.0)
+            break;//reflected ray to skybox
 
-        if (d==0) {
+        if (d == 0) {
             vec3 center = spheres[hit.indexOfSphere].xyz;
             float radius = spheres[hit.indexOfSphere].w;
 
@@ -301,7 +305,6 @@ vec3 rayTrace(Ray ray, float alfa, float beta, vec3 u, vec3 v, vec3 w) {
             if (hit.indexOfSphere == 0) {
                 resultColor *= 2.5;
             }
-            
         } else {
             vec3 center = spheres[hit.indexOfSphere].xyz;
             float radius = spheres[hit.indexOfSphere].w;
@@ -316,7 +319,7 @@ vec3 rayTrace(Ray ray, float alfa, float beta, vec3 u, vec3 v, vec3 w) {
             
             resultColor2 *= textureColor.rgb;
 
-            reflectedColor += intensity * resultColor2;
+            reflectedColor *= resultColor2;
             intensity *= intensity * intensity;
         }
 
@@ -324,7 +327,8 @@ vec3 rayTrace(Ray ray, float alfa, float beta, vec3 u, vec3 v, vec3 w) {
         ray.direction = reflect(ray.direction, hit.normal);
 
     }
-    resultColor += reflectedColor;
+    if (!isSkyBox)
+        resultColor += reflectedColor;
     return resultColor;
 }
 
