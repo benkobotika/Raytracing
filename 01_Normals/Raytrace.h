@@ -39,7 +39,9 @@ public:
 	void MouseWheel(SDL_MouseWheelEvent&);
 	void Resize(int, int);
 
-	
+	//max depth to reflect
+	int maxDepth = 100;
+	int depth = 1;
 	
 	// current scene variable
 	int current_scene = 0;
