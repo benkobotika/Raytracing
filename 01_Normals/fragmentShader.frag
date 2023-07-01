@@ -266,7 +266,7 @@ vec3 rayTrace(Ray ray, float alfa, float beta, vec3 u, vec3 v, vec3 w) {
     vec3 resultColor = vec3(0, 0, 0);
     vec3 resultColor2 = vec3(0, 0, 0);
     vec3 reflectedColor = vec3(0, 0, 0);
-    float intensity = 0.01f;
+    float intensity = 1;
     const float epsilon = 0.0000001f;
 
     bool isSkyBox = false;
@@ -321,7 +321,7 @@ vec3 rayTrace(Ray ray, float alfa, float beta, vec3 u, vec3 v, vec3 w) {
             
             resultColor2 *= textureColor.rgb;
 
-            reflectedColor *= resultColor2;
+            reflectedColor += intensity * resultColor2;
             intensity *= intensity * intensity;
         }
 
