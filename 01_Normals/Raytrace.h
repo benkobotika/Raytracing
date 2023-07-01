@@ -42,9 +42,28 @@ public:
 	// current scene variable
 	int current_scene = 0;
 
-public:
+	// spheres (posX, posY, posZ, r)
+	float mercury_size = 2.0f;
+	std::vector<glm::vec4> spheres = {
+	glm::vec4(0.0f, 0.0f, 0.0f, mercury_size * log2(277.0f)),				// sun
+	glm::vec4(40.0f, 0.0f, 0.0f, mercury_size),								// mercury
+	glm::vec4(60.0f, 0.0f, 0.0f, mercury_size * log2(277.0f / 115.0f)),	    // venus
+	glm::vec4(80.0f, 0.0f, 0.0f, mercury_size * log2(277.0f / 109.0f)),		// earth
+	glm::vec4(90.0f, 0.0f, 0.0f, mercury_size * log2(277.0f / 240.0f)),		// moon
+	glm::vec4(105.0f, 0.0f, 0.0f, mercury_size * log2(277.0f / 207.0f)),	// mars
+	glm::vec4(125.0f, 0.0f, 0.0f, mercury_size * log2(277.0f / 11.0f)),		// jupiter
+	glm::vec4(155.0f, 0.0f, 0.0f, mercury_size * log2(277.0f / 12.0f)),		// saturn
+	glm::vec4(185.0f, 0.0f, 0.0f, mercury_size * log2(277.0f / 27.7f)),		// uranus
+	glm::vec4(215.0f, 0.0f, 0.0f, mercury_size * log2(277.0f / 27.4f)),		// neptune
+	glm::vec4(240.0f, 0.0f, 0.0f, 1000.0f)									// random sphere
+	};
 
 	glm::vec4 getRandomPosition();
+
+
+protected:
+
+	void InitMasses();
 
 	struct Vertex
 	{
@@ -60,22 +79,6 @@ public:
 	{{1.0f, 1.0f, -1.0f},   {0.0f, 0.0f, -1.0f}, {0.0f, 1.0f}},
 	{{-1.0f, 1.0f, -1.0f},  {0.0f, 0.0f, -1.0f}, {0.0f, 1.0f}},
 	{{-1.0f, -1.0f, -1.0f}, {0.0f, 0.0f, -1.0f}, {0.0f, 1.0f}}
-	};
-
-	// spheres (posX, posY, posZ, r)
-	float mercury_size = 2.0f;
-	std::vector<glm::vec4> spheres = {
-	glm::vec4(0.0f, 0.0f, 0.0f, mercury_size * log2(277.0f)),				// sun
-	glm::vec4(40.0f, 0.0f, 0.0f, mercury_size),								// mercury
-	glm::vec4(60.0f, 0.0f, 0.0f, mercury_size * log2(277.0f / 115.0f)),	    // venus
-	glm::vec4(80.0f, 0.0f, 0.0f, mercury_size * log2(277.0f / 109.0f)),		// earth
-	glm::vec4(90.0f, 0.0f, 0.0f, mercury_size * log2(277.0f / 240.0f)),		// moon
-	glm::vec4(105.0f, 0.0f, 0.0f, mercury_size * log2(277.0f / 207.0f)),	// mars
-	glm::vec4(125.0f, 0.0f, 0.0f, mercury_size * log2(277.0f / 11.0f)),		// jupiter
-	glm::vec4(155.0f, 0.0f, 0.0f, mercury_size * log2(277.0f / 12.0f)),		// saturn
-	glm::vec4(185.0f, 0.0f, 0.0f, mercury_size * log2(277.0f / 27.7f)),		// uranus
-	glm::vec4(215.0f, 0.0f, 0.0f, mercury_size * log2(277.0f / 27.4f)),		// neptune
-	glm::vec4(240.0f, 0.0f, 0.0f, 1000.0f)									// random sphere
 	};
 	
 
@@ -109,7 +112,7 @@ public:
 	// Gravity
 	glm::vec3 meteorVelocity;
 	const float G = 6.67430e-11;  // Gravitational constant
-
+	int masses[11];
 
 
 	// variables to shader

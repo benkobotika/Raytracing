@@ -155,6 +155,14 @@ void Raytrace::InitVaoVbo() {
 	glEnableVertexAttribArray(2);
 }
 
+void Raytrace::InitMasses()
+{
+	for (int i = 0; i < spheres.size(); i++)
+	{
+		masses[i]==std::pow(spheres[i][3], 3);
+	}
+}
+
 bool Raytrace::Init()
 {
 	// Sky color
@@ -169,6 +177,7 @@ bool Raytrace::Init()
 	InitShaders();
 	InitTextures();
 	InitCubemap();
+	InitMasses();
 
 	// Camera
 	// Parameters: angle, aspect (ratio of the width to height), near clipping plane dist, far clipping plane dist 
