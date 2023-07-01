@@ -26,8 +26,6 @@ Raytrace::~Raytrace()
 	glDeleteTextures(allSpheresSize, m_loadedTextureID);
 	glDeleteVertexArrays(1, &vao);
 	glDeleteBuffers(1, &vbo);
-
-	delete[] m_loadedTextureID;
 }
 
 // Init shaders
@@ -231,7 +229,7 @@ bool Raytrace::Init()
 void Raytrace::Clean()
 {
 	// Deallocating memory
-	for (int i = 0; i < spheres.size(); i++)
+	for (int i = 0; i < allSpheresSize; i++)
 	{
 		glDeleteTextures(1, &m_loadedTextureID[i]);
 	}
