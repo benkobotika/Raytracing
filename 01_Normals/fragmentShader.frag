@@ -21,9 +21,9 @@ uniform vec3 up;
 // point light and directional light (2 light sources)
 uniform vec3 light_sources[4]; // [position, color, position, color]
 vec3 to_point_light = light_sources[0];
-vec3 point_light_color = light_sources[1]; // orange color
+vec3 point_light_color = light_sources[3]; // orange color
 vec3 to_light_dir = light_sources[2];
-vec3 light_dir_color = light_sources[3]; // white color
+vec3 light_dir_color = light_sources[1]; // white color
 
 // light properties: ambient, diffuse, specular, attenuation
 uniform vec3 light_properties[4]; // La, Ld, Ls, At
@@ -100,11 +100,27 @@ float setAttentuation(vec3 sunCoordinate, Hit hit) {
     return 1 / attenuation;
 }
 
-bool samedistance(float distance1, float distance2) {
-    float result = distance1 - distance2;
-    if (result < 0)
-        result *= -1;
-    return result < 1000.0f;
+bool thisIsShadow(Hit hit, vec3 sunCoordinate) {
+    Ray rayFromSunToHit;
+    rayFromSunToHit.startPosition = hit.position + 0.01f * hit.normal;
+    rayFromSunToHit.direction = normalize(sunCoordinate - hit.position);
+
+    Ray rayFromTopOfSunToHit;
+    rayFromTopOfSunToHit.startPosition = hit.position + 0.01f * hit.normal;
+    rayFromTopOfSunToHit.direction = normalize(sunCoordinate + up * spheres[0].w - hit.position);
+
+    Ray rayFromBottomOfSunToHit;
+    rayFromBottomOfSunToHit.startPosition = hit.position + 0.01f * hit.normal;
+    rayFromBottomOfSunToHit.direction = normalize(sunCoordinate - up * spheres[0].w - hit.position);
+
+    Hit firstHitFromHitToSun = firstIntersection(rayFromSunToHit);
+    Hit firstHitFromHitToTopOfSun = firstIntersection(rayFromTopOfSunToHit);
+    Hit firstHitFromHitToBottomOfSun = firstIntersection(rayFromBottomOfSunToHit);
+
+    return (hit.indexOfSphere == 0 || 
+    (firstHitFromHitToSun.distance > 0.0 && firstHitFromHitToSun.indexOfSphere == 0) ||
+    (firstHitFromHitToTopOfSun.distance > 0.0 && firstHitFromHitToTopOfSun.indexOfSphere == 0) ||
+    (firstHitFromHitToBottomOfSun.distance > 0.0 && firstHitFromHitToBottomOfSun.indexOfSphere == 0));
 }
 
 vec3 lights(Hit hit, vec3 sunCoordinate) {
@@ -122,23 +138,13 @@ vec3 lights(Hit hit, vec3 sunCoordinate) {
     vec3 specular = setSpecularLight(hit, to_light_dir_norm, to_point_light_norm);
 
     float attenuation = setAttentuation(sunCoordinate, hit);
-
-    Ray rayFromSunToFragment;
-    rayFromSunToFragment.startPosition = hit.position + 0.001f * hit.normal;
-    rayFromSunToFragment.direction = normalize(spheres[0].xyz - hit.position);
-
-    Hit firstHitFromHitToSun = firstIntersection(rayFromSunToFragment);
-
-    float distFromHitToSun = distance(hit.position, spheres[0].xyz);
-    float distFromFirstHitToSun = distance(firstHitFromHitToSun.position, spheres[0].xyz);
     
-    if (hit.indexOfSphere == 0 || 
-        (firstHitFromHitToSun.distance > 0.0 && firstHitFromHitToSun.indexOfSphere == 0)) {
+    if (thisIsShadow(hit, sunCoordinate)) {
         return attenuation * (ambient + diffuse + specular);
     } else {
         return attenuation * ambient * 0.45f;
     }
-};
+}
 
 Hit intersect(Ray ray, int indexOfSphere) {
     Hit hit;
@@ -173,7 +179,7 @@ Hit intersect(Ray ray, int indexOfSphere) {
         }
     }
     return hit;
-};
+}
 
 Hit firstIntersection(Ray ray) {
     Hit bestHit;
@@ -187,7 +193,7 @@ Hit firstIntersection(Ray ray) {
         }
     }
     return bestHit;
-};
+}
 
 vec4 getTextureColor(Hit hit,vec2 sphereTexCoords)
 {
@@ -281,7 +287,7 @@ vec3 rayTrace(Ray ray, float alfa, float beta, vec3 u, vec3 v, vec3 w) {
             if (hit.indexOfSphere == 0) {
                 resultColor *= 2.5;
             }
-            //vec4 textureColor = texture(texImage[hit.indexOfSphere], sphereTexCoords);
+            
         } else {
             vec3 center = spheres[hit.indexOfSphere].xyz;
             float radius = spheres[hit.indexOfSphere].w;
