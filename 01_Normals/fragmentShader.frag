@@ -55,6 +55,9 @@ uniform float screen_height;
 // Cubemap texture
 uniform samplerCube cubemapTexture;
 
+//max depth to reflected rays
+uniform int maxDepth;
+
 struct Hit {
     float distance;
     vec3 position;
@@ -265,7 +268,6 @@ vec3 rayTrace(Ray ray, float alfa, float beta, vec3 u, vec3 v, vec3 w) {
     vec3 reflectedColor = vec3(0, 0, 0);
     float intensity = 0.01f;
     const float epsilon = 0.0000001f;
-    int maxDepth = 1;
 
     bool isSkyBox = false;
 

@@ -351,6 +351,9 @@ void Raytrace::Render()
 	GLint cubemapTextureLocation = glGetUniformLocation(m_programID, "cubemapTexture");
 	glUniform1i(cubemapTextureLocation, spheres.size() + 1); // 0 corresponds to the texture unit used above (GL_TEXTURE0)
 
+	GLint maxDepthLocation = glGetUniformLocation(m_programID, "maxDepth");
+	glUniform1i(maxDepthLocation, depth);
+
 	// Adjusting the aspect ratios
 	float screenWidth = m_camera.GetScreenWidth();
 	float screenHeight = m_camera.GetScreenHeight();
