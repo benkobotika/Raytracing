@@ -100,6 +100,29 @@ float setAttentuation(vec3 sunCoordinate, Hit hit) {
     return 1 / attenuation;
 }
 
+bool thisIsShadow(Hit hit, vec3 sunCoordinate) {
+    Ray rayFromSunToHit;
+    rayFromSunToHit.startPosition = hit.position + 0.01f * hit.normal;
+    rayFromSunToHit.direction = normalize(sunCoordinate - hit.position);
+
+    Ray rayFromTopOfSunToHit;
+    rayFromTopOfSunToHit.startPosition = hit.position + 0.01f * hit.normal;
+    rayFromTopOfSunToHit.direction = normalize(sunCoordinate + up * spheres[0].w - hit.position);
+
+    Ray rayFromBottomOfSunToHit;
+    rayFromBottomOfSunToHit.startPosition = hit.position + 0.01f * hit.normal;
+    rayFromBottomOfSunToHit.direction = normalize(sunCoordinate - up * spheres[0].w - hit.position);
+
+    Hit firstHitFromHitToSun = firstIntersection(rayFromSunToHit);
+    Hit firstHitFromHitToTopOfSun = firstIntersection(rayFromTopOfSunToHit);
+    Hit firstHitFromHitToBottomOfSun = firstIntersection(rayFromBottomOfSunToHit);
+
+    return (hit.indexOfSphere == 0 || 
+    (firstHitFromHitToSun.distance > 0.0 && firstHitFromHitToSun.indexOfSphere == 0) ||
+    (firstHitFromHitToTopOfSun.distance > 0.0 && firstHitFromHitToTopOfSun.indexOfSphere == 0) ||
+    (firstHitFromHitToBottomOfSun.distance > 0.0 && firstHitFromHitToBottomOfSun.indexOfSphere == 0));
+}
+
 vec3 lights(Hit hit, vec3 sunCoordinate) {
     // Calculate lights
     // ambient
@@ -115,20 +138,13 @@ vec3 lights(Hit hit, vec3 sunCoordinate) {
     vec3 specular = setSpecularLight(hit, to_light_dir_norm, to_point_light_norm);
 
     float attenuation = setAttentuation(sunCoordinate, hit);
-
-    Ray rayFromSunToFragment;
-    rayFromSunToFragment.startPosition = hit.position + 0.001f * hit.normal;
-    rayFromSunToFragment.direction = normalize(sunCoordinate - hit.position);
-
-    Hit firstHitFromHitToSun = firstIntersection(rayFromSunToFragment);
     
-    if (hit.indexOfSphere == 0 || 
-        (firstHitFromHitToSun.distance > 0.0 && firstHitFromHitToSun.indexOfSphere == 0)) {
+    if (thisIsShadow(hit, sunCoordinate)) {
         return attenuation * (ambient + diffuse + specular);
     } else {
         return attenuation * ambient * 0.45f;
     }
-};
+}
 
 Hit intersect(Ray ray, int indexOfSphere) {
     Hit hit;
@@ -163,7 +179,7 @@ Hit intersect(Ray ray, int indexOfSphere) {
         }
     }
     return hit;
-};
+}
 
 Hit firstIntersection(Ray ray) {
     Hit bestHit;
@@ -177,7 +193,7 @@ Hit firstIntersection(Ray ray) {
         }
     }
     return bestHit;
-};
+}
 
 vec4 getTextureColor(Hit hit,vec2 sphereTexCoords)
 {
