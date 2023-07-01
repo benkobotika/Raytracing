@@ -97,13 +97,13 @@ void Raytrace::Update()
 		// Gravitation
 		for (int j = 0; j < 2; j++) {
 			// direction of the force
-			glm::vec3 forceDirection = glm::vec3(spheres[i]) - glm::vec3(spheres[10]);  
+			glm::vec3 forceDirection = glm::vec3(spheres[j]) - glm::vec3(spheres[10]);  
 
 			// distance between the two bodies
 			float distance = glm::length(forceDirection);
 
 			// mass = density * volume = density * (4/3 * pi * r^3) = k * r^3
-			// and simplified to mass = r^3
+
 			float mass1 = std::pow(spheres[j][3], 3);
 			float mass2 = std::pow(spheres[10][3], 3);
 
