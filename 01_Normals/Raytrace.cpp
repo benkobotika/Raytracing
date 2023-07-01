@@ -83,6 +83,8 @@ void Raytrace::InitTextures()
 	m_loadedTextureID[7] = TextureFromFile("assets/saturn.jpg");
 	m_loadedTextureID[8] = TextureFromFile("assets/uranus.jpg");
 	m_loadedTextureID[9] = TextureFromFile("assets/neptune.jpg");
+	m_loadedTextureID[10] = TextureFromFile("assets/asteroid.jpg");
+
 	
 }
 
@@ -221,6 +223,6 @@ void Raytrace::Resize(int _w, int _h)
 glm::vec4 Raytrace::getRandomPosition() {
 	std::random_device rd;
 	std::mt19937 gen(rd());
-	std::uniform_real_distribution<> dis(-10.0, 10.0);
-	return { dis(gen), dis(gen), dis(gen), 100.0f};
+	std::uniform_real_distribution<> dis(-100.0f, 100.0f);
+	return { dis(gen), dis(gen), dis(gen), 10.0f};
 }

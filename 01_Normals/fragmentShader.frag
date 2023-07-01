@@ -45,9 +45,9 @@ float shininess = material_properties[2].w;
 
 // spheres
 uniform int spheresCount;
-uniform vec4 spheres[10];
+uniform vec4 spheres[11];
 
-uniform sampler2D texImage[10];
+uniform sampler2D texImage[11];
 
 // Cubemap texture
 uniform samplerCube cubemapTexture;
@@ -228,6 +228,10 @@ vec4 getTextureColor(Hit hit,vec2 sphereTexCoords)
     else if(hit.indexOfSphere == 9)
     { 
         textureColor = texture(texImage[9], sphereTexCoords);
+    }
+    else if(hit.indexOfSphere == 10)
+    {
+        textureColor = texture(texImage[10], sphereTexCoords);
     }
     return textureColor;
 }
