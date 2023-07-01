@@ -75,7 +75,7 @@ public:
 	glm::vec4(135.0f, 0.0f, 0.0f, mercury_size * log2(277.0f / 12.0f)),		// saturn
 	glm::vec4(165.0f, 0.0f, 0.0f, mercury_size * log2(277.0f / 27.7f)),		// uranus
 	glm::vec4(195.0f, 0.0f, 0.0f, mercury_size * log2(277.0f / 27.4f)),		// neptune
-	glm::vec4(0.0f, 0.0f, 0.0f, 1000.0f)									// random sphere
+	glm::vec4(220.0f, 0.0f, 0.0f, 1000.0f)									// random sphere
 	};
 	
 
@@ -106,6 +106,7 @@ public:
 		glm::vec4(Ks, shininess)
 	};
 
+	// Gravity
 	glm::vec3 meteorVelocity;
 	const float G = 6.67430e-11;  // Gravitational constant
 

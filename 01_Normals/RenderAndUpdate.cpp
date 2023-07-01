@@ -27,7 +27,7 @@ void Raytrace::Update()
 	m_camera.Update(delta_time);
 
 	// Rotations
-	/*float rotationSpeed[] = {
+	float rotationSpeed[] = {
 		0.9f,	// Mercury
 		0.8f,	// Venus
 		0.7f,	// Earth
@@ -36,19 +36,19 @@ void Raytrace::Update()
 		0.4f,	// Jupiter
 		0.3f,	// Saturn
 		0.2f,	// Uranus
-		0.1f };	// Neptune*/
-	float rotationSpeed[] = {
-		0.0f,	// Mercury
-		0.0f,	// Venus
-		0.0f,	// Earth
-		0.0f,	// Moon
-		0.0f,	// Mars
-		0.0f,	// Jupiter
-		0.0f,	// Saturn
-		0.0f,	// Uranus
-		0.0f };	// Neptune
+		0.1f };	// Neptune
+	//float rotationSpeed[] = {
+	//	0.0f,	// Mercury
+	//	0.0f,	// Venus
+	//	0.0f,	// Earth
+	//	0.0f,	// Moon
+	//	0.0f,	// Mars
+	//	0.0f,	// Jupiter
+	//	0.0f,	// Saturn
+	//	0.0f,	// Uranus
+	//	0.0f };	// Neptune
 
-	for (int i = 1; i < spheres.size(); i++) {
+	for (int i = 1; i < spheres.size()-1; i++) {
 		float& x = spheres[i][0];
 		float& y = spheres[i][1];
 		float& z = spheres[i][2];
@@ -93,20 +93,36 @@ void Raytrace::Update()
 			x = new_x;
 			z = new_z;
 		}
+		for (int j = 0; j < 2; j++) {
+			// direction of the force
+			glm::vec3 forceDirection = glm::vec3(spheres[i]) - glm::vec3(spheres[10]);  
+
+			// distance between the two bodies
+			float distance = glm::length(forceDirection);
+
+			// mass = density * volume = density * (4/3 * pi * r^3) = k * r^3
+			float mass1 = std::pow(spheres[j][3], 3);
+			float mass2 = std::pow(spheres[10][3], 3);
+
+			// gravitational force
+			float forceMagnitude = G * mass1 * mass2 / std::pow(distance, 2);
+
+			// force vector
+			glm::vec3 force = forceMagnitude * glm::normalize(forceDirection);
+
+			// acceleration = force / mass
+			glm::vec3 acceleration = force / mass2;
+
+			// update velocity
+			meteorVelocity += acceleration * delta_time;  
+		}
+		//glm::vec3& pos = *(glm::vec3*)&spheres[10];
+
+		// update position
+		*(glm::vec3*)&spheres[10] += meteorVelocity * delta_time;
 	}
 
-	for (int i = 0; i < 3; i++) {
-		glm::vec3 forceDirection = glm::vec3(spheres[i]) - glm::vec3(spheres[3]);  // direction of the force
-		float distance = glm::length(forceDirection);  // distance between the two bodies
-		float mass1 = std::pow(spheres[i][3], 3);  // mass = density * volume = density * (4/3 * pi * r^3) = k * r^3
-		float mass2 = std::pow(spheres[10][3], 3);
-		float forceMagnitude = G * mass1 * mass2 / std::pow(distance, 2);  // gravitational force
-		glm::vec3 force = forceMagnitude * glm::normalize(forceDirection);  // force vector
-		glm::vec3 acceleration = force / mass2;  // acceleration = force / mass
-		meteorVelocity += acceleration * delta_time;  // update velocity
-	}
-	glm::vec3& pos = *(glm::vec3*)&spheres[10];
-	pos += meteorVelocity * delta_time;  // update position
+	
 
 	last_time = SDL_GetTicks();
 }
