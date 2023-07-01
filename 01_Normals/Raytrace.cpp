@@ -98,6 +98,10 @@ void Raytrace::InitTextures()
 	m_loadedTextureID[19] = TextureFromFile("assets/Ball6.jpg");
 	m_loadedTextureID[20] = TextureFromFile("assets/Ball7.jpg");
 	m_loadedTextureID[21] = TextureFromFile("assets/Ball8.jpg");
+	m_loadedTextureID[22] = TextureFromFile("assets/Ball9.jpg");
+	m_loadedTextureID[23] = TextureFromFile("assets/Ball10.jpg");
+	m_loadedTextureID[24] = TextureFromFile("assets/Ball11.jpg");
+	m_loadedTextureID[25] = TextureFromFile("assets/Ball12.jpg");
 	
 }
 
