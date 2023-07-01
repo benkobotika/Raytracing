@@ -14,7 +14,7 @@
 Raytrace::Raytrace()
 {
 	// Camera position (eye, center, up)
-	glm::vec3 eye = glm::vec3(0, 50, 150);
+	glm::vec3 eye = glm::vec3(94.2055, -57.5629, 90.4523);
 	glm::vec3 at = glm::vec3(0, 0, 0);
 	glm::vec3 up = glm::vec3(0, 1, 0);
 	m_camera.SetView(eye, at, up);
@@ -155,6 +155,14 @@ void Raytrace::InitVaoVbo() {
 	glEnableVertexAttribArray(2);
 }
 
+void Raytrace::InitMasses()
+{
+	for (int i = 0; i < spheres.size(); i++)
+	{
+		masses[i]==std::pow(spheres[i][3], 3);
+	}
+}
+
 bool Raytrace::Init()
 {
 	// Sky color
@@ -169,6 +177,7 @@ bool Raytrace::Init()
 	InitShaders();
 	InitTextures();
 	InitCubemap();
+	InitMasses();
 
 	// Camera
 	// Parameters: angle, aspect (ratio of the width to height), near clipping plane dist, far clipping plane dist 
@@ -194,6 +203,8 @@ bool Raytrace::Init()
 	m_loc_eye = glGetUniformLocation(m_programID, "eye");
 	m_loc_at = glGetUniformLocation(m_programID, "at");
 	m_loc_up = glGetUniformLocation(m_programID, "up");
+	m_loc_screen_width = glGetUniformLocation(m_programID, "screen_width");
+	m_loc_screen_height = glGetUniformLocation(m_programID, "screen_height");
 
 	return true;
 }

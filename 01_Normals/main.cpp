@@ -47,7 +47,7 @@ int main(int argc, char* args[])
 	// Create window
 	SDL_Window* win = 0;
 	win = SDL_CreateWindow("Raytrace", 50, 50, 1200, 650,
-		SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL);
+		SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE);
 	//win = SDL_CreateWindow("Raytrace", 0, 0, 0, 0,
 	//	SDL_WINDOW_FULLSCREEN | SDL_WINDOW_OPENGL);
 

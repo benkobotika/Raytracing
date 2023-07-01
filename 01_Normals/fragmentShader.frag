@@ -49,6 +49,9 @@ uniform vec4 spheres[11];
 
 uniform sampler2D texImage[11];
 
+uniform float screen_width;
+uniform float screen_height;
+
 // Cubemap texture
 uniform samplerCube cubemapTexture;
 
@@ -266,7 +269,7 @@ vec3 rayTrace(Ray ray, float alfa, float beta, vec3 u, vec3 v, vec3 w) {
             
             // Scale up sun light intensity 
             if (hit.indexOfSphere == 0) {
-                resultColor *= 2;
+                resultColor *= 2.5;
             }
             
         } else {
@@ -298,10 +301,10 @@ vec3 rayTrace(Ray ray, float alfa, float beta, vec3 u, vec3 v, vec3 w) {
 void main()
 {
     float fovx = radians(60.0);
-    float aspect = 640.0 / 480.0;
+    float aspect = screen_width / screen_height;
 
-    float alfa = tan(fovx / 2.0) * (gl_FragCoord.x - (640.0 / 2.0)) / (640.0 / 2.0);
-    float beta = tan(fovx / 2.0) * ((480.0 / 2.0) - gl_FragCoord.y) / (480.0 / 2.0) / aspect;
+    float alfa = tan(fovx / 2.0) * (gl_FragCoord.x - (screen_width / 2.0)) / (screen_width / 2.0);
+    float beta = tan(fovx / 2.0) * ((screen_height / 2.0) - gl_FragCoord.y) / (screen_height / 2.0) / aspect;
 
     vec3 w = normalize(eye - at);
     vec3 u = normalize(cross(up, w));
