@@ -49,6 +49,9 @@ uniform vec4 spheres[11];
 
 uniform sampler2D texImage[11];
 
+uniform float screen_width;
+uniform float screen_height;
+
 // Cubemap texture
 uniform samplerCube cubemapTexture;
 
@@ -63,6 +66,8 @@ struct Ray {
     vec3 startPosition;
     vec3 direction;
 };
+
+Hit firstIntersection(Ray ray);
 
 vec3 setAmbientLight() {
     return La * Ka;
@@ -95,6 +100,13 @@ float setAttentuation(vec3 sunCoordinate, Hit hit) {
     return 1 / attenuation;
 }
 
+bool samedistance(float distance1, float distance2) {
+    float result = distance1 - distance2;
+    if (result < 0)
+        result *= -1;
+    return result < 1000.0f;
+}
+
 vec3 lights(Hit hit, vec3 sunCoordinate) {
     // Calculate lights
     // ambient
@@ -111,7 +123,21 @@ vec3 lights(Hit hit, vec3 sunCoordinate) {
 
     float attenuation = setAttentuation(sunCoordinate, hit);
 
-    return attenuation * (ambient + diffuse + specular);
+    Ray rayFromSunToFragment;
+    rayFromSunToFragment.startPosition = hit.position + 0.001f * hit.normal;
+    rayFromSunToFragment.direction = normalize(spheres[0].xyz - hit.position);
+
+    Hit firstHitFromHitToSun = firstIntersection(rayFromSunToFragment);
+
+    float distFromHitToSun = distance(hit.position, spheres[0].xyz);
+    float distFromFirstHitToSun = distance(firstHitFromHitToSun.position, spheres[0].xyz);
+    
+    if (hit.indexOfSphere == 0 || 
+        (firstHitFromHitToSun.distance > 0.0 && firstHitFromHitToSun.indexOfSphere == 0)) {
+        return attenuation * (ambient + diffuse + specular);
+    } else {
+        return attenuation * ambient * 0.45f;
+    }
 };
 
 Hit intersect(Ray ray, int indexOfSphere) {
@@ -150,7 +176,6 @@ Hit intersect(Ray ray, int indexOfSphere) {
 };
 
 Hit firstIntersection(Ray ray) {
-    float nearest;
     Hit bestHit;
     bestHit.distance = -1;
 
@@ -217,6 +242,8 @@ vec4 getTextureColor(Hit hit,vec2 sphereTexCoords)
 vec3 rayTrace(Ray ray, float alfa, float beta, vec3 u, vec3 v, vec3 w) {
     vec3 resultColor = vec3(0, 0, 0);
     vec3 resultColor2 = vec3(0, 0, 0);
+    vec3 reflectedColor = vec3(0, 0, 0);
+    float intensity = 0.01;
     const float epsilon = 0.0000001f;
     int maxDepth = 0;
 
@@ -252,42 +279,42 @@ vec3 rayTrace(Ray ray, float alfa, float beta, vec3 u, vec3 v, vec3 w) {
             
             // Scale up sun light intensity 
             if (hit.indexOfSphere == 0) {
-                resultColor *= 2;
+                resultColor *= 2.5;
             }
             //vec4 textureColor = texture(texImage[hit.indexOfSphere], sphereTexCoords);
         } else {
-            /*vec3 center = spheres[hit.indexOfSphere].xyz;
+            vec3 center = spheres[hit.indexOfSphere].xyz;
             float radius = spheres[hit.indexOfSphere].w;
 
             vec3 sphereToIntersection = hit.position - center;
-            float u = 0.5 + atan(sphereToIntersection.z, sphereToIntersection.x) / (2.0 * M_PI);
+            float u = 0.5 + atan(-sphereToIntersection.z, sphereToIntersection.x) / (2.0 * M_PI);
             float v = 0.5 - asin(sphereToIntersection.y / radius) / M_PI;
             vec2 sphereTexCoords = vec2(u, v);
             
-            resultColor2 = lights(hit, sunCoordinate); 
-
-            vec4 textureColor = texture(texImage[hit.indexOfSphere], sphereTexCoords);
+            resultColor2 = lights(hit, sunCoordinate);
+            vec4 textureColor = getTextureColor(hit, sphereTexCoords);
+            
             resultColor2 *= textureColor.rgb;
 
-            resultColor = resultColor + 0.001 * resultColor2;*/
+            reflectedColor += intensity * resultColor2;
+            intensity *= intensity * intensity;
         }
-
-        ///visszaverodes a bolygokrol
 
         ray.startPosition = hit.position + epsilon * hit.normal;
         ray.direction = reflect(ray.direction, hit.normal);
 
     }
+    resultColor += reflectedColor;
     return resultColor;
 }
 
 void main()
 {
     float fovx = radians(60.0);
-    float aspect = 640.0 / 480.0;
+    float aspect = screen_width / screen_height;
 
-    float alfa = tan(fovx / 2.0) * (gl_FragCoord.x - (640.0 / 2.0)) / (640.0 / 2.0);
-    float beta = tan(fovx / 2.0) * ((480.0 / 2.0) - gl_FragCoord.y) / (480.0 / 2.0) / aspect;
+    float alfa = tan(fovx / 2.0) * (gl_FragCoord.x - (screen_width / 2.0)) / (screen_width / 2.0);
+    float beta = tan(fovx / 2.0) * ((screen_height / 2.0) - gl_FragCoord.y) / (screen_height / 2.0) / aspect;
 
     vec3 w = normalize(eye - at);
     vec3 u = normalize(cross(up, w));
