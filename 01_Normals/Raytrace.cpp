@@ -23,7 +23,7 @@ Raytrace::Raytrace()
 // Destructor
 Raytrace::~Raytrace()
 {
-	glDeleteTextures(spheres.size(), m_loadedTextureID);
+	glDeleteTextures(allSpheresSize, m_loadedTextureID);
 	glDeleteVertexArrays(1, &vao);
 	glDeleteBuffers(1, &vbo);
 

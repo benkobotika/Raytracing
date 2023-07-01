@@ -149,7 +149,7 @@ protected:
 	// OpenGL things
 	GLuint vao = 0;
 	GLuint vbo = 0;
-	int allSpheresSize = spheres0.size() + spheres1.size() + spheres2.size() + 3;
+	int allSpheresSize = 4 + spheres0.size() + spheres1.size() + spheres2.size();
 	GLuint* m_loadedTextureID = new GLuint[allSpheresSize]; // loaded texture identifier
 	GLuint cubemapTextureID0 = 0;
 	GLuint cubemapTextureID1 = 0;
