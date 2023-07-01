@@ -150,6 +150,12 @@ void Raytrace::passEyeAtUp() {
 
 	glm::vec3 up = m_camera.GetUp();
 	glUniform3fv(m_loc_up, 1, &up[0]);
+
+	// std::cout << "========================================================" << std::endl;
+	// std::cout << eye.x << " " << eye.y << " " << eye.z << std::endl;
+	// std::cout << at.x << " " << at.y << " " << at.z << std::endl;
+	// std::cout << up.x << " " << up.y << " " << up.z << std::endl;
+	// td::cout << "========================================================" << std::endl;
 }
 
 void Raytrace::passMvpWorldWorldIT() {
@@ -160,6 +166,8 @@ void Raytrace::passMvpWorldWorldIT() {
 	glUniformMatrix4fv(m_loc_mvp, 1, GL_FALSE, &mvp[0][0]);
 	glUniformMatrix4fv(m_loc_world, 1, GL_FALSE, &world[0][0]);
 	glUniformMatrix4fv(m_loc_worldIT, 1, GL_FALSE, &worldIT[0][0]);
+	glUniform1f(m_loc_screen_width, m_camera.GetScreenWidth());
+	glUniform1f(m_loc_screen_height, m_camera.GetScreenHeight());
 }
 
 void Raytrace::Render()

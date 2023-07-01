@@ -124,6 +124,8 @@ public:
 	GLuint cubemapTextureID2 = 0;
 	
 	gCamera	m_camera;
+	GLuint m_loc_screen_width = 0;
+	GLuint m_loc_screen_height = 0;
 
 	// uniform variable locations in shader
 	GLuint m_loc_mvp = 0;

@@ -28,6 +28,8 @@ public:
 	glm::vec3 GetUp() const { return m_up; }
 	glm::mat4 GetProj() const { return m_matProj; }
 	glm::mat4 GetViewProj() const { return m_matViewProj; }
+	float GetScreenWidth();
+	float GetScreenHeight();
 
 	void Resize(int _w, int _h);
 
@@ -79,6 +81,8 @@ private:
 
 	// The unit vector pointing to the 'right'
 	glm::vec3	m_st;
+
+	float screen_width, screen_height;
 
 	glm::mat4	m_matProj;
 

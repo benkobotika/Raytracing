@@ -12,7 +12,7 @@ gCamera::gCamera(void) : m_eye(0.0f, 20.0f, 20.0f), m_at(0.0f), m_up(0.0f, 1.0f,
 
 	m_dist = glm::length(m_at - m_eye);
 
-	SetProj(glm::radians(60.0f), 640 / 480.0f, 0.01f, 1000.0f);
+	SetProj(glm::radians(60.0f), 1920 / 1080.0f, 0.01f, 1000.0f);
 }
 
 gCamera::gCamera(glm::vec3 _eye, glm::vec3 _at, glm::vec3 _up) : m_speed(16.0f), m_goFw(0), m_goRight(0), m_dist(10), m_slow_ctrl(false), m_slow_shift(true)
@@ -79,6 +79,8 @@ void gCamera::SetSpeed(float _val)
 
 void gCamera::Resize(int _w, int _h)
 {
+	screen_width = _w;
+	screen_height = _h;
 	SetProj(glm::radians(60.0f), _w / (float)_h, 0.01f, 1000.0f);
 }
 
@@ -188,5 +190,13 @@ void gCamera::MouseUp(SDL_MouseButtonEvent& mouse) {
 void gCamera::LookAt(glm::vec3 _at)
 {
 	SetView(m_eye, _at, m_up);
+}
+
+float gCamera::GetScreenWidth() {
+	return screen_width;
+}
+
+float gCamera::GetScreenHeight() {
+	return screen_height;
 }
 
