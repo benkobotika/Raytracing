@@ -290,8 +290,8 @@ void Raytrace::Render()
 	glUniform1i(maxDepthLocation, depth);
 
 	// Adjusting the aspect ratios
-	float screenWidth = 640.0f;
-	float screenHeight = 480.0f;
+	float screenWidth = m_camera.GetScreenWidth();
+	float screenHeight = m_camera.GetScreenHeight();
 
 	// Calculate inverseViewMatrix
 	glm::mat4 inverseViewMatrix = glm::inverse(m_camera.GetViewMatrix()); // from camera to view (InverseViewMatrix)
