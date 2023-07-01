@@ -19,12 +19,92 @@
 //	m1 és m2 a két test tömege,
 //	r a távolságuk.
 
+void Raytrace::UpdateTextures()
+{
+	switch (current_scene)
+	{
+		case 0:
+		{
+			for (int i = 0; i < spheres.size(); i++) {
+				glActiveTexture(GL_TEXTURE0 + i);
+				glBindTexture(GL_TEXTURE_2D, m_loadedTextureID[i]);
+				std::stringstream uniformName;
+				uniformName << "texImage[" << i << "]";
+				glUniform1i(glGetUniformLocation(m_programID, uniformName.str().c_str()), i);
+			}
+			break;
+		}
+		case 1:
+		{
+			int offset = spheres0.size();
+			std::cout << spheres0.size() << std::endl;
+			for (int i = 0; i < spheres.size() - 1; i++) {
+				glActiveTexture(GL_TEXTURE0 + i);
+				glBindTexture(GL_TEXTURE_2D, m_loadedTextureID[offset + i]);
+				std::stringstream uniformName;
+				uniformName << "texImage[" << i << "]";
+				glUniform1i(glGetUniformLocation(m_programID, uniformName.str().c_str()), i);
+			}
+			// meteor
+			int meteor_index = spheres.size();
+			glActiveTexture(GL_TEXTURE0 + meteor_index);
+			glBindTexture(GL_TEXTURE_2D, m_loadedTextureID[10]);
+			std::stringstream uniformName;
+			uniformName << "texImage[" << meteor_index << "]";
+			glUniform1i(glGetUniformLocation(m_programID, uniformName.str().c_str()), meteor_index);
+			break;
+		}
+		case 2:
+		{
+			int offset2 = spheres0.size() + spheres1.size();
+			for (int i = 0; i < spheres.size() - 1; i++) {
+				glActiveTexture(GL_TEXTURE0 + i);
+				glBindTexture(GL_TEXTURE_2D, m_loadedTextureID[offset2 + i]);
+				std::stringstream uniformName;
+				uniformName << "texImage[" << i << "]";
+				glUniform1i(glGetUniformLocation(m_programID, uniformName.str().c_str()), i);
+			}
+			// meteor
+			int meteor_index = spheres.size();
+			glActiveTexture(GL_TEXTURE0 + meteor_index);
+			glBindTexture(GL_TEXTURE_2D, m_loadedTextureID[10]);
+			std::stringstream uniformName;
+			uniformName << "texImage[" << meteor_index << "]";
+			glUniform1i(glGetUniformLocation(m_programID, uniformName.str().c_str()), meteor_index);
+			break;
+		}
+	}
+}
+
 void Raytrace::Update()
 {
 	static Uint32 last_time = SDL_GetTicks();
 	float delta_time = (SDL_GetTicks() - last_time) / 1000.0f;
 
 	m_camera.Update(delta_time);
+
+	if (last_scene != current_scene)
+	{
+		switch (current_scene)
+		{
+		case 0:
+			spheres = spheres0;
+			last_scene = current_scene;
+			break;
+		case 1:
+			spheres = spheres1;
+			last_scene = current_scene;
+			break;
+		case 2:
+			spheres = spheres2;
+			last_scene = current_scene;
+			break;
+		default:
+			spheres = spheres0;
+			last_scene = current_scene;
+			break;
+		}
+	}
 
 	// Rotations
 	float rotationSpeed[] = {
@@ -97,7 +177,7 @@ void Raytrace::Update()
 		//// Gravity
 		
 		// direction of the force
-		glm::vec3 forceDirection = glm::vec3(spheres[i]) - glm::vec3(spheres[10]);
+		glm::vec3 forceDirection = glm::vec3(spheres[i]) - glm::vec3(spheres[spheres.size()-1]);
 
 		// distance between the two bodies
 		float distance = glm::length(forceDirection);
@@ -116,12 +196,11 @@ void Raytrace::Update()
 		// update velocity
 		meteorVelocity += acceleration * delta_time;
 
-		glm::vec3& pos = *(glm::vec3*)&spheres[10];
+		glm::vec3& pos = *(glm::vec3*)&spheres[spheres.size() - 1];
 
 		// update position
 		pos += meteorVelocity * delta_time*1000.0f;
 
-		std::cout << "pos: " << pos[0]<<", " << pos[1] <<", "<<pos[2]<<std::endl;
 	}
 
 	
@@ -186,13 +265,7 @@ void Raytrace::Render()
 	passEyeAtUp();
 
 	// Texture
-	for (int i = 0; i < spheres.size(); i++) {
-		glActiveTexture(GL_TEXTURE0 + i);
-		glBindTexture(GL_TEXTURE_2D, m_loadedTextureID[i]);
-		std::stringstream uniformName;
-		uniformName << "texImage[" << i << "]";
-		glUniform1i(glGetUniformLocation(m_programID, uniformName.str().c_str()), i);
-	}
+	UpdateTextures();
 
 	// Skybox 
 	glActiveTexture(GL_TEXTURE0 + spheres.size() + 1);

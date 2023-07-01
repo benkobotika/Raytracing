@@ -151,7 +151,7 @@ int main(int argc, char* args[])
 				}
 				else if (ev.key.keysym.sym == SDLK_r) {
 					// Generate a new random position for the fourth sphere
-					app.spheres[10] = app.getRandomPosition();
+					app.spheres[app.spheres.size() - 1] = app.getRandomPosition();
 				}
 				app.KeyboardDown(ev.key);
 				break;
