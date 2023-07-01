@@ -110,7 +110,7 @@ protected:
 	};
 
 	// Gravity
-	glm::vec3 meteorVelocity;
+	glm::vec3 meteorVelocity = { 0.0f,0.0f,0.0f };
 	const float G = 6.67430e-11;  // Gravitational constant
 	int masses[11];
 
