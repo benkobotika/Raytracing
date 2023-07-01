@@ -192,6 +192,8 @@ void Raytrace::Update()
 			// force vector
 			glm::vec3 force = forceMagnitude * glm::normalize(forceDirection);
 
+		// acceleration = force / mass
+		glm::vec3 acceleration = force / (float)masses[10]*100000.0f;
 			// acceleration = force / mass
 			glm::vec3 acceleration = force / (float)masses[10];
 

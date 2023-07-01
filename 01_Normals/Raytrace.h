@@ -59,12 +59,12 @@ public:
 	glm::vec4(155.0f, 0.0f, 0.0f, mercury_size * log2(277.0f / 12.0f)),		// saturn
 	glm::vec4(185.0f, 0.0f, 0.0f, mercury_size * log2(277.0f / 27.7f)),		// uranus
 	glm::vec4(215.0f, 0.0f, 0.0f, mercury_size * log2(277.0f / 27.4f)),		// neptune
-	glm::vec4(240.0f, 0.0f, 0.0f, 1000.0f)									// random sphere
+	glm::vec4(240.0f, 0.0f, 0.0f, 1.0f)									// random sphere
 	};
 
 	std::vector<glm::vec4> spheres1 = {
 	glm::vec4(0.0f, 0.0f, 0.0f, mercury_size * log2(277.0f)),				// endor
-	glm::vec4(40.0f, 0.0f, 0.0f, 2*mercury_size),								// death star
+	glm::vec4(40.0f, 0.0f, 0.0f, 2*mercury_size),							// death star
 	glm::vec4(240.0f, 0.0f, 0.0f, 1000.0f)									// random sphere
 	};
 
@@ -98,6 +98,9 @@ public:
 	};
 
 	glm::vec4 getRandomPosition();
+
+	glm::vec3 meteorVelocity = { 0.0f,0.0f,0.0f };
+
 
 
 protected:
@@ -149,7 +152,6 @@ protected:
 	};
 
 	// Gravity
-	glm::vec3 meteorVelocity = { 0.0f,0.0f,0.0f };
 	const float G = 6.67430e-11;  // Gravitational constant
 	int masses[11];
 
