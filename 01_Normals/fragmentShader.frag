@@ -21,9 +21,9 @@ uniform vec3 up;
 // point light and directional light (2 light sources)
 uniform vec3 light_sources[4]; // [position, color, position, color]
 vec3 to_point_light = light_sources[0];
-vec3 point_light_color = light_sources[1]; // orange color
+vec3 point_light_color = light_sources[3]; // orange color
 vec3 to_light_dir = light_sources[2];
-vec3 light_dir_color = light_sources[3]; // white color
+vec3 light_dir_color = light_sources[1]; // white color
 
 // light properties: ambient, diffuse, specular, attenuation
 uniform vec3 light_properties[4]; // La, Ld, Ls, At
@@ -97,13 +97,6 @@ float setAttentuation(vec3 sunCoordinate, Hit hit) {
     return 1 / attenuation;
 }
 
-bool samedistance(float distance1, float distance2) {
-    float result = distance1 - distance2;
-    if (result < 0)
-        result *= -1;
-    return result < 1000.0f;
-}
-
 vec3 lights(Hit hit, vec3 sunCoordinate) {
     // Calculate lights
     // ambient
@@ -122,12 +115,9 @@ vec3 lights(Hit hit, vec3 sunCoordinate) {
 
     Ray rayFromSunToFragment;
     rayFromSunToFragment.startPosition = hit.position + 0.001f * hit.normal;
-    rayFromSunToFragment.direction = normalize(spheres[0].xyz - hit.position);
+    rayFromSunToFragment.direction = normalize(sunCoordinate - hit.position);
 
     Hit firstHitFromHitToSun = firstIntersection(rayFromSunToFragment);
-
-    float distFromHitToSun = distance(hit.position, spheres[0].xyz);
-    float distFromFirstHitToSun = distance(firstHitFromHitToSun.position, spheres[0].xyz);
     
     if (hit.indexOfSphere == 0 || 
         (firstHitFromHitToSun.distance > 0.0 && firstHitFromHitToSun.indexOfSphere == 0)) {
@@ -278,7 +268,7 @@ vec3 rayTrace(Ray ray, float alfa, float beta, vec3 u, vec3 v, vec3 w) {
             if (hit.indexOfSphere == 0) {
                 resultColor *= 2;
             }
-            //vec4 textureColor = texture(texImage[hit.indexOfSphere], sphereTexCoords);
+            
         } else {
             vec3 center = spheres[hit.indexOfSphere].xyz;
             float radius = spheres[hit.indexOfSphere].w;
