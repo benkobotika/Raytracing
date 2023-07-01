@@ -157,7 +157,7 @@ void Raytrace::passEyeAtUp() {
 	// std::cout << eye.x << " " << eye.y << " " << eye.z << std::endl;
 	// std::cout << at.x << " " << at.y << " " << at.z << std::endl;
 	// std::cout << up.x << " " << up.y << " " << up.z << std::endl;
-	// td::cout << "========================================================" << std::endl;
+	// std::cout << "========================================================" << std::endl;
 }
 
 void Raytrace::passMvpWorldWorldIT() {

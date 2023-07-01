@@ -6,7 +6,7 @@
 #include <math.h>
 
 // Initializes a new instance of the <see cref="gCamera"/> class.
-gCamera::gCamera(void) : m_eye(0.0f, 20.0f, 20.0f), m_at(0.0f), m_up(0.0f, 1.0f, 0.0f), m_speed(16.0f), m_goFw(0), m_goRight(0), m_slow_ctrl(false), m_slow_shift(true)
+gCamera::gCamera(void) : m_eye(0.0f, 20.0f, 20.0f), m_at(0.0f), m_up(0.0f, 1.0f, 0.0f), m_speed(60.0f), m_goFw(0), m_goRight(0), m_slow_ctrl(false), m_slow_shift(true)
 {
 	SetView(glm::vec3(0, 20, 20), glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
 
@@ -103,7 +103,7 @@ void gCamera::KeyboardDown(SDL_KeyboardEvent& key)
 		if (!m_slow_ctrl)
 		{
 			m_slow_ctrl = true;
-			m_speed /= 2.0f;
+			m_speed /= 4.0f;
 		}
 		break;
 		// The camera moves forward when the W key is pressed.
@@ -145,7 +145,7 @@ void gCamera::KeyboardUp(SDL_KeyboardEvent& key)
 		if (m_slow_ctrl)
 		{
 			m_slow_ctrl = false;
-			m_speed *= 2.0f;
+			m_speed *= 4.0f;
 		}
 		break;
 	// When the W/A/S/D key is released, the camera stops moving forward.
