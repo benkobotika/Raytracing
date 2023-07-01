@@ -67,8 +67,8 @@ public:
 	};
 
 	std::vector<glm::vec4> spheres2 = {
-	glm::vec4(0.0f, 0.0f, 0.0f, mercury_size * log2(277.0f)),				// endor
-	glm::vec4(40.0f, 0.0f, 0.0f, 2 * mercury_size),								// death star
+	glm::vec4(0.0f, 0.0f, 0.0f, mercury_size * log2(277.0f)),				// ball1
+	glm::vec4(40.0f, 0.0f, 0.0f, 2 * mercury_size),								// ball2
 	glm::vec4(240.0f, 0.0f, 0.0f, 1000.0f)									// random sphere
 	};
 
