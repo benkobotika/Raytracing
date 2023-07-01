@@ -27,7 +27,7 @@ void Raytrace::Update()
 	m_camera.Update(delta_time);
 
 	// Rotations
-	/*float rotationSpeed[] = {
+	/**/float rotationSpeed[] = {
 		0.9f,	// Mercury
 		0.8f,	// Venus
 		0.7f,	// Earth
@@ -36,8 +36,8 @@ void Raytrace::Update()
 		0.4f,	// Jupiter
 		0.3f,	// Saturn
 		0.2f,	// Uranus
-		0.1f };	// Neptune*/
-	float rotationSpeed[] = {
+		0.1f };	// Neptune
+	/*float rotationSpeed[] = {
 		0.0f,	// Mercury
 		0.0f,	// Venus
 		0.0f,	// Earth
@@ -46,7 +46,7 @@ void Raytrace::Update()
 		0.0f,	// Jupiter
 		0.0f,	// Saturn
 		0.0f,	// Uranus
-		0.0f };	// Neptune
+		0.0f };	// Neptune*/
 
 	for (int i = 1; i < spheres.size(); i++) {
 		float& x = spheres[i][0];
