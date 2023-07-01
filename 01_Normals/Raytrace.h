@@ -39,7 +39,9 @@ public:
 	void MouseWheel(SDL_MouseWheelEvent&);
 	void Resize(int, int);
 
-	
+	//max depth to reflect
+	int maxDepth = 100;
+	int depth = 1;
 	
 	// current scene variable
 	int current_scene = 0;
@@ -66,10 +68,19 @@ public:
 	glm::vec4(240.0f, 0.0f, 0.0f, 1000.0f)									// random sphere
 	};
 
+	float uranus_size = mercury_size * log2(277.0f / 27.7f);
 	std::vector<glm::vec4> spheres2 = {
-	glm::vec4(0.0f, 0.0f, 0.0f, mercury_size * log2(277.0f)),				// endor
-	glm::vec4(40.0f, 0.0f, 0.0f, 2 * mercury_size),							// death star
-	glm::vec4(240.0f, 0.0f, 0.0f, 1000.0f)									// random sphere
+	glm::vec4(0.0f, 0.0f, 0.0f, uranus_size*2),
+	glm::vec4(40.0f, 0.0f, 0.0f, uranus_size),
+	glm::vec4(80.0f, 0.0f, 0.0f, uranus_size),
+	glm::vec4(100.0f, 0.0f, 0.0f, uranus_size),
+	glm::vec4(110.0f, 0.0f, 0.0f, uranus_size),
+	glm::vec4(135.0f, 0.0f, 0.0f, uranus_size),
+	glm::vec4(155.0f, 0.0f, 0.0f, uranus_size),
+	glm::vec4(185.0f, 0.0f, 0.0f, uranus_size),
+	glm::vec4(215.0f, 0.0f, 0.0f, uranus_size),
+	glm::vec4(235.0f, 0.0f, 0.0f, uranus_size),
+	glm::vec4(260.0f, 0.0f, 0.0f, 1000.0f)									// random sphere
 	};
 
 	std::vector<glm::vec4> spheres = {

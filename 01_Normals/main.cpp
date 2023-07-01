@@ -154,6 +154,14 @@ int main(int argc, char* args[])
 					app.spheres[app.spheres.size() - 1] = app.getRandomPosition();
 					app.meteorVelocity = { 0.0f,0.0f,0.0f };
 				}
+				else if (ev.key.keysym.sym == SDLK_PLUS || ev.key.keysym.sym == SDLK_KP_PLUS) {
+					if (app.depth + 1 <= app.maxDepth)
+						app.depth++;
+				}
+				else if (ev.key.keysym.sym == SDLK_MINUS || ev.key.keysym.sym == SDLK_KP_MINUS) {
+					if (app.depth >= 1)
+						app.depth--;
+				}
 				app.KeyboardDown(ev.key);
 				break;
 			case SDL_KEYUP:
