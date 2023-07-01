@@ -287,8 +287,8 @@ void Raytrace::Render()
 	glUniform1i(cubemapTextureLocation, spheres.size() + 1); // 0 corresponds to the texture unit used above (GL_TEXTURE0)
 
 	// Adjusting the aspect ratios
-	float screenWidth = 640.0f;
-	float screenHeight = 480.0f;
+	float screenWidth = m_camera.GetScreenWidth();
+	float screenHeight = m_camera.GetScreenHeight();
 
 	// Calculate inverseViewMatrix
 	glm::mat4 inverseViewMatrix = glm::inverse(m_camera.GetViewMatrix()); // from camera to view (InverseViewMatrix)
