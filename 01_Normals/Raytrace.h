@@ -39,11 +39,39 @@ public:
 	void MouseWheel(SDL_MouseWheelEvent&);
 	void Resize(int, int);
 
+	
+	
 	// current scene variable
 	int current_scene = 0;
 
 	// spheres (posX, posY, posZ, r)
 	float mercury_size = 2.0f;
+	std::vector<glm::vec4> spheres0 = {
+	glm::vec4(0.0f, 0.0f, 0.0f, mercury_size * log2(277.0f)),				// sun
+	glm::vec4(40.0f, 0.0f, 0.0f, mercury_size),								// mercury
+	glm::vec4(60.0f, 0.0f, 0.0f, mercury_size * log2(277.0f / 115.0f)),	    // venus
+	glm::vec4(80.0f, 0.0f, 0.0f, mercury_size * log2(277.0f / 109.0f)),		// earth
+	glm::vec4(90.0f, 0.0f, 0.0f, mercury_size * log2(277.0f / 240.0f)),		// moon
+	glm::vec4(105.0f, 0.0f, 0.0f, mercury_size * log2(277.0f / 207.0f)),	// mars
+	glm::vec4(125.0f, 0.0f, 0.0f, mercury_size * log2(277.0f / 11.0f)),		// jupiter
+	glm::vec4(155.0f, 0.0f, 0.0f, mercury_size * log2(277.0f / 12.0f)),		// saturn
+	glm::vec4(185.0f, 0.0f, 0.0f, mercury_size * log2(277.0f / 27.7f)),		// uranus
+	glm::vec4(215.0f, 0.0f, 0.0f, mercury_size * log2(277.0f / 27.4f)),		// neptune
+	glm::vec4(240.0f, 0.0f, 0.0f, 1000.0f)									// random sphere
+	};
+
+	std::vector<glm::vec4> spheres1 = {
+	glm::vec4(0.0f, 0.0f, 0.0f, mercury_size * log2(277.0f)),				// endor
+	glm::vec4(40.0f, 0.0f, 0.0f, 2*mercury_size),								// death star
+	glm::vec4(240.0f, 0.0f, 0.0f, 1000.0f)									// random sphere
+	};
+
+	std::vector<glm::vec4> spheres2 = {
+	glm::vec4(0.0f, 0.0f, 0.0f, mercury_size * log2(277.0f)),				// ball1
+	glm::vec4(40.0f, 0.0f, 0.0f, 2 * mercury_size),								// ball2
+	glm::vec4(240.0f, 0.0f, 0.0f, 1000.0f)									// random sphere
+	};
+
 	std::vector<glm::vec4> spheres = {
 	glm::vec4(0.0f, 0.0f, 0.0f, mercury_size * log2(277.0f)),				// sun
 	glm::vec4(40.0f, 0.0f, 0.0f, mercury_size),								// mercury
@@ -121,7 +149,8 @@ protected:
 	// OpenGL things
 	GLuint vao = 0;
 	GLuint vbo = 0;
-	GLuint* m_loadedTextureID = new GLuint[spheres.size()]; // loaded texture identifier
+	int allSpheresSize = 3 + spheres0.size() + spheres1.size() + spheres2.size();
+	GLuint* m_loadedTextureID = new GLuint[allSpheresSize]; // loaded texture identifier
 	GLuint cubemapTextureID0 = 0;
 	GLuint cubemapTextureID1 = 0;
 	GLuint cubemapTextureID2 = 0;
@@ -164,5 +193,9 @@ protected:
 	void InitCubemap();
 	GLuint  LoadCubemapTexture(int scence);
 
+	void UpdateTextures();
+
+	// last scene
+	int last_scene = 0;
 };
 

@@ -23,11 +23,9 @@ Raytrace::Raytrace()
 // Destructor
 Raytrace::~Raytrace()
 {
-	glDeleteTextures(spheres.size(), m_loadedTextureID);
+	glDeleteTextures(allSpheresSize, m_loadedTextureID);
 	glDeleteVertexArrays(1, &vao);
 	glDeleteBuffers(1, &vbo);
-
-	delete[] m_loadedTextureID;
 }
 
 // Init shaders
@@ -73,6 +71,7 @@ void Raytrace::InitShaders()
 void Raytrace::InitTextures()
 {
 	// Read from file
+	// scene 0
 	m_loadedTextureID[0] = TextureFromFile("assets/sun.jpg");
 	m_loadedTextureID[1] = TextureFromFile("assets/mercury.jpg");
 	m_loadedTextureID[2] = TextureFromFile("assets/venus.jpg");
@@ -84,7 +83,21 @@ void Raytrace::InitTextures()
 	m_loadedTextureID[8] = TextureFromFile("assets/uranus.jpg");
 	m_loadedTextureID[9] = TextureFromFile("assets/neptune.jpg");
 	m_loadedTextureID[10] = TextureFromFile("assets/asteroid.jpg");
-
+	
+	// scene 1
+	m_loadedTextureID[11] = TextureFromFile("assets/endor.jpg");
+	m_loadedTextureID[12] = TextureFromFile("assets/deathstar.jpg");
+	
+	// scene 2
+	m_loadedTextureID[13] = TextureFromFile("assets/Ball0.jpg");
+	m_loadedTextureID[14] = TextureFromFile("assets/Ball1.jpg");
+	m_loadedTextureID[15] = TextureFromFile("assets/Ball2.jpg");
+	m_loadedTextureID[16] = TextureFromFile("assets/Ball3.jpg");
+	m_loadedTextureID[17] = TextureFromFile("assets/Ball4.jpg");
+	m_loadedTextureID[18] = TextureFromFile("assets/Ball5.jpg");
+	m_loadedTextureID[19] = TextureFromFile("assets/Ball6.jpg");
+	m_loadedTextureID[20] = TextureFromFile("assets/Ball7.jpg");
+	m_loadedTextureID[21] = TextureFromFile("assets/Ball8.jpg");
 	
 }
 
@@ -157,9 +170,13 @@ void Raytrace::InitVaoVbo() {
 
 void Raytrace::InitMasses()
 {
-	for (int i = 0; i < spheres.size(); i++)
+	// mass = density * volume = density * (4/3 * pi * r^3) = k * r^3
+	// simplified to mass = r^3
+
+	masses[0] = 10000.0f;
+	for (int i = 1; i < spheres.size(); i++)
 	{
-		masses[i]==std::pow(spheres[i][3], 3);
+		masses[i]=std::pow(spheres[i][3], 3);
 	}
 }
 
@@ -212,7 +229,7 @@ bool Raytrace::Init()
 void Raytrace::Clean()
 {
 	// Deallocating memory
-	for (int i = 0; i < spheres.size(); i++)
+	for (int i = 0; i < allSpheresSize; i++)
 	{
 		glDeleteTextures(1, &m_loadedTextureID[i]);
 	}

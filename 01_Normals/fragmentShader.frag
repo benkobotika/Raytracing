@@ -45,9 +45,9 @@ float shininess = material_properties[2].w;
 
 // spheres
 uniform int spheresCount;
-uniform vec4 spheres[11];
+uniform vec4 spheres[16];
 
-uniform sampler2D texImage[11];
+uniform sampler2D texImage[16];
 
 uniform float screen_width;
 uniform float screen_height;
