@@ -172,9 +172,13 @@ void Raytrace::InitVaoVbo() {
 
 void Raytrace::InitMasses()
 {
-	for (int i = 0; i < spheres.size(); i++)
+	// mass = density * volume = density * (4/3 * pi * r^3) = k * r^3
+	// simplified to mass = r^3
+
+	masses[0] = 10000.0f;
+	for (int i = 1; i < spheres.size(); i++)
 	{
-		masses[i]==std::pow(spheres[i][3], 3);
+		masses[i]=std::pow(spheres[i][3], 3);
 	}
 }
 
