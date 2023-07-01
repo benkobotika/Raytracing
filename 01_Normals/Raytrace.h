@@ -70,7 +70,7 @@ public:
 	glm::vec4(60.0f, 0.0f, 0.0f, mercury_size * log2(277.0f / 115.0f)),	    // venus
 	glm::vec4(80.0f, 0.0f, 0.0f, mercury_size * log2(277.0f / 109.0f)),		// earth
 	glm::vec4(90.0f, 0.0f, 0.0f, mercury_size * log2(277.0f / 240.0f)),		// moon
-	glm::vec4(105.0f, 0.0f, 0.0f, mercury_size * log2(277.0f / 207.0f)),		// mars
+	glm::vec4(105.0f, 0.0f, 0.0f, mercury_size * log2(277.0f / 207.0f)),	// mars
 	glm::vec4(125.0f, 0.0f, 0.0f, mercury_size * log2(277.0f / 11.0f)),		// jupiter
 	glm::vec4(155.0f, 0.0f, 0.0f, mercury_size * log2(277.0f / 12.0f)),		// saturn
 	glm::vec4(185.0f, 0.0f, 0.0f, mercury_size * log2(277.0f / 27.7f)),		// uranus
@@ -92,7 +92,7 @@ public:
 	glm::vec3 La = glm::vec3(0.8f, 0.9f, 0.9f);
 	glm::vec3 Ld = glm::vec3(0.4f, 0.6f, 0.6f);
 	glm::vec3 Ls = glm::vec3(0.9f, 0.9f, 0.9f);
-	glm::vec3 At = glm::vec3(0.75f, 0.00009f, 0.000032f);
+	glm::vec3 At = glm::vec3(0.5f, 0.00009f, 0.000032f);
 	std::vector<glm::vec3> lightProperties = { La, Ld, Ls, At };
 
 	// ambient, diffuse, specular material properties
