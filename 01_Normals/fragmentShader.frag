@@ -312,7 +312,7 @@ vec3 rayTrace(Ray ray, float alfa, float beta, vec3 u, vec3 v, vec3 w) {
             vec4 textureColor = getTextureColor(hit, sphereTexCoords);
             
             // Water reflection
-            if (textureColor.r > 0.15 && textureColor.r < 0.60 && textureColor.g > 0.27 && textureColor.g < 0.47 && textureColor.b > 0.27) {
+            if (textureColor.r > 0.15 && textureColor.r < 0.60 && textureColor.g > 0.27 && textureColor.g < 0.47 && textureColor.b > 0.27 && abs(textureColor.r-textureColor.g-textureColor.b)>0.5) {
                 water = true;
             }
 
