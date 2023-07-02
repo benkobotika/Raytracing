@@ -81,7 +81,7 @@ void Raytrace::UpdateTextures()
 void Raytrace::Update()
 {
 	static Uint32 last_time = SDL_GetTicks();
-	float delta_time = (SDL_GetTicks() - last_time) / 1000.0f;
+	delta_time = (SDL_GetTicks() - last_time) / 1000.0f;
 	
 	// resetting collision
 	collisionOccurred = false;
@@ -368,14 +368,17 @@ void Raytrace::passMvpWorldWorldIT() {
 	glUniform1f(m_loc_screen_height, m_camera.GetScreenHeight());
 }
 
+
+
 void Raytrace::Render()
 {
 	if (collisionOccurred) {
 		glClearColor(1.0f, 1.0f, 1.0f, 1.0f);  // white background
-		//std::this_thread::sleep_for(std::chrono::milliseconds(100));
-	}
-	else {
-		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);  // black background (or any other color you want)
+		collisionTimer += delta_time;
+		if (collisionTimer > collisionDelay) {
+			collisionOccurred = false;
+			collisionTimer = 0.0f;
+		}
 	}
 
 	// Clear the frame buffer (GL_COLOR_BUFFER_BIT) and the depth buffer (GL_DEPTH_BUFFER_BIT)

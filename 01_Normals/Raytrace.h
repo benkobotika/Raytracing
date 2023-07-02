@@ -106,9 +106,14 @@ public:
 
 protected:
 
+	// Gravity implementation
 	void InitMasses();
 	bool SpheresCollide(glm::vec4 sphere1, glm::vec4 sphere2);
+	float collisionTimer = 0.0f;
+	float collisionDelay = 1.0f;  // delay in seconds
+	float delta_time;
 
+	// Vertex initialization
 	struct Vertex
 	{
 		glm::vec3 p; // position
