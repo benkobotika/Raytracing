@@ -373,11 +373,12 @@ void Raytrace::PassMvpWorldWorldIT() {
 void Raytrace::Render()
 {
 	if (collisionOccurred) {
-		glClearColor(1.0f, 1.0f, 1.0f, 1.0f);  // white background
 		collisionTimer += delta_time;
 		if (collisionTimer > collisionDelay) {
+			glClearColor(1.0f, 1.0f, 1.0f, 1.0f);  // white background
 			collisionOccurred = false;
 			collisionTimer = 0.0f;
+			std::this_thread::sleep_for(std::chrono::milliseconds(2000)); // Sleep to let the flash be visible
 		}
 	}
 
