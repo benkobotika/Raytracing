@@ -36,12 +36,13 @@ float distanceRatio = At[0];
 float linearConst = At[1];
 float quadraticConst = At[2];
 
-// material properties: ambient, diffuse, specular
-uniform vec4 material_properties[3]; // Ka, Kd, Ks
+// material properties: ambient, diffuse, specular, reflected color
+uniform vec4 material_properties[4]; // Ka, Kd, Ks
 vec3 Ka = material_properties[0].xyz;
 vec3 Kd = material_properties[1].xyz;
 vec3 Ks = material_properties[2].xyz;
 float shininess = material_properties[2].w;
+vec3 basicReflectedColor = material_properties[3].xyz;
 
 // spheres
 uniform int spheresCount;
@@ -57,6 +58,9 @@ uniform samplerCube cubemapTexture;
 
 //max depth to reflected rays
 uniform int maxDepth;
+
+//current scene
+uniform int currentScene;
 
 struct Hit {
     float distance;
@@ -306,6 +310,10 @@ vec3 rayTrace(Ray ray, float alfa, float beta, vec3 u, vec3 v, vec3 w) {
             resultColor = lights(hit, sunCoordinate, shadow);
             vec4 textureColor = getTextureColor(hit, sphereTexCoords);
             
+            /*if (textureColor.rgb[0] < 100 && textureColor.rgb[1] < 100 && textureColor.rgb[2] > 200) {
+                return vec3(0,0,0);
+            }*/
+
             resultColor *= textureColor.rgb;
             
             // Scale up sun light intensity 
@@ -317,6 +325,7 @@ vec3 rayTrace(Ray ray, float alfa, float beta, vec3 u, vec3 v, vec3 w) {
             if (shadow) {
                 break;
             }
+
             vec3 center = spheres[hit.indexOfSphere].xyz;
             float radius = spheres[hit.indexOfSphere].w;
 
@@ -334,14 +343,20 @@ vec3 rayTrace(Ray ray, float alfa, float beta, vec3 u, vec3 v, vec3 w) {
             
             resultColor2 *= textureColor.rgb;
 
-            reflectedColor += intensity * resultColor2;
-            intensity *= intensity * intensity;
+            if (currentScene == 2) {
+                reflectedColor += intensity * resultColor2;
+            } else {
+                reflectedColor += intensity * basicReflectedColor;
+            }
+
+            //reflectedColor += intensity * basicReflectedColor;
+            intensity *= intensity;
         }
 
         ray.startPosition = hit.position + epsilon * hit.normal;
         ray.direction = reflect(ray.direction, hit.normal);
-
     }
+
     if (!isSkyBox)
         resultColor += reflectedColor;
     return resultColor;
