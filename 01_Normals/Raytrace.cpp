@@ -265,3 +265,10 @@ glm::vec4 Raytrace::getRandomPosition() {
 	std::uniform_real_distribution<> dis(-200.0f, 200.0f);
 	return { dis(gen), dis(gen), dis(gen), 10.0f};
 }
+
+bool Raytrace::SpheresCollide(glm::vec4 sphere1, glm::vec4 sphere2)
+{
+	float distance = glm::distance(glm::vec3(sphere1), glm::vec3(sphere2));
+	float radiusSum = sphere1[3] + sphere2[3];
+	return distance < radiusSum;
+}

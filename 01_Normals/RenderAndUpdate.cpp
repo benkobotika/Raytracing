@@ -7,6 +7,8 @@
 #include <sstream>
 #include "GLDebugMessageCallback.h"
 #include "Raytrace.h"
+#include <thread>
+#include <chrono>
 
 //Newton gravitációs törvénye a következőképpen szól :
 //
@@ -80,6 +82,9 @@ void Raytrace::Update()
 {
 	static Uint32 last_time = SDL_GetTicks();
 	float delta_time = (SDL_GetTicks() - last_time) / 1000.0f;
+	
+	// resetting collision
+	collisionOccurred = false;
 
 	m_camera.Update(delta_time);
 
@@ -197,6 +202,33 @@ void Raytrace::Update()
 
 			// update velocity
 			meteorVelocity += acceleration * delta_time;
+
+			glm::vec3& pos = *(glm::vec3*)&spheres[spheres.size() - 1];
+
+			std::cout << "pos: " << pos[0] << ", " << pos[1] << ", " << pos[2] << std::endl;
+
+			// update position
+			pos += meteorVelocity * delta_time * 1000.0f;
+
+			// detect collision
+			if (SpheresCollide(spheres[i], spheres[spheres.size() - 1]))
+			{
+				collisionOccurred = true;
+				/*std::cout << "collision" << std::endl;
+				std::cout << "pos: " << pos[0] << ", " << pos[1] << ", " << pos[2] << std::endl;
+				std::cout << "vel: " << meteorVelocity[0] << ", " << meteorVelocity[1] << ", " << meteorVelocity[2] << std::endl;
+				std::cout << "acc: " << acceleration[0] << ", " << acceleration[1] << ", " << acceleration[2] << std::endl;
+				std::cout << "force: " << force[0] << ", " << force[1] << ", " << force[2] << std::endl;
+				std::cout << "forceDir: " << forceDirection[0] << ", " << forceDirection[1] << ", " << forceDirection[2] << std::endl;
+				std::cout << "forceMag: " << forceMagnitude << std::endl;
+				std::cout << "distance: " << distance << std::endl;
+				std::cout << "mass: " << masses[i] << std::endl;
+				std::cout << "acceleration: " << acceleration[0] << ", " << acceleration[1] << ", " << acceleration[2] << std::endl;
+				std::cout << "velocity: " << meteorVelocity[0] << ", " << meteorVelocity[1] << ", " << meteorVelocity[2] << std::endl;
+				std::cout << "position: " << pos[0] << ", " << pos[1] << ", " << pos[2] << std::endl;
+				std::cout << "radius: " << radius << std::endl;*/
+
+			}
 		}
 	}
 	else
@@ -261,14 +293,36 @@ void Raytrace::Update()
 
 			// update velocity
 			meteorVelocity += acceleration * delta_time;
+
+			glm::vec3& pos = *(glm::vec3*)&spheres[spheres.size() - 1];
+
+			std::cout << "pos: " << pos[0] << ", " << pos[1] << ", " << pos[2] << std::endl;
+
+			// update position
+			pos += meteorVelocity * delta_time * 1000.0f;
+			
+			// detect collision
+			if (SpheresCollide(spheres[i], spheres[spheres.size() - 1]))
+			{
+				collisionOccurred = true;
+				/*std::cout << "collision" << std::endl;
+				std::cout << "pos: " << pos[0] << ", " << pos[1] << ", " << pos[2] << std::endl;
+				std::cout << "vel: " << meteorVelocity[0] << ", " << meteorVelocity[1] << ", " << meteorVelocity[2] << std::endl;
+				std::cout << "acc: " << acceleration[0] << ", " << acceleration[1] << ", " << acceleration[2] << std::endl;
+				std::cout << "force: " << force[0] << ", " << force[1] << ", " << force[2] << std::endl;
+				std::cout << "forceDir: " << forceDirection[0] << ", " << forceDirection[1] << ", " << forceDirection[2] << std::endl;
+				std::cout << "forceMag: " << forceMagnitude << std::endl;
+				std::cout << "distance: " << distance << std::endl;
+				std::cout << "mass: " << masses[i] << std::endl;
+				std::cout << "acceleration: " << acceleration[0] << ", " << acceleration[1] << ", " << acceleration[2] << std::endl;
+				std::cout << "velocity: " << meteorVelocity[0] << ", " << meteorVelocity[1] << ", " << meteorVelocity[2] << std::endl;
+				std::cout << "position: " << pos[0] << ", " << pos[1] << ", " << pos[2] << std::endl;
+				std::cout << "radius: " << radius << std::endl;*/
+
+			}
 		}
 	}
-	glm::vec3& pos = *(glm::vec3*)&spheres[spheres.size() - 1];
-
-	std::cout << "pos: " << pos[0] << ", " << pos[1] << ", " << pos[2] << std::endl;
-
-	// update position
-	pos += meteorVelocity * delta_time * 1000.0f;
+	
 
 	last_time = SDL_GetTicks();
 }
@@ -315,6 +369,14 @@ void Raytrace::passMvpWorldWorldIT() {
 
 void Raytrace::Render()
 {
+	if (collisionOccurred) {
+		glClearColor(1.0f, 1.0f, 1.0f, 1.0f);  // white background
+		//std::this_thread::sleep_for(std::chrono::milliseconds(100));
+	}
+	else {
+		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);  // black background (or any other color you want)
+	}
+
 	// Clear the frame buffer (GL_COLOR_BUFFER_BIT) and the depth buffer (GL_DEPTH_BUFFER_BIT)
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
