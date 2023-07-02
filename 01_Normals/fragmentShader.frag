@@ -266,7 +266,7 @@ vec3 rayTrace(Ray ray, float alfa, float beta, vec3 u, vec3 v, vec3 w) {
     vec3 resultColor = vec3(0, 0, 0);
     vec3 resultColor2 = vec3(0, 0, 0);
     vec3 reflectedColor = vec3(0, 0, 0);
-    float intensity = 1;
+    float intensity = 0.25;
     const float epsilon = 0.0000001f;
 
     bool isSkyBox = false;
@@ -306,6 +306,7 @@ vec3 rayTrace(Ray ray, float alfa, float beta, vec3 u, vec3 v, vec3 w) {
             // Scale up sun light intensity 
             if (hit.indexOfSphere == 0) {
                 resultColor *= 2.5;
+                break;
             }
         } else {
             vec3 center = spheres[hit.indexOfSphere].xyz;
