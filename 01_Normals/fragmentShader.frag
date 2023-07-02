@@ -140,7 +140,7 @@ bool thisIsShadow(Hit hit, vec3 sunCoordinate) {
     (firstHitFromHitToRightSideOfSun.distance > 0.0 && firstHitFromHitToRightSideOfSun.indexOfSphere == 0));
 }
 
-vec3 lights(Hit hit, vec3 sunCoordinate) {
+vec3 lights(Hit hit, vec3 sunCoordinate, bool shadow) {
     // Calculate lights
     // ambient
     vec3 ambient = setAmbientLight();
@@ -156,7 +156,7 @@ vec3 lights(Hit hit, vec3 sunCoordinate) {
 
     float attenuation = setAttentuation(sunCoordinate, hit);
     
-    if (thisIsShadow(hit, sunCoordinate)) {
+    if (shadow) {
         return attenuation * (ambient + diffuse + specular);
     } else {
         return attenuation * ambient * 0.45f;
@@ -298,7 +298,11 @@ vec3 rayTrace(Ray ray, float alfa, float beta, vec3 u, vec3 v, vec3 w) {
             float v = 0.5 - asin(sphereToIntersection.y / radius) / M_PI;
             vec2 sphereTexCoords = vec2(u, v);
             
-            resultColor = lights(hit, sunCoordinate);
+            // Check that the fragment is in shadow or not
+            bool shadow = thisIsShadow(hit, sunCoordinate);
+
+            // Add lights
+            resultColor = lights(hit, sunCoordinate, shadow);
             vec4 textureColor = getTextureColor(hit, sphereTexCoords);
             
             resultColor *= textureColor.rgb;
@@ -317,7 +321,14 @@ vec3 rayTrace(Ray ray, float alfa, float beta, vec3 u, vec3 v, vec3 w) {
             float v = 0.5 - asin(sphereToIntersection.y / radius) / M_PI;
             vec2 sphereTexCoords = vec2(u, v);
             
-            resultColor2 = lights(hit, sunCoordinate);
+            // Check that the fragment is in shadow or not
+            bool shadow = thisIsShadow(hit, sunCoordinate);
+
+            // Add lights
+            if (shadow == false) {
+                break; // in shadow we don't calculate reflected colors
+            }
+            resultColor2 = lights(hit, sunCoordinate, shadow);
             vec4 textureColor = getTextureColor(hit, sphereTexCoords);
             
             resultColor2 *= textureColor.rgb;
