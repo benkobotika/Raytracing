@@ -327,19 +327,19 @@ void Raytrace::Update()
 	last_time = SDL_GetTicks();
 }
 
-void Raytrace::passLightAndMaterialProperties() {
+void Raytrace::PassLightAndMaterialProperties() {
 	glUniform3fv(m_loc_light_sources, lightSources.size(), reinterpret_cast<const GLfloat*>(lightSources.data()));
 	glUniform3fv(m_loc_light_properties, lightProperties.size(), reinterpret_cast<const GLfloat*>(lightProperties.data()));
 	glUniform4fv(m_loc_material_properties, materialProperties.size(), reinterpret_cast<const GLfloat*>(materialProperties.data()));
 }
 
-void Raytrace::passSphereProperties() {
+void Raytrace::PassSphereProperties() {
 	int current_spheres_size = spheres.size();
 	glUniform1i(m_loc_spheres_count, current_spheres_size);
 	glUniform4fv(m_loc_spheres, current_spheres_size, reinterpret_cast<const GLfloat*>(spheres.data()));
 }
 
-void Raytrace::passEyeAtUp() {
+void Raytrace::PassEyeAtUp() {
 	glm::vec3 eye = m_camera.GetEye();
 	glUniform3fv(m_loc_eye, 1, &eye[0]);
 
@@ -356,7 +356,7 @@ void Raytrace::passEyeAtUp() {
 	// std::cout << "========================================================" << std::endl;
 }
 
-void Raytrace::passMvpWorldWorldIT() {
+void Raytrace::PassMvpWorldWorldIT() {
 	glm::mat4 viewProj = m_camera.GetViewProj();
 	glm::mat4 world = glm::mat4(1.0f);
 	glm::mat4 worldIT = glm::inverse(glm::transpose(world));
@@ -388,12 +388,12 @@ void Raytrace::Render()
 	glUseProgram(m_programID);
 
 	// Pass light and material properties to the fragment shader
-	passLightAndMaterialProperties();
+	PassLightAndMaterialProperties();
 
 	// Rendering
-	passSphereProperties();
-	passMvpWorldWorldIT();
-	passEyeAtUp();
+	PassSphereProperties();
+	PassMvpWorldWorldIT();
+	PassEyeAtUp();
 
 	// Texture
 	UpdateTextures();

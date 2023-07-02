@@ -151,12 +151,12 @@ void GLAPIENTRY GLDebugMessageCallback(GLenum source, GLenum type, GLuint id,
     // note: __debugbreak is specific for MSVC, won't work with gcc/clang
     // -> in that case remove it and manually set breakpoints
 #ifdef _DEBUG
-    // Ha itt megállt a program, akkor valamilyen OpenGL hiba történt.
-    // 1. A console-on található a hibaüzenet.
-    // 2. A Call Stack segítségével megkereshető a hibát kiváltó OpenGL művelet
-    //     (a nyíl a hibát jelző utasítást követő sorra mutat!).
-    // 3. A program innen folytatható (zöld háromszög - Continue / F5)
-    //     vagy megállítható (piros négyzet - Stop / Shift + F5).
+    // If the program has stopped at this point, an OpenGL error has occurred.
+    // 1. The error message can be found in the console.
+    // 2. The error-causing OpenGL operation can be identified using the Call Stack.
+    //    (The arrow points to the line following the instruction causing the error!)
+    // 3. The program can be resumed from this point (green triangle - Continue / F5)
+    //    or stopped(red square - Stop / Shift + F5).
     __debugbreak();
 #endif
 }

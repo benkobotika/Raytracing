@@ -12,25 +12,25 @@
 
 /* 
 
-Az http://www.opengl-tutorial.org/ oldal alapján.
+Based on the http://www.opengl-tutorial.org/ website.
 
 */
 GLuint loadShader(GLenum _shaderType, const char* _fileName)
 {
-	// shader azonosito letrehozasa
+	// Creating a shader identifier
 	GLuint loadedShader = glCreateShader(_shaderType);
 
-	// ha nem sikerult hibauzenet es -1 visszaadasa
+	// If the creation failed, return an error message and -1
 	if (loadedShader == 0)
 	{
 		std::cerr << "[glCreateShader] Error during the initialization of shader: " << _fileName << "!\n";
 		return 0;
 	}
 
-	// shaderkod betoltese _fileName fajlbol
+	// Loading shader code from the _fileName file
 	std::string shaderCode = "";
 
-	// _fileName megnyitasa
+	// Opening the _fileName file
 	std::ifstream shaderStream(_fileName);
 
 	if (!shaderStream.is_open())
@@ -39,7 +39,7 @@ GLuint loadShader(GLenum _shaderType, const char* _fileName)
 		return 0;
 	}
 
-	// file tartalmanak betoltese a shaderCode string-be
+	// Loading the contents of the file into the shaderCode string
 	std::string line = "";
 	while (std::getline(shaderStream, line))
 	{
@@ -48,24 +48,24 @@ GLuint loadShader(GLenum _shaderType, const char* _fileName)
 
 	shaderStream.close();
 
-	// fajlbol betoltott kod hozzarendelese a shader-hez
+	// Assigning the code loaded from the file to the shader
 	const char* sourcePointer = shaderCode.c_str();
 	glShaderSource(loadedShader, 1, &sourcePointer, nullptr);
 
-	// shader leforditasa
+	// Compile the shader
 	glCompileShader(loadedShader);
 
-	// ellenorizzuk, h minden rendben van-e
+	// Check if everything is fine
 	GLint result = GL_FALSE;
 	int infoLogLength;
 
-	// forditas statuszanak lekerdezese
+	// Querying the compilation status
 	glGetShaderiv(loadedShader, GL_COMPILE_STATUS, &result);
 	glGetShaderiv(loadedShader, GL_INFO_LOG_LENGTH, &infoLogLength);
 
 	if (GL_FALSE == result)
 	{
-		// hibauzenet elkerese es kiirasa
+		// Requesting and printing the error message
 		std::vector<char> VertexShaderErrorMessage(infoLogLength);
 		glGetShaderInfoLog(loadedShader, infoLogLength, nullptr, &VertexShaderErrorMessage[0]);
 
@@ -77,18 +77,18 @@ GLuint loadShader(GLenum _shaderType, const char* _fileName)
 
 GLuint loadProgramVSGSFS(const char* _fileNameVS, const char* _fileNameGS, const char* _fileNameFS)
 {
-	// a vertex, geometry es fragment shaderek betoltese
+	// Loading the vertex, geometry, and fragment shaders
 	GLuint vs_ID = loadShader(GL_VERTEX_SHADER,		_fileNameVS);
 	GLuint gs_ID = loadShader(GL_GEOMETRY_SHADER,	_fileNameGS);
 	GLuint fs_ID = loadShader(GL_FRAGMENT_SHADER,	_fileNameFS);
 
-	// ha barmelyikkel gond volt programot sem tudunk csinalni, 0 vissza
+	// If there was any issue with loading any of the shaders, we cannot proceed with the program. Return 0
 	if ( vs_ID == 0 || gs_ID == 0 || fs_ID == 0 )
 	{
 		return 0;
 	}
 
-	// linkeljuk ossze a dolgokat
+	// Linking the components together
 	GLuint program_ID = glCreateProgram();
 
 	fprintf(stdout, "Linking program\n");
@@ -98,7 +98,7 @@ GLuint loadProgramVSGSFS(const char* _fileNameVS, const char* _fileNameGS, const
 
 	glLinkProgram(program_ID);
 
-	// linkeles ellenorzese
+	// Checking the linking status
 	GLint infoLogLength = 0, result = 0;
 
 	glGetProgramiv(program_ID, GL_LINK_STATUS, &result);
@@ -110,12 +110,12 @@ GLuint loadProgramVSGSFS(const char* _fileNameVS, const char* _fileNameGS, const
 		fprintf(stdout, "%s\n", &ProgramErrorMessage[0]);
 	}
 
-	// mar nincs ezekre szukseg
+	// Then these are no longer needed
 	glDeleteShader( vs_ID );
 	glDeleteShader( gs_ID );
 	glDeleteShader( fs_ID );
 
-	// adjuk vissza a program azonositojat
+	// Returning the program identifier
 	return program_ID;
 }
 
@@ -131,7 +131,7 @@ int invert_image(int pitch, int height, void* image_pixels)
 		SDL_SetError("Not enough memory for image inversion");
 		return -1;
 	}
-	//if height is odd, don't need to swap middle row
+	// If height is odd, don't need to swap middle row
 	height_div_2 = (int)(height * .5);
 	for (index = 0; index < height_div_2; index++) {
 		//uses string.h
@@ -156,7 +156,6 @@ int invert_image(int pitch, int height, void* image_pixels)
 	return 0;
 }
 
-// 
 int SDL_InvertSurface(SDL_Surface* image)
 {
 	if (NULL == image)
@@ -170,8 +169,7 @@ int SDL_InvertSurface(SDL_Surface* image)
 
 GLuint TextureFromFile(const char* filename)
 {
-
-	// Kép betöltése
+	// Load image
 	SDL_Surface* loaded_img = IMG_Load(filename);
 	if (loaded_img == nullptr)
 	{
@@ -179,14 +177,14 @@ GLuint TextureFromFile(const char* filename)
 		return 0;
 	}
 
-	// Uint32-ben tárolja az SDL a színeket, ezért számít a bájtsorrend
+	// SDL stores colors as Uint32 values, so byte order matters
 #if SDL_BYTEORDER == SDL_LIL_ENDIAN
 	Uint32 format = SDL_PIXELFORMAT_ABGR8888;
 #else
 	Uint32 format = SDL_PIXELFORMAT_RGBA8888;
 #endif
 
-	// Átalakítás 32bit RGBA formátumra, ha nem abban volt
+	// Converting to 32-bit RGBA format if it wasn't already
 	SDL_Surface* formattedSurf = SDL_ConvertSurfaceFormat(loaded_img, format, 0);
 	if (formattedSurf == nullptr)
 	{
@@ -195,7 +193,8 @@ GLuint TextureFromFile(const char* filename)
 		return 0;
 	}
 
-	// Áttérés SDL koordinátarendszerről ( (0,0) balfent ) OpenGL textúra-koordinátarendszerre ( (0,0) ballent )
+	// Switching from SDL coordinate system (with (0,0) in the top-left corner) to
+	// OpenGL texture coordinate system (with (0,0) in the bottom-left corner)
 	if (SDL_InvertSurface(formattedSurf) == -1) {
 		std::cout << "[TextureFromFile] Error while processing image: " << SDL_GetError() << std::endl;
 		SDL_FreeSurface(formattedSurf);
@@ -203,19 +202,19 @@ GLuint TextureFromFile(const char* filename)
 		return 0;
 	}
 
-	// OpenGL textúra generálás
+	// Generating an OpenGL texture
 	GLuint tex;
 	glGenTextures(1, &tex);
 
 	glBindTexture(GL_TEXTURE_2D, tex);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, formattedSurf->w, formattedSurf->h, 0, GL_RGBA, GL_UNSIGNED_BYTE, formattedSurf->pixels);
 
-	// Mipmap generálása
+	// Generating mipmaps
 	glGenerateMipmap(GL_TEXTURE_2D);
 
 	glBindTexture(GL_TEXTURE_2D, 0);
 
-	// Használt SDL_Surface-k felszabadítása
+	// Freeing the used SDL_Surfaces
 	SDL_FreeSurface(formattedSurf);
 	SDL_FreeSurface(loaded_img);
 
