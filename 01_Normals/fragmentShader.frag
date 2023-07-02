@@ -132,7 +132,7 @@ bool thisIsShadow(Hit hit, vec3 sunCoordinate) {
     Hit firstHitFromHitToLeftSideOfSun = firstIntersection(rayFromBottomOfSunToHit);
     Hit firstHitFromHitToRightSideOfSun = firstIntersection(rayFromRightSideOfSunToHit);
 
-    return (hit.indexOfSphere == 0 || 
+    return !(hit.indexOfSphere == 0 || 
     (firstHitFromHitToSun.distance > 0.0 && firstHitFromHitToSun.indexOfSphere == 0) ||
     (firstHitFromHitToTopOfSun.distance > 0.0 && firstHitFromHitToTopOfSun.indexOfSphere == 0) ||
     (firstHitFromHitToBottomOfSun.distance > 0.0 && firstHitFromHitToBottomOfSun.indexOfSphere == 0) ||
@@ -157,9 +157,9 @@ vec3 lights(Hit hit, vec3 sunCoordinate, bool shadow) {
     float attenuation = setAttentuation(sunCoordinate, hit);
     
     if (shadow) {
-        return attenuation * (ambient + diffuse + specular);
-    } else {
         return attenuation * ambient * 0.45f;
+    } else {
+        return attenuation * (ambient + diffuse + specular);
     }
 }
 
@@ -276,6 +276,7 @@ vec3 rayTrace(Ray ray, float alfa, float beta, vec3 u, vec3 v, vec3 w) {
     // ratio between distanceEyeAndPlanet and distanceIntersectionPointAndPlanet
     float distanceRatio = 0.75f;
 
+    bool shadow = false;
     for (int d = 0; d <= maxDepth && !isSkyBox; d++) {
         Hit hit = firstIntersection(ray);
 
@@ -299,7 +300,7 @@ vec3 rayTrace(Ray ray, float alfa, float beta, vec3 u, vec3 v, vec3 w) {
             vec2 sphereTexCoords = vec2(u, v);
             
             // Check that the fragment is in shadow or not
-            bool shadow = thisIsShadow(hit, sunCoordinate);
+            shadow = thisIsShadow(hit, sunCoordinate);
 
             // Add lights
             resultColor = lights(hit, sunCoordinate, shadow);
@@ -313,6 +314,9 @@ vec3 rayTrace(Ray ray, float alfa, float beta, vec3 u, vec3 v, vec3 w) {
                 break;
             }
         } else {
+            if (shadow) {
+                break;
+            }
             vec3 center = spheres[hit.indexOfSphere].xyz;
             float radius = spheres[hit.indexOfSphere].w;
 
@@ -322,12 +326,9 @@ vec3 rayTrace(Ray ray, float alfa, float beta, vec3 u, vec3 v, vec3 w) {
             vec2 sphereTexCoords = vec2(u, v);
             
             // Check that the fragment is in shadow or not
-            bool shadow = thisIsShadow(hit, sunCoordinate);
+            shadow = thisIsShadow(hit, sunCoordinate);
 
             // Add lights
-            if (shadow == false) {
-                break; // in shadow we don't calculate reflected colors
-            }
             resultColor2 = lights(hit, sunCoordinate, shadow);
             vec4 textureColor = getTextureColor(hit, sphereTexCoords);
             
