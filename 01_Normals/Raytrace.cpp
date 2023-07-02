@@ -177,7 +177,7 @@ void Raytrace::InitMasses()
 	// mass = density * volume = density * (4/3 * pi * r^3) = k * r^3
 	// simplified to mass = r^3
 
-	masses[0] = 10000000000000.0f;
+	/*masses[0] = 100000000000000000000000000000.0f;
 	masses[1] = 1000.0f;
 	masses[2] = 150000.0f;
 	masses[3] = 160000.0f;
@@ -187,7 +187,14 @@ void Raytrace::InitMasses()
 	masses[7] = 80000000.0f;
 	masses[8] = 40000000.0f;
 	masses[9] = 35000000.0f;
-	masses[10] = 100.0f;
+	masses[10] = 120000000.0f;*/
+
+	for (int i = 0; i < spheres.size(); i++)
+	{
+		masses[i] = std::pow(spheres[i][3], 3)*100000.0f;
+	}
+	masses[4]+=2* 100000.0f;
+	masses[5]+=7* 100000.0f;
 }
 
 bool Raytrace::Init()
@@ -208,7 +215,7 @@ bool Raytrace::Init()
 
 	for (int i = 0; i < spheres.size(); i++)
 	{
-		std::cout << "masses[" << i << "]" << masses[i]<<std::endl;
+		std::cout << "masses[" << i << "] = " << masses[i] << std::endl;
 	}
 
 	// Camera
