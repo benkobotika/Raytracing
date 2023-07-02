@@ -220,7 +220,7 @@ bool Raytrace::Init()
 
 	// Camera
 	// Parameters: angle, aspect (ratio of the width to height), near clipping plane dist, far clipping plane dist 
-	m_camera.SetProj(glm::radians(60.0f), 640.0f / 480.0f, 0.01f, 1000.0f);
+	m_camera.SetProj(glm::radians(60.0f), m_camera.GetScreenWidth() / m_camera.GetScreenHeight(), 0.01f, 1000.0f);
 
 	// Get the location of uniform variables in the shader
 	m_loc_mvp = glGetUniformLocation(m_programID, "MVP");
