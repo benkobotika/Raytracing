@@ -100,12 +100,14 @@ public:
 	glm::vec4 getRandomPosition();
 
 	glm::vec3 meteorVelocity = { 0.0f,0.0f,0.0f };
+	bool collisionOccurred = false;
 
 
 
 protected:
 
 	void InitMasses();
+	bool SpheresCollide(glm::vec4 sphere1, glm::vec4 sphere2);
 
 	struct Vertex
 	{
