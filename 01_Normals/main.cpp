@@ -154,6 +154,7 @@ int main(int argc, char* args[])
 					// Generate a new random position for the fourth sphere
 					app.spheres[app.spheres.size() - 1] = app.getRandomPosition();
 					app.meteorVelocity = { 0.0f,0.0f,0.0f };
+					app.r_pressed = true;
 				}
 				else if (ev.key.keysym.sym == SDLK_PLUS || ev.key.keysym.sym == SDLK_KP_PLUS) {
 					if (app.depth + 1 <= app.maxDepth)

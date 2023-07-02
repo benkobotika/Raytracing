@@ -177,12 +177,16 @@ void Raytrace::InitMasses()
 	// mass = density * volume = density * (4/3 * pi * r^3) = k * r^3
 	// simplified to mass = r^3
 
-	masses[0] = 1000000.0f;
-	for (int i = 1; i < spheres.size()-1; i++)
-	{
-		masses[i]=std::pow(spheres[i][3], 2)*100;
-		std::cout << "masses[" << i << "] = " << masses[i] << std::endl;
-	}
+	masses[0] = 10000000000000.0f;
+	masses[1] = 1000.0f;
+	masses[2] = 150000.0f;
+	masses[3] = 160000.0f;
+	masses[4] = 200.0f;
+	masses[5] = 1500.0f;
+	masses[6] = 100000000.0f;
+	masses[7] = 80000000.0f;
+	masses[8] = 40000000.0f;
+	masses[9] = 35000000.0f;
 	masses[10] = 100.0f;
 }
 

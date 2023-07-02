@@ -113,6 +113,33 @@ void Raytrace::UpdateSpheres()
 {
 	float rotationSpeed[9];
 	SetRotationSpeed(rotationSpeed, current_scene);
+
+	//// Gravity for the Sun
+
+	// direction of the force
+	glm::vec3 forceDirection = glm::vec3(spheres[0]) - glm::vec3(spheres[spheres.size() - 1]);
+
+	// distance between the two bodies
+	float distance = glm::length(forceDirection) * 1.0f;
+
+	// gravitational force
+	float forceMagnitude = G * masses[0] * masses[10] / std::pow(distance, 2) * 1.0f;
+
+	// force vector
+	glm::vec3 force = forceMagnitude * glm::normalize(forceDirection) * 1.0f;
+
+	// acceleration = force / mass
+	glm::vec3 acceleration = force / (float)masses[10] * 10.0f;
+
+	// update velocity
+	meteorVelocity += acceleration * delta_time;
+
+	glm::vec3& pos = *(glm::vec3*)&spheres[spheres.size() - 1];
+
+	//std::cout << "pos: " << pos[0] << ", " << pos[1] << ", " << pos[2] << std::endl;
+
+	// update position
+	pos += meteorVelocity * delta_time * 1000.0f;
 	for (int i = 1; i < spheres.size() - 1; i++)
 	{
 		float& x = spheres[i][0];
@@ -169,13 +196,13 @@ void Raytrace::UpdateSpheres()
 		float distance = glm::length(forceDirection) * 1.0f;
 
 		// gravitational force
-		float forceMagnitude = G * masses[i] * masses[10] / std::pow(distance, 2) * 1000.0f;
+		float forceMagnitude = G * masses[i] * masses[10] / std::pow(distance, 2) * 1.0f;
 
 		// force vector
-		glm::vec3 force = forceMagnitude * glm::normalize(forceDirection) * 1000.0f;
+		glm::vec3 force = forceMagnitude * glm::normalize(forceDirection) * 1.0f;
 
 		// acceleration = force / mass
-		glm::vec3 acceleration = force / (float)masses[10] * 100000.0f;
+		glm::vec3 acceleration = force / (float)masses[10] * 1000.0f;
 
 		// update velocity
 		meteorVelocity += acceleration * delta_time;
@@ -188,7 +215,7 @@ void Raytrace::UpdateSpheres()
 		pos += meteorVelocity * delta_time * 1000.0f;
 
 		// detect collision
-		if (SpheresCollide(spheres[i], spheres[spheres.size() - 1]))
+		if ( r_pressed && (SpheresCollide(spheres[i], spheres[spheres.size() - 1])  || SpheresCollide(spheres[0],spheres[spheres.size()-1])))
 		{
 			collisionOccurred = true;
 			/*std::cout << "collision" << std::endl;
@@ -204,6 +231,9 @@ void Raytrace::UpdateSpheres()
 			std::cout << "velocity: " << meteorVelocity[0] << ", " << meteorVelocity[1] << ", " << meteorVelocity[2] << std::endl;
 			std::cout << "position: " << pos[0] << ", " << pos[1] << ", " << pos[2] << std::endl;
 			std::cout << "radius: " << radius << std::endl;*/
+
+			pos = getRandomPosition();
+			meteorVelocity = { 0.0f,0.0f,0.0f };
 
 		}
 	}
