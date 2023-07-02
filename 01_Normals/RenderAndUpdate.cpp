@@ -120,7 +120,7 @@ void Raytrace::UpdateSpheres()
 	glm::vec3 forceDirection = glm::vec3(spheres[0]) - glm::vec3(spheres[spheres.size() - 1]);
 
 	// distance between the two bodies
-	float distance = glm::length(forceDirection) * 1.0f;
+	float distance = glm::length(forceDirection) * 2.0f;
 
 	// Gravitational force
 	float forceMagnitude = G * masses[0] * masses[10] / std::pow(distance, 2) * 1.0f;
@@ -194,7 +194,7 @@ void Raytrace::UpdateSpheres()
 		glm::vec3 forceDirection = glm::vec3(spheres[i]) - glm::vec3(spheres[spheres.size() - 1]);
 
 		// distance between the two bodies
-		float distance = glm::length(forceDirection) * 1.0f;
+		float distance = glm::length(forceDirection) * 2.0f;
 
 		// Gravitational force
 		float forceMagnitude = G * masses[i] * masses[10] / std::pow(distance, 2) * 1.0f;

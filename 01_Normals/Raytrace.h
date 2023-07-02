@@ -94,7 +94,7 @@ public:
 	glm::vec4(155.0f, 0.0f, 0.0f, mercury_size * log2(277.0f / 12.0f)),		// saturn
 	glm::vec4(185.0f, 0.0f, 0.0f, mercury_size * log2(277.0f / 27.7f)),		// uranus
 	glm::vec4(215.0f, 0.0f, 0.0f, mercury_size * log2(277.0f / 27.4f)),		// neptune
-	glm::vec4(0.0f, 0.0f, 0.0f, 10.0f)										// oversized asteroid
+	glm::vec4(0.0f, 0.0f, 0.0f, 1.0f)										// oversized asteroid
 	};
 
 	glm::vec4 getRandomPosition();
