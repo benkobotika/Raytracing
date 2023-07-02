@@ -156,7 +156,8 @@ protected:
 	std::vector<glm::vec4> materialProperties = {
 		glm::vec4(Ka, 0.0f),
 		glm::vec4(Kd, 0.0f),
-		glm::vec4(Ks, shininess)
+		glm::vec4(Ks, shininess),
+		glm::vec4(255, 253, 55, 0)
 	};
 
 	// Gravity

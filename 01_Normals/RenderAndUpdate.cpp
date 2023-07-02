@@ -366,6 +366,9 @@ void Raytrace::Render()
 	GLint maxDepthLocation = glGetUniformLocation(m_programID, "maxDepth");
 	glUniform1i(maxDepthLocation, depth);
 
+	GLint current_scene_Location = glGetUniformLocation(m_programID, "currentScene");
+	glUniform1i(current_scene_Location, current_scene);
+
 	// Adjusting the aspect ratios
 	float screenWidth = m_camera.GetScreenWidth();
 	float screenHeight = m_camera.GetScreenHeight();
