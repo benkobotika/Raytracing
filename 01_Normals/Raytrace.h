@@ -214,6 +214,7 @@ protected:
 	GLuint  LoadCubemapTexture(int scence);
 
 	void UpdateTextures();
+	void UpdateSpheres();
 
 	// last scene
 	int last_scene = 0;
