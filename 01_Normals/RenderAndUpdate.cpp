@@ -10,17 +10,6 @@
 #include <thread>
 #include <chrono>
 
-//Newton gravitációs törvénye a következőképpen szól :
-//
-//F = G * (m1 * m2) / r ^ 2
-//
-//ahol :
-//
-//	F az erő,
-//	G a gravitációs állandó(6.67430 * 10 ^ -11 m ^ 3 kg ^ -1 s ^ -2),
-//	m1 és m2 a két test tömege,
-//	r a távolságuk.
-
 void Raytrace::UpdateTextures()
 {
 	switch (current_scene)
@@ -114,31 +103,42 @@ void Raytrace::UpdateSpheres()
 	float rotationSpeed[9];
 	SetRotationSpeed(rotationSpeed, current_scene);
 
-	//// Gravity for the Sun
+	// Gravity for the Sun
+	// ===================
+	// Newton's law of gravity is as follows:
+	//
+	// F = G * (m1 * m2) / r ^ 2
+	//
+	// where:
+	//
+	// F is the force,
+	// G is the gravitational constant (6.67430 * 10^-11 m^3 kg^-1 s^-2),
+	// m1 and m2 are the masses of the two bodies,
+	// r is the distance between them.
 
-	// direction of the force
+	// Direction of the force
 	glm::vec3 forceDirection = glm::vec3(spheres[0]) - glm::vec3(spheres[spheres.size() - 1]);
 
-	// distance between the two bodies
+	// Distance between the two bodies
 	float distance = glm::length(forceDirection) * 1.0f;
 
-	// gravitational force
+	// Gravitational force
 	float forceMagnitude = G * masses[0] * masses[10] / std::pow(distance, 2) * 1.0f;
 
-	// force vector
+	// Force vector
 	glm::vec3 force = forceMagnitude * glm::normalize(forceDirection) * 1.0f;
 
 	// acceleration = force / mass
 	glm::vec3 acceleration = force / (float)masses[10] * 10.0f;
 
-	// update velocity
+	// Update velocity
 	meteorVelocity += acceleration * delta_time;
 
 	glm::vec3& pos = *(glm::vec3*)&spheres[spheres.size() - 1];
 
-	//std::cout << "pos: " << pos[0] << ", " << pos[1] << ", " << pos[2] << std::endl;
+	// std::cout << "pos: " << pos[0] << ", " << pos[1] << ", " << pos[2] << std::endl;
 
-	// update position
+	// Update position
 	pos += meteorVelocity * delta_time * 1000.0f;
 	for (int i = 1; i < spheres.size() - 1; i++)
 	{
@@ -149,7 +149,7 @@ void Raytrace::UpdateSpheres()
 
 		float angle = rotationSpeed[i - 1] * delta_time;
 
-		// moon
+		// Moon
 		if (i == 4 && current_scene == 0)
 		{
 			float& earth_x = spheres[3][0];
@@ -187,34 +187,35 @@ void Raytrace::UpdateSpheres()
 			z = new_z;
 		}
 
-		//// Gravity
+		// Gravity
+		// =======
 
-		// direction of the force
+		// Direction of the force
 		glm::vec3 forceDirection = glm::vec3(spheres[i]) - glm::vec3(spheres[spheres.size() - 1]);
 
-		// distance between the two bodies
+		// Distance between the two bodies
 		float distance = glm::length(forceDirection) * 1.0f;
 
-		// gravitational force
+		// Gravitational force
 		float forceMagnitude = G * masses[i] * masses[10] / std::pow(distance, 2) * 1.0f;
 
-		// force vector
+		// Force vector
 		glm::vec3 force = forceMagnitude * glm::normalize(forceDirection) * 1.0f;
 
 		// acceleration = force / mass
 		glm::vec3 acceleration = force / (float)masses[10] * 1000.0f;
 
-		// update velocity
+		// Update velocity
 		meteorVelocity += acceleration * delta_time;
 
 		glm::vec3& pos = *(glm::vec3*)&spheres[spheres.size() - 1];
 
 		std::cout << "pos: " << pos[0] << ", " << pos[1] << ", " << pos[2] << std::endl;
 
-		// update position
+		// Update position
 		pos += meteorVelocity * delta_time * 1000.0f;
 
-		// detect collision
+		// Detect collision
 		if ( r_pressed && (SpheresCollide(spheres[i], spheres[spheres.size() - 1])  || SpheresCollide(spheres[0],spheres[spheres.size()-1])))
 		{
 			collisionOccurred = true;
@@ -244,7 +245,7 @@ void Raytrace::Update()
 	static Uint32 last_time = SDL_GetTicks();
 	delta_time = (SDL_GetTicks() - last_time) / 1000.0f;
 
-	// resetting collision
+	// Resetting collision
 	collisionOccurred = false;
 
 	m_camera.Update(delta_time);

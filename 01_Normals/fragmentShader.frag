@@ -281,6 +281,7 @@ vec3 rayTrace(Ray ray, float alfa, float beta, vec3 u, vec3 v, vec3 w) {
     float distanceRatio = 0.75f;
 
     bool shadow = false;
+    bool water = false;
     for (int d = 0; d <= maxDepth && !isSkyBox; d++) {
         Hit hit = firstIntersection(ray);
 
@@ -292,7 +293,7 @@ vec3 rayTrace(Ray ray, float alfa, float beta, vec3 u, vec3 v, vec3 w) {
             isSkyBox = true;
             break;
         } else if (hit.distance <= 0.0)
-            break;//reflected ray to skybox
+            break; // reflected ray to skybox
 
         if (d == 0) {
             vec3 center = spheres[hit.indexOfSphere].xyz;
@@ -310,9 +311,10 @@ vec3 rayTrace(Ray ray, float alfa, float beta, vec3 u, vec3 v, vec3 w) {
             resultColor = lights(hit, sunCoordinate, shadow);
             vec4 textureColor = getTextureColor(hit, sphereTexCoords);
             
-            /*if (textureColor.rgb[0] < 100 && textureColor.rgb[1] < 100 && textureColor.rgb[2] > 200) {
-                return vec3(0,0,0);
-            }*/
+            // Water reflection
+            if (textureColor.r > 0.15 && textureColor.r < 0.60 && textureColor.g > 0.27 && textureColor.g < 0.47 && textureColor.b > 0.27) {
+                water = true;
+            }
 
             resultColor *= textureColor.rgb;
             
@@ -322,8 +324,9 @@ vec3 rayTrace(Ray ray, float alfa, float beta, vec3 u, vec3 v, vec3 w) {
                 break;
             }
         } else {
+
             if (shadow) {
-                break;
+                break; // don't calculate reflected lights
             }
 
             vec3 center = spheres[hit.indexOfSphere].xyz;
@@ -348,8 +351,6 @@ vec3 rayTrace(Ray ray, float alfa, float beta, vec3 u, vec3 v, vec3 w) {
             } else {
                 reflectedColor += intensity * basicReflectedColor;
             }
-
-            //reflectedColor += intensity * basicReflectedColor;
             intensity *= intensity;
         }
 
@@ -357,7 +358,7 @@ vec3 rayTrace(Ray ray, float alfa, float beta, vec3 u, vec3 v, vec3 w) {
         ray.direction = reflect(ray.direction, hit.normal);
     }
 
-    if (!isSkyBox)
+    if (!isSkyBox && (water || currentScene != 0))
         resultColor += reflectedColor;
     return resultColor;
 }
