@@ -120,7 +120,7 @@ void Raytrace::UpdateSpheres()
 	glm::vec3 forceDirection = glm::vec3(spheres[0]) - glm::vec3(spheres[spheres.size() - 1]);
 
 	// distance between the two bodies
-	float distance = glm::length(forceDirection) * 1.0f;
+	float distance = glm::length(forceDirection) * 3.0f;
 
 	// gravitational force
 	float forceMagnitude = G * masses[0] * masses[10] / std::pow(distance, 2) * 1.0f;
@@ -129,7 +129,7 @@ void Raytrace::UpdateSpheres()
 	glm::vec3 force = forceMagnitude * glm::normalize(forceDirection) * 1.0f;
 
 	// acceleration = force / mass
-	glm::vec3 acceleration = force / (float)masses[10] * 10.0f;
+	glm::vec3 acceleration = force / (float)masses[10] * 1000.0f;
 
 	// update velocity
 	meteorVelocity += acceleration * delta_time;
@@ -193,7 +193,7 @@ void Raytrace::UpdateSpheres()
 		glm::vec3 forceDirection = glm::vec3(spheres[i]) - glm::vec3(spheres[spheres.size() - 1]);
 
 		// distance between the two bodies
-		float distance = glm::length(forceDirection) * 1.0f;
+		float distance = glm::length(forceDirection) * 3.0f;
 
 		// gravitational force
 		float forceMagnitude = G * masses[i] * masses[10] / std::pow(distance, 2) * 1.0f;
