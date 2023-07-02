@@ -74,15 +74,15 @@ void SetRotationSpeed(float* rotationSpeed, int current_scene)
 {
 	if (current_scene == 0 || current_scene == 1)
 	{
-		rotationSpeed[0] = 0.9f;	// Mercury
-		rotationSpeed[1] = 0.8f;	// Venus
-		rotationSpeed[2] = 0.7f;	// Earth
+		rotationSpeed[0] = 0.45f;	// Mercury
+		rotationSpeed[1] = 0.40f;	// Venus
+		rotationSpeed[2] = 0.35f;	// Earth
 		rotationSpeed[3] = 12.0f;	// Moon
-		rotationSpeed[4] = 0.5f;	// Mars
-		rotationSpeed[5] = 0.4f;	// Jupiter
-		rotationSpeed[6] = 0.3f;	// Saturn
-		rotationSpeed[7] = 0.2f;	// Uranus
-		rotationSpeed[8] = 0.1f;	// Neptune
+		rotationSpeed[4] = 0.30f;	// Mars
+		rotationSpeed[5] = 0.25f;	// Jupiter
+		rotationSpeed[6] = 0.20f;	// Saturn
+		rotationSpeed[7] = 0.15f;	// Uranus
+		rotationSpeed[8] = 0.10f;	// Neptune
 	}
 	else
 	{
