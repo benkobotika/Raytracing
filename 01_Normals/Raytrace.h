@@ -59,7 +59,7 @@ public:
 	glm::vec4(155.0f, 0.0f, 0.0f, mercury_size * log2(277.0f / 12.0f)),		// saturn
 	glm::vec4(185.0f, 0.0f, 0.0f, mercury_size * log2(277.0f / 27.7f)),		// uranus
 	glm::vec4(215.0f, 0.0f, 0.0f, mercury_size * log2(277.0f / 27.4f)),		// neptune
-	glm::vec4(240.0f, 0.0f, 0.0f, 1.0f)									// random sphere
+	glm::vec4(240.0f, 0.0f, 0.0f, 1.0f)										// random sphere
 	};
 
 	std::vector<glm::vec4> spheres1 = {
@@ -205,16 +205,17 @@ protected:
 	void InitTextures();
 
 	// Render functions
-	void passLightAndMaterialProperties();
-	void passSphereProperties();
-	void passEyeAtUp();
-	void passMvpWorldWorldIT();
+	void PassLightAndMaterialProperties();
+	void PassSphereProperties();
+	void PassEyeAtUp();
+	void PassMvpWorldWorldIT();
 
 	// skybox
 	void InitCubemap();
 	GLuint  LoadCubemapTexture(int scence);
 
 	void UpdateTextures();
+	void UpdateSpheres();
 
 	// last scene
 	int last_scene = 0;
