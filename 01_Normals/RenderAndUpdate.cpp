@@ -399,7 +399,7 @@ void Raytrace::Render()
 	UpdateTextures();
 
 	// Skybox 
-	glActiveTexture(GL_TEXTURE0 + spheres.size() + 1);
+	glActiveTexture(GL_TEXTURE0 + allSpheresSize + 1);
 	switch (current_scene)
 	{
 	case 0:
@@ -417,7 +417,7 @@ void Raytrace::Render()
 	}
 
 	GLint cubemapTextureLocation = glGetUniformLocation(m_programID, "cubemapTexture");
-	glUniform1i(cubemapTextureLocation, spheres.size() + 1); // 0 corresponds to the texture unit used above (GL_TEXTURE0)
+	glUniform1i(cubemapTextureLocation, allSpheresSize + 1); // 0 corresponds to the texture unit used above (GL_TEXTURE0)
 
 	GLint maxDepthLocation = glGetUniformLocation(m_programID, "maxDepth");
 	glUniform1i(maxDepthLocation, depth);
