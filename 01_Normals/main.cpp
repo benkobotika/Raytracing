@@ -41,8 +41,9 @@ int main(int argc, char* args[])
 	SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
 
 	// Antialiasing
-	//SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS,  1);
-	//SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES,  2);
+	SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 1);
+	SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, 4); // MSAA with 4 samples
+	glEnable(GL_MULTISAMPLE);
 
 	// Create window
 	SDL_Window* win = 0;
