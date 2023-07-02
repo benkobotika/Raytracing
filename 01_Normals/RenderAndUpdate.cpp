@@ -336,7 +336,7 @@ void Raytrace::passLightAndMaterialProperties() {
 void Raytrace::passSphereProperties() {
 	int current_spheres_size = spheres.size();
 	glUniform1i(m_loc_spheres_count, current_spheres_size);
-	glUniform4fv(m_loc_spheres, spheres.size(), reinterpret_cast<const GLfloat*>(spheres.data()));
+	glUniform4fv(m_loc_spheres, current_spheres_size, reinterpret_cast<const GLfloat*>(spheres.data()));
 }
 
 void Raytrace::passEyeAtUp() {
