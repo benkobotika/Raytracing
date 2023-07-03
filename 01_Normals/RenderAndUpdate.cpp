@@ -77,7 +77,7 @@ void SetRotationSpeed(float* rotationSpeed, int current_scene)
 		rotationSpeed[0] = 0.45f;	// Mercury
 		rotationSpeed[1] = 0.40f;	// Venus
 		rotationSpeed[2] = 0.35f;	// Earth
-		rotationSpeed[3] = 12.0f;	// Moon
+		rotationSpeed[3] = 15.0f;	// Moon
 		rotationSpeed[4] = 0.30f;	// Mars
 		rotationSpeed[5] = 0.25f;	// Jupiter
 		rotationSpeed[6] = 0.20f;	// Saturn
