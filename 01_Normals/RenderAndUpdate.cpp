@@ -39,8 +39,8 @@ void Raytrace::UpdateTextures()
 		}
 		// meteor
 		int meteor_index = spheres.size();
-		glActiveTexture(GL_TEXTURE0 + meteor_index);
-		glBindTexture(GL_TEXTURE_2D, m_loadedTextureID[10]);
+		glActiveTexture(GL_TEXTURE0 + meteor_index); // active texture
+		glBindTexture(GL_TEXTURE_2D, m_loadedTextureID[10]); // associates the texture identifier with the active texture unit
 		std::stringstream uniformName;
 		uniformName << "texImage[" << meteor_index << "]";
 		glUniform1i(glGetUniformLocation(m_programID, uniformName.str().c_str()), meteor_index);
@@ -314,11 +314,10 @@ void Raytrace::PassMvpWorldWorldIT() {
 }
 
 
-
 void Raytrace::Render()
 {
 	if (collisionOccurred) {
-		collisionTimer += delta_time*1000.0f;
+		collisionTimer += delta_time * 1000.0f;
 		if (collisionTimer > collisionDelay) {
 			glClearColor(1.0f, 1.0f, 1.0f, 1.0f);  // white background
 			collisionOccurred = false;

@@ -168,6 +168,7 @@ vec3 lights(Hit hit, vec3 sunCoordinate, bool shadow) {
 }
 
 Hit intersect(Ray ray, int indexOfSphere) {
+    // t^2<v, v> + 2t<v, p0 - c> + <p0 - c, p0 - c> - r^2 = 0
     Hit hit;
     hit.distance = -1.0f;
 
