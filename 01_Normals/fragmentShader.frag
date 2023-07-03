@@ -268,7 +268,8 @@ vec4 getTextureColor(Hit hit,vec2 sphereTexCoords)
 
 vec3 rayTrace(Ray ray, float alfa, float beta, vec3 u, vec3 v, vec3 w) {
     vec3 resultColor = vec3(0, 0, 0);
-    vec3 resultColor2 = vec3(0, 0, 0);
+    vec3 tempColor = vec3(0, 0, 0);
+    vec3 basicColor = vec3(0, 0, 0);
     vec3 reflectedColor = vec3(0, 0, 0);
     float intensity = 0.25;
     const float epsilon = 0.0000001f;
@@ -289,28 +290,42 @@ vec3 rayTrace(Ray ray, float alfa, float beta, vec3 u, vec3 v, vec3 w) {
             // Draw skybox using cubemap texture
             vec3 rayDirection = normalize(alfa * u + beta * v - w);
             vec3 skyboxColor = textureCube(cubemapTexture, rayDirection).rgb;
-            resultColor = skyboxColor;
+            basicColor = skyboxColor;
             isSkyBox = true;
             break;
         } else if (hit.distance <= 0.0)
             break; // reflected ray to skybox
 
+
+
+        if (shadow && d > 0) {
+            break; // don't calculate reflected lights
+        }
+
+
+        //calculate the color of hit
+        vec3 center = spheres[hit.indexOfSphere].xyz;
+        float radius = spheres[hit.indexOfSphere].w;
+
+        vec3 sphereToIntersection = hit.position - center;
+        float u = 0.5 + atan(-sphereToIntersection.z, sphereToIntersection.x) / (2.0 * M_PI);
+        float v = 0.5 - asin(sphereToIntersection.y / radius) / M_PI;
+        vec2 sphereTexCoords = vec2(u, v);
+            
+        // Check that the fragment is in shadow or not
+        shadow = thisIsShadow(hit, sunCoordinate);
+
+        // Add lights
+        tempColor = lights(hit, sunCoordinate, shadow);
+        vec4 textureColor = getTextureColor(hit, sphereTexCoords);
+
+        tempColor *= textureColor.rgb;
+
+
+
         if (d == 0) {
-            vec3 center = spheres[hit.indexOfSphere].xyz;
-            float radius = spheres[hit.indexOfSphere].w;
+            basicColor = tempColor;
 
-            vec3 sphereToIntersection = hit.position - center;
-            float u = 0.5 + atan(-sphereToIntersection.z, sphereToIntersection.x) / (2.0 * M_PI);
-            float v = 0.5 - asin(sphereToIntersection.y / radius) / M_PI;
-            vec2 sphereTexCoords = vec2(u, v);
-            
-            // Check that the fragment is in shadow or not
-            shadow = thisIsShadow(hit, sunCoordinate);
-
-            // Add lights
-            resultColor = lights(hit, sunCoordinate, shadow);
-            vec4 textureColor = getTextureColor(hit, sphereTexCoords);
-            
             // Water reflection
             if (((textureColor.r > 0.12 && textureColor.r < 0.35) || (textureColor.r > 0.62 && textureColor.r < 0.74) || (textureColor.r > 0.90)) &&
             ((textureColor.g > 0.22 && textureColor.g < 0.48) || (textureColor.g > 0.82)) &&
@@ -318,39 +333,20 @@ vec3 rayTrace(Ray ray, float alfa, float beta, vec3 u, vec3 v, vec3 w) {
             {
                 water = true;
             }
-
-            resultColor *= textureColor.rgb;
             
             // Scale up sun light intensity 
             if (hit.indexOfSphere == 0) {
-                resultColor *= 2.5;
+                basicColor *= 2.5;
                 break;
             }
-        } else {
 
-            if (shadow) {
-                break; // don't calculate reflected lights
+            if (!(!isSkyBox && (water || currentScene != 0))) {
+                break;
             }
 
-            vec3 center = spheres[hit.indexOfSphere].xyz;
-            float radius = spheres[hit.indexOfSphere].w;
-
-            vec3 sphereToIntersection = hit.position - center;
-            float u = 0.5 + atan(-sphereToIntersection.z, sphereToIntersection.x) / (2.0 * M_PI);
-            float v = 0.5 - asin(sphereToIntersection.y / radius) / M_PI;
-            vec2 sphereTexCoords = vec2(u, v);
-            
-            // Check that the fragment is in shadow or not
-            shadow = thisIsShadow(hit, sunCoordinate);
-
-            // Add lights
-            resultColor2 = lights(hit, sunCoordinate, shadow);
-            vec4 textureColor = getTextureColor(hit, sphereTexCoords);
-            
-            resultColor2 *= textureColor.rgb;
-
+        } else {
             if (currentScene == 2) {
-                reflectedColor += intensity * resultColor2;
+                reflectedColor += intensity * tempColor;
             } else {
                 reflectedColor += intensity * basicReflectedColor;
             }
@@ -360,6 +356,8 @@ vec3 rayTrace(Ray ray, float alfa, float beta, vec3 u, vec3 v, vec3 w) {
         ray.startPosition = hit.position + epsilon * hit.normal;
         ray.direction = reflect(ray.direction, hit.normal);
     }
+
+    resultColor = basicColor;
 
     if (!isSkyBox && (water || currentScene != 0))
         resultColor += reflectedColor;
