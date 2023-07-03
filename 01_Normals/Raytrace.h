@@ -114,6 +114,10 @@ protected:
 	float collisionDelay = 1.0f;  // delay in seconds
 	float delta_time;
 
+	// Gravity
+	const float G = 6.67430e-11;  // Gravitational constant
+	int masses[11];
+
 	// Vertex initialization
 	struct Vertex
 	{
@@ -159,10 +163,6 @@ protected:
 		glm::vec4(Ks, shininess),
 		glm::vec4(255, 253, 55, 0)
 	};
-
-	// Gravity
-	const float G = 6.67430e-11;  // Gravitational constant
-	int masses[11];
 
 
 	// variables to shader
