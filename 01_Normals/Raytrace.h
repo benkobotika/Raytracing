@@ -103,6 +103,7 @@ public:
 	bool collisionOccurred = false;
 	bool r_pressed = false;
 	bool stop_animation = false;
+	bool slow_down_animation = false;
 
 protected:
 

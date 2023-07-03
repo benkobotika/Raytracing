@@ -70,7 +70,7 @@ void Raytrace::UpdateTextures()
 	}
 }
 
-void SetRotationSpeed(float* rotationSpeed, int current_scene, bool stop_animation, int size)
+void SetRotationSpeed(float* rotationSpeed, int size, int current_scene, bool stop_animation, bool slow_down_animation)
 {
 	if (stop_animation)
 	{
@@ -104,6 +104,13 @@ void SetRotationSpeed(float* rotationSpeed, int current_scene, bool stop_animati
 			rotationSpeed[6] = 1.1f;
 			rotationSpeed[7] = 1.2f;
 			rotationSpeed[8] = 1.3f;
+		}
+		if (slow_down_animation)
+		{
+			for (int i = 0; i < size; i++)
+			{
+				rotationSpeed[i] /= 2.5;
+			}
 		}
 	}
 }
@@ -145,7 +152,7 @@ void Raytrace::CalculateGravity(glm::vec4 sphere1, glm::vec4 sphere2)
 void Raytrace::UpdateSpheres()
 {
 	float rotationSpeed[10];
-	SetRotationSpeed(rotationSpeed, current_scene, stop_animation, spheres.size() - 1);
+	SetRotationSpeed(rotationSpeed, spheres.size() - 1, current_scene, stop_animation, slow_down_animation);
 
 	// Calculate the gravity from the Sun
 	CalculateGravity(spheres[0], spheres[spheres.size() - 1]);

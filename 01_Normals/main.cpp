@@ -166,6 +166,8 @@ int main(int argc, char* args[])
 				}
 				else if (ev.key.keysym.sym == SDLK_SPACE) {
 					app.stop_animation = !app.stop_animation;
+				} else if (ev.key.keysym.sym == SDLK_TAB) {
+					app.slow_down_animation = !app.slow_down_animation;
 				}
 				app.KeyboardDown(ev.key);
 				break;
