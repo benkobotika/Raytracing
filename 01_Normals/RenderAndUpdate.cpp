@@ -108,13 +108,10 @@ void SetRotationSpeed(float* rotationSpeed, int current_scene, bool stop_animati
 	}
 }
 
-void Raytrace::UpdateSpheres()
+void Raytrace::CalculateGravity(glm::vec4 sphere1, glm::vec4 sphere2)
 {
-	float rotationSpeed[10];
-	SetRotationSpeed(rotationSpeed, current_scene, stop_animation, spheres.size() - 1);
-
-	// Gravity for the Sun
-	// ===================
+	// Gravity
+	// =======
 	// Newton's law of gravity is as follows:
 	//
 	// F = G * (m1 * m2) / r ^ 2
@@ -127,7 +124,7 @@ void Raytrace::UpdateSpheres()
 	// r is the distance between them.
 
 	// Direction of the force
-	glm::vec3 forceDirection = glm::vec3(spheres[0]) - glm::vec3(spheres[spheres.size() - 1]);
+	glm::vec3 forceDirection = glm::vec3(sphere1) - glm::vec3(sphere2);
 
 	// distance between the two bodies
 	float distance = glm::length(forceDirection) * 2.0f;
@@ -143,6 +140,15 @@ void Raytrace::UpdateSpheres()
 
 	// Update velocity
 	meteorVelocity += acceleration * delta_time;
+}
+
+void Raytrace::UpdateSpheres()
+{
+	float rotationSpeed[10];
+	SetRotationSpeed(rotationSpeed, current_scene, stop_animation, spheres.size() - 1);
+
+	// Calculate the gravity from the Sun
+	CalculateGravity(spheres[0], spheres[spheres.size() - 1]);
 
 	glm::vec3& pos = *(glm::vec3*)&spheres[spheres.size() - 1];
 
@@ -197,30 +203,8 @@ void Raytrace::UpdateSpheres()
 			z = new_z;
 		}
 
-		// Gravity
-		// =======
-
-		// Direction of the force
-		glm::vec3 forceDirection = glm::vec3(spheres[i]) - glm::vec3(spheres[spheres.size() - 1]);
-
-		// distance between the two bodies
-		float distance = glm::length(forceDirection) * 2.0f;
-
-		// Gravitational force
-		float forceMagnitude = G * masses[i] * masses[10] / std::pow(distance, 2) * 1.0f;
-
-		// Force vector
-		glm::vec3 force = forceMagnitude * glm::normalize(forceDirection) * 1.0f;
-
-		// acceleration = force / mass
-		glm::vec3 acceleration = force / (float)masses[10] * 1000.0f;
-
-		// Update velocity
-		meteorVelocity += acceleration * delta_time;
-
-		glm::vec3& pos = *(glm::vec3*)&spheres[spheres.size() - 1];
-
-		// std::cout << "pos: " << pos[0] << ", " << pos[1] << ", " << pos[2] << std::endl;
+		// Gravity for the planets
+		CalculateGravity(spheres[i], spheres[spheres.size() - 1]);
 
 		// Update position
 		pos += meteorVelocity * delta_time * 1000.0f;

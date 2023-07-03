@@ -113,6 +113,9 @@ protected:
 	float collisionDelay = 1.0f;  // delay in seconds
 	float delta_time;
 
+	// Calculate Gravity
+	void CalculateGravity(glm::vec4 sphere1, glm::vec4 sphere2);
+
 	// Gravity
 	const float G = 6.67430e-11;  // Gravitational constant
 	int masses[11];
