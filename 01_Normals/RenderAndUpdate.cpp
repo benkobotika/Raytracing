@@ -120,7 +120,7 @@ void Raytrace::Update()
 			0.9f,	// Mercury
 			0.8f,	// Venus
 			0.7f,	// Earth
-			12.0f,	// Moon
+			15.0f,	// Moon
 			0.5f,	// Mars
 			0.4f,	// Jupiter
 			0.3f,	// Saturn
