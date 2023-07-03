@@ -36,12 +36,13 @@ float distanceRatio = At[0];
 float linearConst = At[1];
 float quadraticConst = At[2];
 
-// material properties: ambient, diffuse, specular
-uniform vec4 material_properties[3]; // Ka, Kd, Ks
+// material properties: ambient, diffuse, specular, reflected color
+uniform vec4 material_properties[4]; // Ka, Kd, Ks
 vec3 Ka = material_properties[0].xyz;
 vec3 Kd = material_properties[1].xyz;
 vec3 Ks = material_properties[2].xyz;
 float shininess = material_properties[2].w;
+vec3 basicReflectedColor = material_properties[3].xyz;
 
 // spheres
 uniform int spheresCount;
@@ -57,6 +58,9 @@ uniform samplerCube cubemapTexture;
 
 //max depth to reflected rays
 uniform int maxDepth;
+
+//current scene
+uniform int currentScene;
 
 struct Hit {
     float distance;
@@ -132,7 +136,7 @@ bool thisIsShadow(Hit hit, vec3 sunCoordinate) {
     Hit firstHitFromHitToLeftSideOfSun = firstIntersection(rayFromBottomOfSunToHit);
     Hit firstHitFromHitToRightSideOfSun = firstIntersection(rayFromRightSideOfSunToHit);
 
-    return (hit.indexOfSphere == 0 || 
+    return !(hit.indexOfSphere == 0 || 
     (firstHitFromHitToSun.distance > 0.0 && firstHitFromHitToSun.indexOfSphere == 0) ||
     (firstHitFromHitToTopOfSun.distance > 0.0 && firstHitFromHitToTopOfSun.indexOfSphere == 0) ||
     (firstHitFromHitToBottomOfSun.distance > 0.0 && firstHitFromHitToBottomOfSun.indexOfSphere == 0) ||
@@ -157,9 +161,9 @@ vec3 lights(Hit hit, vec3 sunCoordinate, bool shadow) {
     float attenuation = setAttentuation(sunCoordinate, hit);
     
     if (shadow) {
-        return attenuation * (ambient + diffuse + specular);
-    } else {
         return attenuation * ambient * 0.45f;
+    } else {
+        return attenuation * (ambient + diffuse + specular);
     }
 }
 
@@ -276,6 +280,8 @@ vec3 rayTrace(Ray ray, float alfa, float beta, vec3 u, vec3 v, vec3 w) {
     // ratio between distanceEyeAndPlanet and distanceIntersectionPointAndPlanet
     float distanceRatio = 0.75f;
 
+    bool shadow = false;
+    bool water = false;
     for (int d = 0; d <= maxDepth && !isSkyBox; d++) {
         Hit hit = firstIntersection(ray);
 
@@ -287,7 +293,7 @@ vec3 rayTrace(Ray ray, float alfa, float beta, vec3 u, vec3 v, vec3 w) {
             isSkyBox = true;
             break;
         } else if (hit.distance <= 0.0)
-            break;//reflected ray to skybox
+            break; // reflected ray to skybox
 
         if (d == 0) {
             vec3 center = spheres[hit.indexOfSphere].xyz;
@@ -299,12 +305,17 @@ vec3 rayTrace(Ray ray, float alfa, float beta, vec3 u, vec3 v, vec3 w) {
             vec2 sphereTexCoords = vec2(u, v);
             
             // Check that the fragment is in shadow or not
-            bool shadow = thisIsShadow(hit, sunCoordinate);
+            shadow = thisIsShadow(hit, sunCoordinate);
 
             // Add lights
             resultColor = lights(hit, sunCoordinate, shadow);
             vec4 textureColor = getTextureColor(hit, sphereTexCoords);
             
+            // Water reflection
+            if (textureColor.r > 0.15 && textureColor.r < 0.60 && textureColor.g > 0.27 && textureColor.g < 0.47 && textureColor.b > 0.27 && abs(textureColor.r-textureColor.g-textureColor.b)>0.5) {
+                water = true;
+            }
+
             resultColor *= textureColor.rgb;
             
             // Scale up sun light intensity 
@@ -313,6 +324,11 @@ vec3 rayTrace(Ray ray, float alfa, float beta, vec3 u, vec3 v, vec3 w) {
                 break;
             }
         } else {
+
+            if (shadow) {
+                break; // don't calculate reflected lights
+            }
+
             vec3 center = spheres[hit.indexOfSphere].xyz;
             float radius = spheres[hit.indexOfSphere].w;
 
@@ -322,26 +338,27 @@ vec3 rayTrace(Ray ray, float alfa, float beta, vec3 u, vec3 v, vec3 w) {
             vec2 sphereTexCoords = vec2(u, v);
             
             // Check that the fragment is in shadow or not
-            bool shadow = thisIsShadow(hit, sunCoordinate);
+            shadow = thisIsShadow(hit, sunCoordinate);
 
             // Add lights
-            if (shadow == false) {
-                break; // in shadow we don't calculate reflected colors
-            }
             resultColor2 = lights(hit, sunCoordinate, shadow);
             vec4 textureColor = getTextureColor(hit, sphereTexCoords);
             
             resultColor2 *= textureColor.rgb;
 
-            reflectedColor += intensity * resultColor2;
-            intensity *= intensity * intensity;
+            if (currentScene == 2) {
+                reflectedColor += intensity * resultColor2;
+            } else {
+                reflectedColor += intensity * basicReflectedColor;
+            }
+            intensity *= intensity;
         }
 
         ray.startPosition = hit.position + epsilon * hit.normal;
         ray.direction = reflect(ray.direction, hit.normal);
-
     }
-    if (!isSkyBox)
+
+    if (!isSkyBox && (water || currentScene != 0))
         resultColor += reflectedColor;
     return resultColor;
 }

@@ -13,7 +13,7 @@ public:
 	~gCamera(void);
 
 	// Gets the view matrix.
-	// <returns>The 4x4 view matrix</returns>
+	//  The 4x4 view matrix
 	glm::mat4 GetViewMatrix();
 
 	void Update(float _deltaTime);

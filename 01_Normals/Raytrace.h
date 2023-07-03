@@ -53,19 +53,19 @@ public:
 	glm::vec4(40.0f, 0.0f, 0.0f, mercury_size),								// mercury
 	glm::vec4(60.0f, 0.0f, 0.0f, mercury_size * log2(277.0f / 115.0f)),	    // venus
 	glm::vec4(80.0f, 0.0f, 0.0f, mercury_size * log2(277.0f / 109.0f)),		// earth
-	glm::vec4(90.0f, 0.0f, 0.0f, mercury_size * log2(277.0f / 240.0f)),		// moon
+	glm::vec4(85.0f, 0.0f, 0.0f, mercury_size * log2(277.0f / 240.0f)),		// moon
 	glm::vec4(105.0f, 0.0f, 0.0f, mercury_size * log2(277.0f / 207.0f)),	// mars
 	glm::vec4(125.0f, 0.0f, 0.0f, mercury_size * log2(277.0f / 11.0f)),		// jupiter
 	glm::vec4(155.0f, 0.0f, 0.0f, mercury_size * log2(277.0f / 12.0f)),		// saturn
 	glm::vec4(185.0f, 0.0f, 0.0f, mercury_size * log2(277.0f / 27.7f)),		// uranus
 	glm::vec4(215.0f, 0.0f, 0.0f, mercury_size * log2(277.0f / 27.4f)),		// neptune
-	glm::vec4(240.0f, 0.0f, 0.0f, 1.0f)									// random sphere
+	glm::vec4(0.0f, 0.0f, 0.0f, 10.0f)										// oversized asteroid
 	};
 
 	std::vector<glm::vec4> spheres1 = {
 	glm::vec4(0.0f, 0.0f, 0.0f, mercury_size * log2(277.0f)),				// endor
 	glm::vec4(40.0f, 0.0f, 0.0f, 2*mercury_size),							// death star
-	glm::vec4(240.0f, 0.0f, 0.0f, 1000.0f)									// random sphere
+	glm::vec4(0.0f, 0.0f, 0.0f, 10.0f)										// oversized asteroid
 	};
 
 	float uranus_size = mercury_size * log2(277.0f / 27.7f);
@@ -80,7 +80,7 @@ public:
 	glm::vec4(185.0f, 0.0f, 0.0f, uranus_size),
 	glm::vec4(215.0f, 0.0f, 0.0f, uranus_size),
 	glm::vec4(235.0f, 0.0f, 0.0f, uranus_size),
-	glm::vec4(260.0f, 0.0f, 0.0f, 1000.0f)									// random sphere
+	glm::vec4(0.0f, 0.0f, 0.0f, 10.0f)										// oversized asteroid
 	};
 
 	std::vector<glm::vec4> spheres = {
@@ -88,27 +88,33 @@ public:
 	glm::vec4(40.0f, 0.0f, 0.0f, mercury_size),								// mercury
 	glm::vec4(60.0f, 0.0f, 0.0f, mercury_size * log2(277.0f / 115.0f)),	    // venus
 	glm::vec4(80.0f, 0.0f, 0.0f, mercury_size * log2(277.0f / 109.0f)),		// earth
-	glm::vec4(90.0f, 0.0f, 0.0f, mercury_size * log2(277.0f / 240.0f)),		// moon
+	glm::vec4(85.0f, 0.0f, 0.0f, mercury_size * log2(277.0f / 240.0f)),		// moon
 	glm::vec4(105.0f, 0.0f, 0.0f, mercury_size * log2(277.0f / 207.0f)),	// mars
 	glm::vec4(125.0f, 0.0f, 0.0f, mercury_size * log2(277.0f / 11.0f)),		// jupiter
 	glm::vec4(155.0f, 0.0f, 0.0f, mercury_size * log2(277.0f / 12.0f)),		// saturn
 	glm::vec4(185.0f, 0.0f, 0.0f, mercury_size * log2(277.0f / 27.7f)),		// uranus
 	glm::vec4(215.0f, 0.0f, 0.0f, mercury_size * log2(277.0f / 27.4f)),		// neptune
-	glm::vec4(240.0f, 0.0f, 0.0f, 1000.0f)									// random sphere
+	glm::vec4(0.0f, 0.0f, 0.0f, 1.0f)										// oversized asteroid
 	};
 
 	glm::vec4 getRandomPosition();
 
 	glm::vec3 meteorVelocity = { 0.0f,0.0f,0.0f };
 	bool collisionOccurred = false;
+	bool r_pressed = false;
 
 
 
 protected:
 
+	// Gravity implementation
 	void InitMasses();
 	bool SpheresCollide(glm::vec4 sphere1, glm::vec4 sphere2);
+	float collisionTimer = 0.0f;
+	float collisionDelay = 1.0f;  // delay in seconds
+	float delta_time;
 
+	// Vertex initialization
 	struct Vertex
 	{
 		glm::vec3 p; // position
@@ -150,7 +156,8 @@ protected:
 	std::vector<glm::vec4> materialProperties = {
 		glm::vec4(Ka, 0.0f),
 		glm::vec4(Kd, 0.0f),
-		glm::vec4(Ks, shininess)
+		glm::vec4(Ks, shininess),
+		glm::vec4(255, 253, 55, 0)
 	};
 
 	// Gravity
@@ -199,16 +206,17 @@ protected:
 	void InitTextures();
 
 	// Render functions
-	void passLightAndMaterialProperties();
-	void passSphereProperties();
-	void passEyeAtUp();
-	void passMvpWorldWorldIT();
+	void PassLightAndMaterialProperties();
+	void PassSphereProperties();
+	void PassEyeAtUp();
+	void PassMvpWorldWorldIT();
 
 	// skybox
 	void InitCubemap();
 	GLuint  LoadCubemapTexture(int scence);
 
 	void UpdateTextures();
+	void UpdateSpheres();
 
 	// last scene
 	int last_scene = 0;

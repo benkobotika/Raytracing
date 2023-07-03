@@ -177,13 +177,24 @@ void Raytrace::InitMasses()
 	// mass = density * volume = density * (4/3 * pi * r^3) = k * r^3
 	// simplified to mass = r^3
 
-	masses[0] = 1000000.0f;
-	for (int i = 1; i < spheres.size()-1; i++)
+	/*masses[0] = 100000000000000000000000000000.0f;
+	masses[1] = 1000.0f;
+	masses[2] = 150000.0f;
+	masses[3] = 160000.0f;
+	masses[4] = 200.0f;
+	masses[5] = 1500.0f;
+	masses[6] = 100000000.0f;
+	masses[7] = 80000000.0f;
+	masses[8] = 40000000.0f;
+	masses[9] = 35000000.0f;
+	masses[10] = 120000000.0f;*/
+
+	for (int i = 0; i < spheres.size(); i++)
 	{
-		masses[i]=std::pow(spheres[i][3], 2)*100;
-		std::cout << "masses[" << i << "] = " << masses[i] << std::endl;
+		masses[i] = std::pow(spheres[i][3], 3)*100000.0f;
 	}
-	masses[10] = 100.0f;
+	masses[4]+=2* 100000.0f;
+	masses[5]+=7* 100000.0f;
 }
 
 bool Raytrace::Init()
@@ -202,14 +213,14 @@ bool Raytrace::Init()
 	InitCubemap();
 	InitMasses();
 
-	for (int i = 0; i < spheres.size(); i++)
-	{
-		std::cout << "masses[" << i << "]" << masses[i]<<std::endl;
-	}
+	// for (int i = 0; i < spheres.size(); i++)
+	// {
+	// 	std::cout << "masses[" << i << "] = " << masses[i] << std::endl;
+	// }
 
 	// Camera
 	// Parameters: angle, aspect (ratio of the width to height), near clipping plane dist, far clipping plane dist 
-	m_camera.SetProj(glm::radians(60.0f), 640.0f / 480.0f, 0.01f, 1000.0f);
+	m_camera.SetProj(glm::radians(60.0f), m_camera.GetScreenWidth() / m_camera.GetScreenHeight(), 0.01f, 1000.0f);
 
 	// Get the location of uniform variables in the shader
 	m_loc_mvp = glGetUniformLocation(m_programID, "MVP");
