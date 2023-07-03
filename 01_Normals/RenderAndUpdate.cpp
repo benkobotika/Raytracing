@@ -70,38 +70,48 @@ void Raytrace::UpdateTextures()
 	}
 }
 
-void SetRotationSpeed(float* rotationSpeed, int current_scene)
+void SetRotationSpeed(float* rotationSpeed, int current_scene, bool stop_animation, int size)
 {
-	if (current_scene == 0 || current_scene == 1)
+	if (stop_animation)
 	{
-		rotationSpeed[0] = 0.45f;	// Mercury
-		rotationSpeed[1] = 0.40f;	// Venus
-		rotationSpeed[2] = 0.35f;	// Earth
-		rotationSpeed[3] = 15.0f;	// Moon
-		rotationSpeed[4] = 0.30f;	// Mars
-		rotationSpeed[5] = 0.25f;	// Jupiter
-		rotationSpeed[6] = 0.20f;	// Saturn
-		rotationSpeed[7] = 0.15f;	// Uranus
-		rotationSpeed[8] = 0.10f;	// Neptune
+		for (int i = 0; i < size; i++)
+		{
+			rotationSpeed[i] = 0.0f;
+		}
 	}
 	else
 	{
-		rotationSpeed[0] = 0.9f;
-		rotationSpeed[1] = 0.8f;
-		rotationSpeed[2] = 0.7f;
-		rotationSpeed[3] = 0.8f;
-		rotationSpeed[4] = 0.9f;
-		rotationSpeed[5] = 1.0f;
-		rotationSpeed[6] = 1.1f;
-		rotationSpeed[7] = 1.2f;
-		rotationSpeed[8] = 1.3f;
+		if (current_scene == 0 || current_scene == 1)
+		{
+			rotationSpeed[0] = 0.45f;	// Mercury
+			rotationSpeed[1] = 0.40f;	// Venus
+			rotationSpeed[2] = 0.35f;	// Earth
+			rotationSpeed[3] = 15.0f;	// Moon
+			rotationSpeed[4] = 0.30f;	// Mars
+			rotationSpeed[5] = 0.25f;	// Jupiter
+			rotationSpeed[6] = 0.20f;	// Saturn
+			rotationSpeed[7] = 0.15f;	// Uranus
+			rotationSpeed[8] = 0.10f;	// Neptune
+		}
+		else
+		{
+			rotationSpeed[0] = 0.9f;
+			rotationSpeed[1] = 0.8f;
+			rotationSpeed[2] = 0.7f;
+			rotationSpeed[3] = 0.8f;
+			rotationSpeed[4] = 0.9f;
+			rotationSpeed[5] = 1.0f;
+			rotationSpeed[6] = 1.1f;
+			rotationSpeed[7] = 1.2f;
+			rotationSpeed[8] = 1.3f;
+		}
 	}
 }
 
 void Raytrace::UpdateSpheres()
 {
-	float rotationSpeed[9];
-	SetRotationSpeed(rotationSpeed, current_scene);
+	float rotationSpeed[10];
+	SetRotationSpeed(rotationSpeed, current_scene, stop_animation, spheres.size() - 1);
 
 	// Gravity for the Sun
 	// ===================

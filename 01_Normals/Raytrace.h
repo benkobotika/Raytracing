@@ -102,8 +102,7 @@ public:
 	glm::vec3 meteorVelocity = { 0.0f,0.0f,0.0f };
 	bool collisionOccurred = false;
 	bool r_pressed = false;
-
-
+	bool stop_animation = false;
 
 protected:
 

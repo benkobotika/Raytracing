@@ -164,6 +164,9 @@ int main(int argc, char* args[])
 					if (app.depth >= 1)
 						app.depth--;
 				}
+				else if (ev.key.keysym.sym == SDLK_SPACE) {
+					app.stop_animation = !app.stop_animation;
+				}
 				app.KeyboardDown(ev.key);
 				break;
 			case SDL_KEYUP:
