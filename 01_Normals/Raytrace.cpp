@@ -213,10 +213,10 @@ bool Raytrace::Init()
 	InitCubemap();
 	InitMasses();
 
-	for (int i = 0; i < spheres.size(); i++)
-	{
-		std::cout << "masses[" << i << "] = " << masses[i] << std::endl;
-	}
+	// for (int i = 0; i < spheres.size(); i++)
+	// {
+	// 	std::cout << "masses[" << i << "] = " << masses[i] << std::endl;
+	// }
 
 	// Camera
 	// Parameters: angle, aspect (ratio of the width to height), near clipping plane dist, far clipping plane dist 
