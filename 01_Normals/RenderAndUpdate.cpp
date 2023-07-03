@@ -49,7 +49,7 @@ void Raytrace::UpdateTextures()
 	case 2:
 	{
 		int offset2 = spheres0.size() + spheres1.size();
-		std::cout << offset2 << std::endl;
+		// std::cout << offset2 << std::endl;
 		for (int i = 0; i < spheres.size() - 1; i++)
 		{
 			glActiveTexture(GL_TEXTURE0 + i);
@@ -210,7 +210,7 @@ void Raytrace::UpdateSpheres()
 
 		glm::vec3& pos = *(glm::vec3*)&spheres[spheres.size() - 1];
 
-		std::cout << "pos: " << pos[0] << ", " << pos[1] << ", " << pos[2] << std::endl;
+		// std::cout << "pos: " << pos[0] << ", " << pos[1] << ", " << pos[2] << std::endl;
 
 		// Update position
 		pos += meteorVelocity * delta_time * 1000.0f;
