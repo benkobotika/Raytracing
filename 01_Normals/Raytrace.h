@@ -115,7 +115,7 @@ protected:
 	float delta_time;
 
 	// Calculate Gravity
-	void CalculateGravity(glm::vec4 sphere1, glm::vec4 sphere2);
+	void CalculateGravity(glm::vec4 sphere1,int, glm::vec4 sphere2);
 
 	// Gravity
 	const float G = 6.67430e-11;  // Gravitational constant

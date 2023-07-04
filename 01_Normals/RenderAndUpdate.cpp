@@ -115,7 +115,7 @@ void SetRotationSpeed(float* rotationSpeed, int size, int current_scene, bool st
 	}
 }
 
-void Raytrace::CalculateGravity(glm::vec4 sphere1, glm::vec4 sphere2)
+void Raytrace::CalculateGravity(glm::vec4 sphere1, int i, glm::vec4 sphere2)
 {
 	// Gravity
 	// =======
@@ -137,7 +137,7 @@ void Raytrace::CalculateGravity(glm::vec4 sphere1, glm::vec4 sphere2)
 	float distance = glm::length(forceDirection) * 2.0f;
 
 	// Gravitational force
-	float forceMagnitude = G * masses[0] * masses[10] / std::pow(distance, 2) * 1.0f;
+	float forceMagnitude = G * masses[i] * masses[10] / std::pow(distance, 2) * 1.0f;
 
 	// Force vector
 	glm::vec3 force = forceMagnitude * glm::normalize(forceDirection) * 1.0f;
@@ -155,7 +155,7 @@ void Raytrace::UpdateSpheres()
 	SetRotationSpeed(rotationSpeed, spheres.size() - 1, current_scene, stop_animation, slow_down_animation);
 
 	// Calculate the gravity from the Sun
-	CalculateGravity(spheres[0], spheres[spheres.size() - 1]);
+	CalculateGravity(spheres[0],0, spheres[spheres.size() - 1]);
 
 	glm::vec3& pos = *(glm::vec3*)&spheres[spheres.size() - 1];
 
@@ -211,7 +211,7 @@ void Raytrace::UpdateSpheres()
 		}
 
 		// Gravity for the planets
-		CalculateGravity(spheres[i], spheres[spheres.size() - 1]);
+		CalculateGravity(spheres[i],i, spheres[spheres.size() - 1]);
 
 		// Update position
 		pos += meteorVelocity * delta_time * 1000.0f;
