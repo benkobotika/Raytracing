@@ -1,4 +1,13 @@
 # Raytracing
+## Short description
+**Raytracing** is a real-time recursive ray tracing application created using OpenGL, featuring: 
+- dynamic scene rendering
+- fragment shader ray tracing
+- camera control
+- lightning and shading
+- recursive reflections
+- texture mapping
+
 
 ## First scene
 ![](Images/1.png)
